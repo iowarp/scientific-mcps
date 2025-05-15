@@ -22,6 +22,7 @@ The following nine capabilities have been implemented:
 | `Parallel_Sort`| Tool     | Simulates sorting a large text file and returned sorted result            |
 | `Node_Hardware`| Tool     | Reports the number of CPU cores on the current system .                   |
 | `Pandas`       | Data     | Loads data and displays rows based on condition using the `pandas` library|
+| `Jarvis`       | Tool     | Initialize, configures, list, runs and destroys the pipeline. Add, link, unlink, delete, update packages to the pipeline. Built in llm client python file to test.|
 
 
 
@@ -52,6 +53,17 @@ The following nine capabilities have been implemented:
     # Install dependencies from pyproject.toml
     uv pip install --requirement pyproject.toml
     ```
+
+- To install all mcps together (Single Command)
+    - Case 1: If you have already setup uv project then:
+    ```bash
+    uv add "git+https://github.com/iowarp/scientific-mcps.git@main"
+    ```
+    - Case 2: If you haven't setup uv project then:
+    ```bash
+    uv pip install "git+https://github.com/iowarp/scientific-mcps.git@main"
+    ```
+
 ## Project Structure
 
 ```
@@ -76,6 +88,8 @@ scientific-mcps/
 ├── Parallel_Sort
 ├── Node_Hardware
 ├── Pandas
+├── Jarvis MCP
+
 
 ```
 ## Usage

@@ -1,0 +1,28 @@
+[build-system]
+requires = ["setuptools>=60.0.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+
+[project]
+name = "jarvis-mcp"
+version = "0.1.0"
+description = "MCP server and client for Jarvis-CD pipelines"
+readme = "README.md"
+requires-python = ">=3.8"
+dependencies = [
+  "fastmcp",
+  "fastapi",
+  "jarvis-cd",
+  "python-dotenv",
+  "google-genai",
+  "jarvis-util @ git+https://github.com/grc-iit/jarvis-util.git@main#egg=jarvis-util",
+  "jarvis-cd @ git+https://github.com/grc-iit/jarvis-cd.git@main#egg=jarvis-cd",
+]
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[project.scripts]
+# this creates a `mcp-server` and `mcp-client` CLI on your $PATH:
+mcp-server = "jarvis_mcp.server:main"
+mcp-client = "jarvis_mcp.client:main"
