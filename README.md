@@ -1,7 +1,6 @@
 
 # IoWarp MCPs
 
-
 ##  Overview
 
 This project implements a **Scientific Model Context Protocol (MCP) Server** using **FastAPI** and **JSON-RPC 2.0**. The server simulates various scientific computing capabilities and allows **AI agents** and **Large Language Models (LLMs)**  to interact with tools and data sources in a standardized way.
@@ -25,42 +24,39 @@ The following nine capabilities have been implemented:
 | `Jarvis`       | Tool     | Initialize, configures, list, runs and destroys the pipeline. Add, link, unlink, delete, update packages to the pipeline. Built in llm client python file to test.|
 
 
-
-
-## Installation
+## Quick Installation
 
 - Clone the repository:
     ```bash
    git clone https://github.com/iowarp/scientific-mcps.git
-   cd scientific-mcps/<mcp-name> # scientific-mcps/Arxiv
+   cd scientific-mcps
    ```
 - Install uv:
     ```bash
     pip install uv
     ```
-
 - Create and activate environment using uv:
     ```bash
     uv venv mcp-server
     mcp-server\Scripts\activate     #On Windows
     source mcp-server/bin/activate  #On macOS/Linux
-
     ```
-  Each MCP directory contains pyproject.toml file.
-
+#### **To Install Individual MCP**
+  - Each MCP directory contains it's own pyproject.toml file and hence can be built seperately. 
+    ```bash
+    cd <mcp-name> # Arxiv
+    ```
 - Install dependencies using uv:
     ```bash
     # Install dependencies from pyproject.toml
     uv pip install --requirement pyproject.toml
     ```
-
-- To install all mcps together (Single Command)
-    - Case 1: If you have already setup uv project then:
+    > Detailed instructions about installation of individual mcp can be found in their respective sub directory. 
+#### **To Install All MCP altogther**
+- To install all mcps as package
     ```bash
     uv add "git+https://github.com/iowarp/scientific-mcps.git@main"
-    ```
-    - Case 2: If you haven't setup uv project then:
-    ```bash
+    # or 
     uv pip install "git+https://github.com/iowarp/scientific-mcps.git@main"
     ```
 
@@ -88,10 +84,11 @@ scientific-mcps/
 ├── Parallel_Sort
 ├── Node_Hardware
 ├── Pandas
-├── Jarvis MCP
-
-
+├── Jarvis
+├── Adios 
+├── Chronolog
 ```
+
 ## Usage
 
 To run any MCP, navigate into its directory and follow the instructions in its **README.md**. Each MCP provides concrete examples and expected inputs/outputs

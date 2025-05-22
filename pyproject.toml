@@ -5,16 +5,16 @@ description = "Install all sub-MCP packages together."
 requires-python = ">=3.12"
 
 dependencies = [
-  "arxiv-mcp @ git+https://github.com/aumsathwara/mcps.git@jarvis_mcp#subdirectory=Arxiv",
-  "compression-mcp @ git+https://github.com/aumsathwara/mcps.git@jarvis_mcp#subdirectory=Compression",
-  "hdf5-mcp @ git+https://github.com/aumsathwara/mcps.git@jarvis_mcp#subdirectory=HDF5",
-  "node-hardware-mcp @ git+https://github.com/aumsathwara/mcps.git@jarvis_mcp#subdirectory=Node_Hardware",
-  "pandas-mcp @ git+https://github.com/aumsathwara/mcps.git@jarvis_mcp#subdirectory=Pandas",
-  "parallel-sort-mcp @ git+https://github.com/aumsathwara/mcps.git@jarvis_mcp#subdirectory=Parallel_Sort",
-  "parquet-mcp @ git+https://github.com/aumsathwara/mcps.git@jarvis_mcp#subdirectory=parquet",
-  "plot-mcp @ git+https://github.com/aumsathwara/mcps.git@jarvis_mcp#subdirectory=Plot",
-  "slurm-mcp @ git+https://github.com/aumsathwara/mcps.git@jarvis_mcp#subdirectory=Slurm",
-  "jarvis-mcp @ git+https://github.com/aumsathwara/mcps.git@jarvis_mcp#subdirectory=Jarvis"
+  "arxiv-mcp @ git+https://github.com/iowarp/scientific-mcps.git@main#subdirectory=Arxiv",
+  "compression-mcp @ git+https://github.com/iowarp/scientific-mcps.git@main#subdirectory=Compression",
+  "hdf5-mcp @ git+https://github.com/iowarp/scientific-mcps.git@main#subdirectory=HDF5",
+  "node-hardware-mcp @ git+https://github.com/iowarp/scientific-mcps.git@main#subdirectory=Node_Hardware",
+  "pandas-mcp @ git+https://github.com/iowarp/scientific-mcps.git@main#subdirectory=Pandas",
+  "parallel-sort-mcp @ git+https://github.com/iowarp/scientific-mcps.git@main#subdirectory=Parallel_Sort",
+  "parquet-mcp @ git+https://github.com/iowarp/scientific-mcps.git@main#subdirectory=parquet",
+  "plot-mcp @ git+https://github.com/iowarp/scientific-mcps.git@main#subdirectory=Plot",
+  "slurm-mcp @ git+https://github.com/iowarp/scientific-mcps.git@main#subdirectory=Slurm",
+  "jarvis-mcp @ git+https://github.com/iowarp/scientific-mcps.git@main#subdirectory=Jarvis"
 ]
 
 [build-system]

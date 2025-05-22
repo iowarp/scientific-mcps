@@ -17,7 +17,7 @@ mcp-server-project/
 ├── pyproject.toml           # Project metadata & dependencies
 ├── data/                    # Sample data directory
 │   └── sim_run_123/         # HDF5 files for testing
-│       ├── run1.hdf5       # ... example files
+│       ├── run1.hdf5        # ... example files
 │       └── run2.hdf5
 ├── README.md                # This file
 ├── src/
@@ -27,28 +27,17 @@ mcp-server-project/
 │       ├── mcp_handlers.py  # MCP method dispatch
 │       └── capabilities/
 │           ├── __init__.py  # Subpackage init
-│           ├── hdf5_list.py       # HDF5 list logic
+│           ├── hdf5_list.py # HDF5 list logic
 └── tests/
-    ├── test_hdf5_list.py   # Tests for HDF5 listing
-    ├── test_mcp_handlers.py# Tests for MCP handlers
-    └── test_server.py      # Tests for HTTP endpoints
+    ├── test_hdf5_list.py    # Tests for HDF5 listing
+    ├── test_mcp_handlers.py # Tests for MCP handlers
+    └── test_server.py       # Tests for HTTP endpoints
 ```
 
 ---
 
-## Prerequisites
-- **Python** >= 3.8 (3.10+ recommended)  
-- **pip** (or use `uv` for virtual environment management)  
-
----
-
 ## Setup
-1. Clone the repository:
-   ```bash
-   git clone https://github.com/SIslamMun/MCP-Programming-assignment.git
-   cd MCP-Programming-assignment
-   ```
-2. Create and activate an `uv` virtual environment:
+<!-- 1. Create and activate an `uv` virtual environment:
    ```bash
    uv venv           # create a virtual environment based on pyproject.toml
    uv lock           # generate or update the lock file
@@ -56,11 +45,19 @@ mcp-server-project/
    ```
    This will create a `.venv/` folder and install all required packages.
 
-3. Confirm your environment is active (your prompt will show `(venv)`), then install development tools:
+2. Confirm your environment is active (your prompt will show `(venv)`), then install development tools:
    ```bash
    uv sync --dev    # install pytest, psutil, and other dev dependencies
-   ```
+   ``` -->
+- Run the following command:
+  ```bash
+  ..\mcp-server\Scripts\activate     # On Windows: to activate env
+  ../source mcp-server/bin/activate  # On macOS/Linux: to activate env
 
+  # Once activated, 
+  uv pip install .                   # To install current mcp server
+  ```
+--- 
 ## Running the Server
 Start the FastAPI server with **uvicorn**:
 ```bash
@@ -100,14 +97,22 @@ curl -X POST http://localhost:8000/mcp \
 
 
 ## Running Tests
-Execute the full pytest suite:
+Install pytest by 
 ```bash
+uv pip install .[test]
+```
+
+Execute the full pytest suite:
+<!-- ```bash
 pytest -q -v
 ```
 
 - **-q**: quiet mode (dots for passes)  
 - **-v**: verbose (test names with PASS/FAIL)  
-- **-s**: (optional) show print() output for debugging
+- **-s**: (optional) show print() output for debugging -->
+```bash
+pytest tests
+```
 
 All tests cover success paths and edge cases for each capability and endpoint.
 

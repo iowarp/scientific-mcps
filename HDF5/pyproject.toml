@@ -1,5 +1,5 @@
 [build-system]
-requires = ["setuptools>=61.0"]
+requires = ["setuptools>=64.0", "wheel"]
 build-backend = "setuptools.build_meta"
 
 [project]
@@ -14,12 +14,14 @@ authors = [
 ]
 readme = "README.md"
 dependencies = [
+  "numpy>=1.26",
   "fastapi>=0.95,<1.0",
   "uvicorn[standard]>=0.20",
   "pandas>=1.0",
-  "psutil>=5.9" 
+  "psutil>=5.9",
 ]
-optional-dependencies = { test = ["pytest>=6.0"] }
+
+optional-dependencies = { test = ["pytest>=6.0", "httpx"]}
 
 [tool.setuptools.packages.find]
 where = ["src"]
