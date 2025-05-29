@@ -5,9 +5,12 @@
 ## Overview
 This project implements a basic **Model Context Protocol (MCP)** server in Python, exposing the following MCP capabilities:
 
-1. **HDF5 Listing** (`list_hdf5`): List all `.hdf5` files in a specified directory.  
+1. **HDF5 Listing** (`list_hdf5`): List all `.hdf5` files in a specified directory.
+2. **inspect hdf5 file** Inspect HDF5 file structure: lists groups, datasets, and attributes.
+3. **preview data** Preview first N elements of each dataset in an HDF5 file.
+4. **read all data**: Read every element of every dataset in an HDF5 file.
 
-The server adheres to JSON-RPC 2.0, built on **FastAPI**. Unit tests using **pytest** cover success and error cases for each capability and endpoint.
+The server is built on **FastMCP**. Unit tests using **pytest** cover success and error cases for each capability and endpoint.
 
 ---
 
@@ -16,9 +19,8 @@ The server adheres to JSON-RPC 2.0, built on **FastAPI**. Unit tests using **pyt
 mcp-server-project/
 ├── pyproject.toml           # Project metadata & dependencies
 ├── data/                    # Sample data directory
-│   └── sim_run_123/         # HDF5 files for testing
-│       ├── run1.hdf5        # ... example files
-│       └── run2.hdf5
+│   ├── sample1.hdf5     # HDF5 files for testing
+│   └── sample2.hdf5
 ├── README.md                # This file
 ├── src/
 │   └── mcp_server/
@@ -27,7 +29,10 @@ mcp-server-project/
 │       ├── mcp_handlers.py  # MCP method dispatch
 │       └── capabilities/
 │           ├── __init__.py  # Subpackage init
-│           ├── hdf5_list.py # HDF5 list logic
+│           ├── hdf5_list.py    
+│           ├── inspect_hdf5.py
+│           ├── preview_hdf5.py 
+│           ├── read_all_hdf5.py
 └── tests/
     ├── test_hdf5_list.py    # Tests for HDF5 listing
     ├── test_mcp_handlers.py # Tests for MCP handlers
@@ -59,41 +64,22 @@ mcp-server-project/
   ```
 --- 
 ## Running the Server
-Start the FastAPI server with **uvicorn**:
+Start the server with **wrp_chat**:
 ```bash
-uvicorn mcp_server.server:app --reload --host 0.0.0.0 --port 8000
+python3 bin/wrp_chat.py --servers=HDF5
 ```
-
-- **--reload** enables auto-reload on code changes.  
-- The server listens on `http://localhost:8000`.
 
 ---
 
-## JSON-RPC Usage Examples
-All requests are HTTP POSTs to `/mcp` with JSON-RPC 2.0 payloads.
+## Examples
 
-### 1. List Resources
-```bash
-curl -X POST http://localhost:8000/mcp \
-  -H "Content-Type: application/json" \
-  -d '{"jsonrpc":"2.0","method":"mcp/listResources","id":1}'
-```
+1. Inspect Tool 
 
+ ![](https://github.com/iowarp/scientific-mcps/blob/main/HDF5/assets/inspect.png)
 
-### 2. List HDF5 Files (`list_hdf5`)
-```bash
-curl -X POST http://localhost:8000/mcp \
-  -H "Content-Type: application/json" \
-  -d '{
-        "jsonrpc":"2.0",
-        "method":"mcp/callTool",
-        "params":{
-          "tool":"list_hdf5",
-          "directory":"data/sim_run_123"
-        },
-        "id":3
-      }'
-```
+2. Read Dataset Tool
+
+ ![](https://github.com/iowarp/scientific-mcps/blob/main/HDF5/assets/read.png)
 
 
 ## Running Tests
@@ -120,5 +106,3 @@ All tests cover success paths and edge cases for each capability and endpoint.
 
 ## Assumptions & Notes
 - HDF5 listing is simulated via filesystem globbing.  
-- Node hardware info relies on `psutil`; logical count falls back to `os.cpu_count()`.  
-

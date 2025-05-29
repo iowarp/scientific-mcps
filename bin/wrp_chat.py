@@ -55,9 +55,9 @@ class MCPClient:
         )
         await self.session.initialize()
         tools = await self.session.list_tools()
-        print("Connected. Tools available:")
+        print("\nConnected. Tools available 📦:\n")
         for t in tools.tools:
-            print(f" - {t.name}: {t.description}")
+            print(f" * {t.name}: {t.description}")
 
     async def process_query(self, query: str) -> dict:
         resp_tools = await self.session.list_tools()
@@ -113,7 +113,7 @@ class MCPClient:
         }
 
     async def chat_loop(self):
-        print("MCP Client Started! (type 'quit' to exit)")
+        print("\nMCP Client Started! (type 'quit' to exit)")
         while True:
             q = input("\nQuery: ").strip()
             if q.lower() in ('quit', 'exit'):

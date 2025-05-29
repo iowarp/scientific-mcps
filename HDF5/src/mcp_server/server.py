@@ -11,7 +11,7 @@ sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 load_dotenv()
 
 # Import HDF5 capabilities
-from capabilities import data_query, hdf5_list, node_hardware
+from capabilities import hdf5_list, inspect_hdf5, preview_hdf5, read_all_hdf5
 import mcp_handlers
 
 # Initialize FastMCP server instance
@@ -20,25 +20,10 @@ mcp = FastMCP("HDF5Server")
 # ─── HDF5 TOOLS ─────────────────────────────────────────────────────────────
 
 @mcp.tool(
-    name="filter_csv",
-    description="Filter CSV data based on a threshold value."
-)
-async def filter_csv_tool(csv_path: str = "data.csv", threshold: int = 50) -> dict:
-    """Filter CSV data based on a threshold value."""
-    try:
-        return await mcp_handlers.filter_values(csv_path, threshold)
-    except Exception as e:
-        return {
-            "content": [{"text": json.dumps({"error": str(e)})}],
-            "_meta": {"tool": "filter_csv", "error": type(e).__name__},
-            "isError": True
-        }
-
-@mcp.tool(
     name="list_hdf5",
     description="List HDF5 files in a directory."
 )
-async def list_hdf5_tool(directory: str = "data/sim_run_123") -> dict:
+async def list_hdf5_tool(directory: str = "data/") -> dict:
     """List all HDF5 files in the specified directory."""
     try:
         return await mcp_handlers.list_hdf5_files(directory)
@@ -48,19 +33,49 @@ async def list_hdf5_tool(directory: str = "data/sim_run_123") -> dict:
             "_meta": {"tool": "list_hdf5", "error": type(e).__name__},
             "isError": True
         }
-
+    
 @mcp.tool(
-    name="node_hardware",
-    description="Get information about CPU cores."
+    name="inspect_hdf5",
+    description="Inspect HDF5 file structure: lists groups, datasets, and attributes."
 )
-async def node_hardware_tool() -> dict:
-    """Get detailed information about CPU cores and hardware."""
+async def inspect_hdf5_tool(filename: str) -> dict:
     try:
-        return await mcp_handlers.get_hardware_info()
+        return await mcp_handlers.inspect_hdf5_handler(filename)
     except Exception as e:
         return {
             "content": [{"text": json.dumps({"error": str(e)})}],
-            "_meta": {"tool": "node_hardware", "error": type(e).__name__},
+            "_meta": {"tool": "inspect_hdf5", "error": type(e).__name__},
+            "isError": True
+        }
+
+@mcp.tool(
+    name="preview_hdf5",
+    description="Preview first N elements of each dataset in an HDF5 file."
+)
+async def preview_hdf5_tool(
+    filename: str,
+    count: int = 10
+) -> dict:
+    try:
+        return await mcp_handlers.preview_hdf5_handler(filename, count)
+    except Exception as e:
+        return {
+            "content": [{"text": json.dumps({"error": str(e)})}],
+            "_meta": {"tool": "preview_hdf5", "error": type(e).__name__},
+            "isError": True
+        }
+
+@mcp.tool(
+    name="read_all_hdf5",
+    description="Read every element of every dataset in an HDF5 file."
+)
+async def read_all_hdf5_tool(filename: str) -> dict:
+    try:
+        return await mcp_handlers.read_all_hdf5_handler(filename)
+    except Exception as e:
+        return {
+            "content": [{"text": json.dumps({"error": str(e)})}],
+            "_meta": {"tool": "read_all_hdf5", "error": type(e).__name__},
             "isError": True
         }
 
