@@ -3,9 +3,15 @@ name = "adios-mcp"
 version = "0.1.0"
 description = "Add your description here"
 readme = "README.md"
-requires-python = "==3.11.12"
+requires-python = "==3.12.0"
+authors = [
+  { name ="Soham Sonar", email = "ssonar2@hawk.iit.edu"}
+]
 dependencies = [
     "mcp[cli]>=1.2.0",
     "python-dotenv>=1.0.1",
-    "google-genai>=0.1.0"
+    "google-genai>=0.1.0",
+    "fastmcp",
+    "numpy",
+    "adios2"
 ]

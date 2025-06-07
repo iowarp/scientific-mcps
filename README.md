@@ -10,19 +10,20 @@ This project implements a **Scientific Model Context Protocol (MCP) Server** usi
 
 The following nine capabilities have been implemented:
 
-| Capability     | Type     | Description                                                               |
-|----------------|----------|---------------------------------------------------------------------------|
-| `HDF5`         | Data     | Lists `.hdf5` files from a specified local directory                      |
-| `Slurm`        | Tool     | Simulates Slurm-like job submission, returns a fake job ID.               |
-| `Arxiv`        | Data     | Fetches 3 recent research papers via the Arxiv API using `httpx`.         |
-| `Compression`  | Tool     | Simulates gzip compression using Python’s `gzip` module.                  |
-| `Plot`         | Tool     | Uses `pandas` and `matplotlib` to generate a plot from a local CSV file.  |
-| `Parquet`      | Data     | Reads the temperature column from a Parquet file using `pyarrow`.         |
-| `Parallel_Sort`| Tool     | Simulates sorting a large text file and returned sorted result            |
-| `Node_Hardware`| Tool     | Reports the number of CPU cores on the current system .                   |
-| `Pandas`       | Data     | Loads data and displays rows based on condition using the `pandas` library|
-| `Jarvis`       | Tool     | Initialize, configures, list, runs and destroys the pipeline. Add, link, unlink, delete, update packages to the pipeline. Built in llm client python file to test.|
-
+| Capability     | Type             | Description                                                               |
+|----------------|------------------|---------------------------------------------------------------------------|
+| `HDF5`         | Data             | Lists `.hdf5` files from a specified local directory                      |
+| `Slurm`        | Tool             | Simulates Slurm-like job submission, returns a fake job ID.               |
+| `Arxiv`        | Data             | Fetches 3 recent research papers via the Arxiv API using `httpx`.         |
+| `Compression`  | Tool             | Simulates gzip compression using Python’s `gzip` module.                  |
+| `Plot`         | Tool             | Uses `pandas` and `matplotlib` to generate a plot from a local CSV file.  |
+| `Parquet`      | Data             | Reads the temperature column from a Parquet file using `pyarrow`.         |
+| `Parallel_Sort`| Tool             | Simulates sorting a large text file and returned sorted result            |
+| `Node_Hardware`| Tool             | Reports the number of CPU cores on the current system .                   |
+| `Pandas`       | Data             | Loads data and displays rows based on condition using the `pandas` library|
+| `Jarvis`       | Tool             | Initialize, configures, list, runs and destroys the pipeline. Add, link, unlink, delete, update packages to the pipeline. Built in llm client python file to test.|
+| `Adios`        | Data             | Reads the data from different type of file engines and file types by adios2|
+| `ChronoLog`    | External System  | Chronolog setup and client api tools to log and retrieve data             |
 
 ## Quick Installation
 
@@ -46,19 +47,27 @@ The following nine capabilities have been implemented:
     ```bash
     cd <mcp-name> # Arxiv
     ```
+    > Detailed instructions about installation of individual mcp can be found in their respective sub directory. 
+#### **To Install All MCP altogther**
 - Install dependencies using uv:
     ```bash
     # Install dependencies from pyproject.toml
     uv pip install --requirement pyproject.toml
     ```
-    > Detailed instructions about installation of individual mcp can be found in their respective sub directory. 
-#### **To Install All MCP altogther**
-- To install all mcps as package
+<!-- - To install all mcps as package
     ```bash
     uv add "git+https://github.com/iowarp/scientific-mcps.git@main"
     # or 
     uv pip install "git+https://github.com/iowarp/scientific-mcps.git@main"
     ```
+-->
+
+## Running the Unified Client Interface Warp Chat
+Put the name of the server you want to run - Adios, HDF5, Jarvis, etc.
+
+```bash
+python3 bin/wrp_chat.py --servers=Adios
+```
 
 ## Project Structure
 

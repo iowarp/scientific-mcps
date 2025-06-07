@@ -14,59 +14,34 @@ The server is built on **FastMCP**. Unit tests using **pytest** cover success an
 
 ---
 
-## Project Structure
-```text
-mcp-server-project/
-├── pyproject.toml           # Project metadata & dependencies
-├── data/                    # Sample data directory
-│   ├── sample1.hdf5     # HDF5 files for testing
-│   └── sample2.hdf5
-├── README.md                # This file
-├── src/
-│   └── mcp_server/
-│       ├── __init__.py      # Package init
-│       ├── server.py        # FastAPI app
-│       ├── mcp_handlers.py  # MCP method dispatch
-│       └── capabilities/
-│           ├── __init__.py  # Subpackage init
-│           ├── hdf5_list.py    
-│           ├── inspect_hdf5.py
-│           ├── preview_hdf5.py 
-│           ├── read_all_hdf5.py
-└── tests/
-    ├── test_hdf5_list.py    # Tests for HDF5 listing
-    ├── test_mcp_handlers.py # Tests for MCP handlers
-    └── test_server.py       # Tests for HTTP endpoints
-```
-
----
-
 ## Setup
-<!-- 1. Create and activate an `uv` virtual environment:
+1. Create and activate an `uv` virtual environment:
    ```bash
    uv venv           # create a virtual environment based on pyproject.toml
-   uv lock           # generate or update the lock file
+   source .venv/bin/activate
    uv sync           # install dependencies into the venv
    ```
    This will create a `.venv/` folder and install all required packages.
 
-2. Confirm your environment is active (your prompt will show `(venv)`), then install development tools:
-   ```bash
-   uv sync --dev    # install pytest, psutil, and other dev dependencies
-   ``` -->
-- Run the following command:
-  ```bash
-  ..\mcp-server\Scripts\activate     # On Windows: to activate env
-  ../source mcp-server/bin/activate  # On macOS/Linux: to activate env
-
-  # Once activated, 
-  uv pip install .                   # To install current mcp server
-  ```
 --- 
-## Running the Server
+## Running the Server with wrp_chat
 Start the server with **wrp_chat**:
 ```bash
-python3 bin/wrp_chat.py --servers=HDF5
+python3 ../bin/wrp_chat.py --servers=Adios
+```
+
+## Running the Server open source LLM client
+Put the following in settings.json:
+```bash
+"adios-mcp": {
+    "command": "uv",
+    "args": [
+        "--directory",
+        "path/to/directory/src/mcpserver/",
+        "run",
+        "server.py"
+    ]
+}
 ```
 
 ---
@@ -104,5 +79,31 @@ All tests cover success paths and edge cases for each capability and endpoint.
 
 ---
 
+## Project Structure
+```text
+HDF5/
+├── pyproject.toml           # Project metadata & dependencies
+├── data/                    # Sample data directory
+│   ├── sample1.hdf5     # HDF5 files for testing
+│   └── sample2.hdf5
+├── README.md                # This file
+├── src/
+│   └── mcp_server/
+│       ├── __init__.py      # Package init
+│       ├── server.py        # FastAPI app
+│       ├── mcp_handlers.py  # MCP method dispatch
+│       └── capabilities/
+│           ├── __init__.py  # Subpackage init
+│           ├── hdf5_list.py    
+│           ├── inspect_hdf5.py
+│           ├── preview_hdf5.py 
+│           ├── read_all_hdf5.py
+└── tests/
+    ├── test_hdf5_list.py    # Tests for HDF5 listing
+    ├── test_mcp_handlers.py # Tests for MCP handlers
+    └── test_server.py       # Tests for HTTP endpoints
+```
+
+---
 ## Assumptions & Notes
 - HDF5 listing is simulated via filesystem globbing.  

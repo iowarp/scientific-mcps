@@ -2,7 +2,7 @@
 name = "IoWarp_MCPs"
 version = "0.1.0"
 description = "Install all sub-MCP packages together."
-requires-python = ">=3.12"
+requires-python = "==3.12"
 
 dependencies = [
   "arxiv-mcp @ git+https://github.com/iowarp/scientific-mcps.git@main#subdirectory=Arxiv",
@@ -14,12 +14,9 @@ dependencies = [
   "parquet-mcp @ git+https://github.com/iowarp/scientific-mcps.git@main#subdirectory=parquet",
   "plot-mcp @ git+https://github.com/iowarp/scientific-mcps.git@main#subdirectory=Plot",
   "slurm-mcp @ git+https://github.com/iowarp/scientific-mcps.git@main#subdirectory=Slurm",
-  "jarvis-mcp @ git+https://github.com/iowarp/scientific-mcps.git@main#subdirectory=Jarvis"
+  "jarvis-mcp @ git+https://github.com/iowarp/scientific-mcps.git@main#subdirectory=Jarvis",
+  "Adios-mcp @ git+https://github.com/iowarp/scientific-mcps.git@main#subdirectory=Adios"
 ]
-
-[build-system]
-requires = ["setuptools>=61.0"]
-build-backend = "setuptools.build_meta"
 
 [tool.setuptools]
 packages = []
