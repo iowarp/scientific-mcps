@@ -1,7 +1,7 @@
 # mcp_handlers.py
 import json
-from typing import Any, Dict
-from capabilities import bp5_list, bp5_inspect_variables, bp5_attributes, bp5_read_variable_at_step, bp5_read_all_variables
+from typing import Any, Dict, Optional
+from capabilities import bp5_list, bp5_inspect_variables, bp5_attributes, bp5_read_variable_at_step, bp5_read_all_variables, bp5_minmax, bp5_add
 
 class UnknownToolError(Exception):
     """Raised when an unsupported tool_name is requested."""
@@ -82,4 +82,36 @@ async def read_all_variables_handler(filename: str) -> Dict[str, Any]:
             "content": [{"text": json.dumps({"error": str(e)})}],
             "_meta": {"tool": "read_bp5", "error": type(e).__name__},
             "isError": True
+        }
+
+async def get_min_max_handler(
+    filename: str, variable_name: str, step: Optional[int] = None
+) -> Dict[str, Any]:
+    try:
+        # returns {"min":…, "max":…} or {"step":…, "min":…, "max":…}
+        result = bp5_minmax.get_min_max(filename, variable_name, step)
+        return result
+    except Exception as e:
+        return {
+            "content": [{"text": json.dumps({"error": str(e)})}],
+            "_meta": {"tool": "get_min_max", "error": type(e).__name__},
+            "isError": True,
+        }
+
+
+async def add_variables_handler(
+    filename: str,
+    var1: str,
+    var2: str,
+    step1: Optional[int] = None,
+    step2: Optional[int] = None,
+) -> Dict[str, Any]:
+    try:
+        total = bp5_add.add_variables(filename, var1, var2, step1, step2)
+        return {"sum": total}
+    except Exception as e:
+        return {
+            "content": [{"text": json.dumps({"error": str(e)})}],
+            "_meta": {"tool": "add_variables", "error": type(e).__name__},
+            "isError": True,
         }

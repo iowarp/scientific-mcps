@@ -108,6 +108,39 @@ async def read_bp5_tool(filename: str) -> dict:
             "isError": True
         }
 
+# ─── GET MIN / MAX ──────────────────────────────────────────────────────────────
+@mcp.tool(
+    name="get_min_max",
+    description=(
+        "Get minimum and maximum of a variable in a BP5 file. [Args: filename, variable_name, optional: step]. \n"
+    ),
+)
+async def get_min_max_tool(
+    filename: str, variable_name: str, step: int = None
+) -> dict:
+    return await mcp_handlers.get_min_max_handler(
+        filename, variable_name, step
+    )
+
+
+# ─── ADD VARIABLES ──────────────────────────────────────────────────────────────
+@mcp.tool(
+    name="add_variables",
+    description=(
+        "Sum two variables in a BP5 file, either globally or at specific steps. [Args: filename, var1, var2, optional: step1, step2]. \n"
+    ),
+)
+async def add_variables_tool(
+    filename: str,
+    var1: str,
+    var2: str,
+    step1: int = None,
+    step2: int = None,
+) -> dict:
+    return await mcp_handlers.add_variables_handler(
+        filename, var1, var2, step1, step2
+    )
+
 
 def main():
     """

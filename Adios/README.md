@@ -32,6 +32,10 @@ A read-only Model Context Protocol (MCP) server for ADIOS datasets, enabling LLM
 
  5. read_bp5: Reads all the variables/data and their steps from a BP5 file. [Args: filename].
 
+ 6. get_min_max: Get minimum and maximum of a variable in a BP5 file. [Args: filename, variable_name, optional: step]. 
+
+ 7. add_variables: Sum two variables in a BP5 file, either globally or at specific steps. [Args: filename, var1, var2, optional: step1, step2].
+
 ---
 
 ## Setup
@@ -66,7 +70,7 @@ Put the following in settings.json:
 ```
 ---
 
-## Examples
+## Few Examples
 
 1. Read variables/data at specific step in a Bp5 File 
 
@@ -80,21 +84,32 @@ Put the following in settings.json:
 
  ![](https://github.com/iowarp/scientific-mcps/blob/main/Adios/assets/attributes.png)
 
+**Detailed demonstration of use cases are available at [Examples](https://github.com/sohamvsonar/scientific-mcps/tree/main/Adios/docs/example_uses.md).**
 
 ## Project Structure
 ```text
 Adios/
 ├── pyproject.toml           # Project metadata & dependencies
+├── README.md                # Project documentation
+├── assets/                  # Images and other assets
 ├── data/                    # Sample data directory
-│   ├── data1.bp             # Bp5 files for testing
-│   └── data2.bp
-├── README.md                # This file
-├── src/
+├── docs/                    # Additional documentation
+│     ├── adios_setup        # Detailed guide on installing the Adios2
+│     └── example_uses       # Example use cases with prompt, answers and pictures
+├── pyproject.toml           # Project metadata & dependencies
+├── src/                     # Source code directory
 │   └── adiosmcp/
 │       ├── __init__.py      # Package init
 │       ├── server.py        # The MCP server
 │       ├── mcp_handlers.py  # MCP methods
 │       └── capabilities/
 │           ├── __init__.py
-│           ├── bp5.py       # bp5 functions
+│           ├── bp5_add.py                    # Add variables functionality
+│           ├── bp5_attributes.py             # Inspect attributes functionality
+│           ├── bp5_inspect_variables.py      # Inspect variables functionality
+│           ├── bp5_list.py                   # List BP5 files functionality
+│           ├── bp5_minmax.py                 # Get min/max functionality
+│           ├── bp5_read_all_variables.py     # Read all variables functionality
+│           ├── bp5_read_variable_at_step.py  # Read variable at step functionality
+├── uv.lock                  # Dependency lock file
 ```
