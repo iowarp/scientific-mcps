@@ -1,7 +1,6 @@
 """
-Slurm capabilities module.
-
-This module contains all Slurm-related functionality organized by capability.
+Capabilities package for Slurm MCP server.
+Contains modules for various Slurm-related functionality.
 """
 
 # Import all capability functions for backward compatibility
@@ -15,7 +14,6 @@ from .cluster_info import get_slurm_info
 from .queue_info import get_queue_info
 from .array_jobs import submit_array_job
 from .node_info import get_node_info
-from .node_allocation import allocate_nodes, deallocate_nodes, get_allocation_status
 from .utils import check_slurm_available
 
 __all__ = [
@@ -29,8 +27,5 @@ __all__ = [
     'get_queue_info',
     'submit_array_job',
     'get_node_info',
-    'allocate_nodes',
-    'deallocate_nodes', 
-    'get_allocation_status',
     'check_slurm_available'
 ]

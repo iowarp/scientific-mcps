@@ -4,7 +4,9 @@
 
 set -e
 
-PROJECT_DIR="/home/sislam6/Illinois_Tech/PhD/Spring25_iit/CS550/scientific-mcps/Slurm"
+# Get the directory where this script is located
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+PROJECT_DIR="$SCRIPT_DIR"
 SERVER_SCRIPT="src/server.py"
 LOG_FILE="server_manager.log"
 PID_FILE="server.pid"

@@ -26,7 +26,6 @@ python comprehensive_capability_test.py
 
 - **🚀 Job Submission**: Submit Slurm jobs with specified core counts and resource requirements
 - **📋 Job Management**: List, monitor, cancel, and get detailed information about jobs
-- **🖥️ Node Allocation**: Interactive node allocation using `salloc` for real-time resource allocation
 - **🔧 Input Validation**: Comprehensive validation of script paths and resource requirements
 - **⚡ Fast Performance**: Optimized for high-throughput job submissions
 - **🛡️ Error Handling**: Robust error handling with detailed error messages
@@ -85,10 +84,6 @@ The Slurm MCP Server follows a modular, layered architecture designed for scalab
 │  │ array_jobs  │ │ job_output  │ │             │ │ node_    │  │
 │  │ .py         │ │ .py         │ │             │ │ info.py  │  │
 │  └─────────────┘ └─────────────┘ └─────────────┘ └──────────┘  │
-│  ┌─────────────────────────────────────────────────────────┐  │
-│  │            Node Allocation (node_allocation.py)        │  │
-│  │    Interactive resource allocation via salloc          │  │
-│  └─────────────────────────────────────────────────────────┘  │
 └─────────────────────┬───────────────────────────────────────────┘
                       │ System Calls
 ┌─────────────────────▼───────────────────────────────────────────┐
@@ -128,7 +123,6 @@ slurm-mcp/
 │       ├── cluster_info.py          # Cluster information
 │       ├── queue_info.py            # Queue monitoring
 │       ├── node_info.py             # Node information
-│       ├── node_allocation.py       # Interactive node allocation (salloc)
 │       └── array_jobs.py            # Array job submission
 │
 ├── tests/                            # Comprehensive test suite
@@ -138,7 +132,6 @@ slurm-mcp/
 │   ├── test_mcp_handlers.py         # Unit tests for MCP handlers
 │   ├── test_server_tools.py         # Tests for server async tools
 │   ├── test_integration.py          # End-to-end integration tests
-│   ├── test_node_allocation.py      # Tests for node allocation functionality
 │   └── test_performance.py          # Performance and load tests
 │
 ├── logs/                             # Organized output directory
@@ -178,7 +171,6 @@ The capabilities are organized into focused, single-responsibility modules:
 - **`cluster_info.py`**: Provides cluster-wide information and status
 - **`queue_info.py`**: Monitors partition and queue states
 - **`node_info.py`**: Retrieves node status and resource information
-- **`node_allocation.py`**: Interactive node allocation using `salloc` for real-time resource management
 
 #### Utilities and Compatibility
 - **`utils.py`**: Common functions and utilities
@@ -268,9 +260,6 @@ uv run pytest tests/test_mcp_handlers.py -v
 
 # Test server tools
 uv run pytest tests/test_server_tools.py -v
-
-# Test node allocation functionality
-uv run pytest tests/test_node_allocation.py -v
 ```
 
 ### 3. Interactive Testing
@@ -510,144 +499,6 @@ Submit a Slurm array job.
 }
 ```
 
-### Node Allocation Tools
-
-The Slurm MCP server provides interactive node allocation capabilities using `salloc` for real-time resource management. This allows you to allocate compute nodes for interactive work sessions.
-
-#### `allocate_nodes`
-Allocate compute nodes using `salloc` for interactive sessions.
-
-**Parameters:**
-- `nodes` (integer, optional): Number of nodes to allocate (default: 1)
-- `cores` (integer, optional): Number of cores per node (default: 1)
-- `memory` (string, optional): Memory requirement (e.g., "4G", "2048M")
-- `time_limit` (string, optional): Time limit (e.g., "1:00:00", default: "01:00:00")
-- `partition` (string, optional): Slurm partition to use
-- `job_name` (string, optional): Name for the allocation (default: "mcp_allocation")
-- `immediate` (boolean, optional): Whether to return immediately without waiting (default: false)
-
-**Returns (Success):**
-```json
-{
-  "allocation_id": "5817",
-  "status": "allocated",
-  "nodes": 1,
-  "cores": 1,
-  "memory": "4G",
-  "time_limit": "01:00:00",
-  "partition": "compute",
-  "job_name": "mcp_allocation",
-  "allocated_nodes": ["node001"],
-  "nodelist": "node001",
-  "real_slurm": true
-}
-```
-
-**Returns (Timeout):**
-```json
-{
-  "error": "Allocation request timed out (10 seconds)",
-  "status": "timeout",
-  "real_slurm": true,
-  "message": "The allocation request took too long. Resources may not be immediately available.",
-  "timeout_duration": 10,
-  "suggestion": "Try with immediate=True for quicker response or check resource availability"
-}
-```
-
-**Returns (Resources Unavailable):**
-```json
-{
-  "error": "No resources available for allocation",
-  "status": "failed",
-  "real_slurm": true,
-  "message": "Unable to allocate resources",
-  "reason": "resources_unavailable"
-}
-```
-
-#### `get_allocation_status`
-Check the status of a node allocation.
-
-**Parameters:**
-- `allocation_id` (string, required): The allocation ID to check
-
-**Returns:**
-```json
-{
-  "allocation_id": "5817",
-  "status": "active",
-  "state": "RUNNING",
-  "time_used": "0:15:30",
-  "nodes": ["node001"],
-  "real_slurm": true
-}
-```
-
-#### `deallocate_nodes`
-Deallocate nodes by canceling the allocation.
-
-**Parameters:**
-- `allocation_id` (string, required): The allocation ID to cancel
-
-**Returns:**
-```json
-{
-  "allocation_id": "5817",
-  "status": "deallocated",
-  "message": "Allocation 5817 deallocated successfully",
-  "real_slurm": true
-}
-```
-
-### Node Allocation Usage Examples
-
-#### Basic Node Allocation
-```python
-# Allocate a single node with 2 cores for 30 minutes
-result = allocate_nodes(
-    nodes=1,
-    cores=2,
-    memory="4G",
-    time_limit="00:30:00",
-    partition="compute"
-)
-
-if result["status"] == "allocated":
-    allocation_id = result["allocation_id"]
-    print(f"Allocated node(s): {result['allocated_nodes']}")
-    
-    # Use your allocation for interactive work...
-    
-    # Clean up when done
-    deallocate_nodes(allocation_id)
-```
-
-#### Quick Allocation with Timeout
-```python
-# Quick allocation with immediate return if resources busy
-result = allocate_nodes(
-    nodes=1,
-    cores=1,
-    time_limit="00:15:00",
-    immediate=True  # Return quickly if resources not available
-)
-
-if result["status"] == "timeout":
-    print("Resources busy, try again later")
-elif result["status"] == "allocated":
-    print(f"Got allocation: {result['allocation_id']}")
-```
-
-#### Allocation Status Monitoring
-```python
-# Check allocation status
-status = get_allocation_status("5817")
-print(f"Allocation state: {status['state']}")
-print(f"Time used: {status['time_used']}")
-print(f"Nodes: {status['nodes']}")
-```
-
 ### Error Responses
 
 All tools return standardized error responses:
@@ -738,11 +589,8 @@ MCP_SSE_PORT=8000
 
 ### Quick Testing
 ```bash
-# Run comprehensive capability test (includes all features)
+# Run comprehensive capability test
 python comprehensive_capability_test.py
-
-# Run node allocation comprehensive test
-python test_node_allocation_comprehensive.py
 
 # Run all tests
 uv run pytest tests/ -v
@@ -750,27 +598,6 @@ uv run pytest tests/ -v
 # Run specific test categories
 uv run pytest tests/test_capabilities.py -v
 uv run pytest tests/test_mcp_handlers.py -v
-uv run pytest tests/test_node_allocation.py -v
-```
-
-### Node Allocation Testing
-
-Test the node allocation functionality specifically:
-
-```bash
-# Test node allocation with clean environment
-scancel --user=$USER  # Clean up any existing jobs
-python test_node_allocation_comprehensive.py
-
-# Test basic allocation manually
-python -c "
-import sys; sys.path.insert(0, 'src')
-from capabilities.node_allocation import allocate_nodes, deallocate_nodes
-result = allocate_nodes(nodes=1, cores=1, time_limit='00:05:00', immediate=True)
-print('Result:', result)
-if result.get('allocation_id'):
-    deallocate_nodes(result['allocation_id'])
-"
 ```
 
 ## Development

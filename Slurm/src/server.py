@@ -238,71 +238,80 @@ async def get_node_info_tool() -> dict:
 
 
 @mcp.tool(
-    name="allocate_slurm_nodes",
-    description="Allocate nodes using salloc for interactive sessions or resource reservation."
+    name="allocate_nodes",
+    description="Allocate nodes interactively using salloc. Request specific nodes, cores, memory, and time limits. If no time limit is provided, system default will be used."
 )
-async def allocate_slurm_nodes_tool(
-    nodes: int = 1,
-    cores: int = 1,
-    memory: str = None,
-    time_limit: str = "01:00:00",
-    partition: str = None,
+async def allocate_nodes_tool(
+    num_nodes: int = 1,
+    time_limit: str = None,
     job_name: str = None,
+    exclusive: bool = False,
+    specific_nodes: str = None,
+    partition: str = None,
+    cpus_per_task: int = None,
+    memory: str = None,
+    gres: str = None,
     immediate: bool = False
 ) -> dict:
     """
-    Allocate Slurm nodes using salloc command.
+    Allocate nodes interactively using salloc.
     
     Args:
-        nodes: Number of nodes to allocate (default: 1)
-        cores: Number of cores per node (default: 1) 
+        num_nodes: Number of nodes to allocate (default: 1)
+        time_limit: Time limit for allocation (format: HH:MM:SS, if not provided uses system default)
+        job_name: Optional job name
+        exclusive: Whether to request exclusive access to nodes
+        specific_nodes: Comma-separated list of specific node names to request
+        partition: Partition to submit to (will check if partition exists)
+        cpus_per_task: Number of CPUs per task
         memory: Memory requirement (e.g., "4G", "2048M")
-        time_limit: Time limit (e.g., "1:00:00", default: "01:00:00")
-        partition: Slurm partition to use
-        job_name: Name for the allocation
-        immediate: Whether to return immediately without waiting for allocation
+        gres: Generic resource requirement (e.g., "gpu:1")
+        immediate: Whether to request immediate allocation (fail if not available)
+        
+    Returns:
+        Dictionary with allocation results
+    """
+    logger.info(f"Allocating {num_nodes} nodes" + (f" with time limit {time_limit}" if time_limit else " with system default time limit"))
+    return mcp_handlers.allocate_nodes_handler(
+        num_nodes, time_limit, job_name, exclusive, specific_nodes,
+        partition, cpus_per_task, memory, gres, immediate
+    )
+
+
+@mcp.tool(
+    name="deallocate_allocation",
+    description="Cancel/deallocate an existing node allocation using its allocation ID."
+)
+async def deallocate_allocation_tool(allocation_id: str) -> dict:
+    """
+    Cancel an existing node allocation.
+    
+    Args:
+        allocation_id: The allocation/job ID to cancel
+        
+    Returns:
+        Dictionary with deallocation results
+    """
+    logger.info(f"Deallocating allocation: {allocation_id}")
+    return mcp_handlers.deallocate_allocation_handler(allocation_id)
+
+
+@mcp.tool(
+    name="get_allocation_info",
+    description="Get detailed information about a specific node allocation by its ID."
+)
+async def get_allocation_info_tool(allocation_id: str) -> dict:
+    """
+    Get information about a specific allocation.
+    
+    Args:
+        allocation_id: The allocation/job ID to query
         
     Returns:
         Dictionary with allocation information
     """
-    logger.info(f"Allocating {nodes} nodes with {cores} cores each")
-    return mcp_handlers.allocate_nodes_handler(nodes, cores, memory, time_limit, partition, job_name, immediate)
-
-
-@mcp.tool(
-    name="deallocate_slurm_nodes", 
-    description="Deallocate previously allocated nodes by canceling the allocation."
-)
-async def deallocate_slurm_nodes_tool(allocation_id: str) -> dict:
-    """
-    Deallocate Slurm nodes by canceling the allocation.
-    
-    Args:
-        allocation_id: The allocation ID to cancel
-        
-    Returns:
-        Dictionary with deallocation status
-    """
-    logger.info(f"Deallocating allocation {allocation_id}")
-    return mcp_handlers.deallocate_nodes_handler(allocation_id)
-
-
-@mcp.tool(
-    name="get_allocation_status",
-    description="Get the status of a node allocation."
-)
-async def get_allocation_status_tool(allocation_id: str) -> dict:
-    """
-    Get status of a node allocation.
-    
-    Args:
-        allocation_id: The allocation ID to check
-        
-    Returns:
-        Dictionary with allocation status information
-    """
-    logger.info(f"Checking status of allocation {allocation_id}")
-    return mcp_handlers.get_allocation_status_handler(allocation_id)
+    logger.info(f"Getting allocation info for: {allocation_id}")
+    return mcp_handlers.get_allocation_info_handler(allocation_id)
 
 
 def main():

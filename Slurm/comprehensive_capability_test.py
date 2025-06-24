@@ -82,9 +82,7 @@ def main():
         f.write('''#!/bin/bash
 #SBATCH --job-name=comprehensive_test
 #SBATCH --output=comprehensive_%j.out
-#SBATCH --time=00:01:00
-#SBATCH --nodes=1
-#SBATCH --ntasks=1
+#SBATCH --time=00:01:30
 
 echo "🎯 Comprehensive MCP Capability Test"
 echo "Job ID: $SLURM_JOB_ID"
@@ -102,9 +100,9 @@ echo "SLURM_JOB_ID: $SLURM_JOB_ID"
 echo "SLURM_NTASKS: $SLURM_NTASKS"
 echo "SLURM_CPUS_ON_NODE: $SLURM_CPUS_ON_NODE"
 echo ""
-echo "Running quick test computation..."
-for i in {1..2}; do
-    echo "Processing step $i/2 at $(date)"
+echo "Running comprehensive test computation..."
+for i in {1..10}; do
+    echo "Processing step $i/10 at $(date)"
     sleep 1
 done
 echo ""
@@ -117,11 +115,11 @@ echo "End Time: $(date)"
     try:
         submission_result = submit_slurm_job_handler(
             script_path=test_script,
-            cores=1,  # Single core for faster scheduling
-            memory='1GB',  # Reasonable memory requirement
-            time_limit='00:03:00',  # Increased to 3 minutes to allow for startup + execution
+            cores=2,
+            memory='2GB',
+            time_limit='00:02:00',
             job_name='comprehensive_test',
-            partition='debug'  # Use debug partition which might have higher priority
+            partition='debug'
         )
         print_result("Job Submission", submission_result)
         test_job_id = submission_result['job_id']
@@ -148,10 +146,9 @@ echo "End Time: $(date)"
         print_section("Test 5: Job Monitoring and Output")
         print("⏳ Waiting for job completion...")
         
-        max_wait = 120  # Increased to 2 minutes for more realistic timeout
+        max_wait = 120  # 2 minutes max wait
         wait_time = 0
         job_completed = False
-        job_running = False
         
         while wait_time < max_wait:
             try:
@@ -159,38 +156,17 @@ echo "End Time: $(date)"
                 job_state = job_details['details']['jobstate']
                 print(f"   Job {test_job_id} state: {job_state} (waited {wait_time}s)")
                 
-                # Track if job started running
-                if job_state == 'RUNNING':
-                    job_running = True
-                    print(f"   ✅ Job {test_job_id} is now running!")
-                
                 if job_state in ['COMPLETED', 'FAILED', 'CANCELLED']:
                     job_completed = True
-                    print(f"   ✅ Job {test_job_id} completed with state: {job_state}")
                     break
-                
-                # If job is pending for too long, provide helpful info
-                if job_state == 'PENDING' and wait_time > 30:
-                    print(f"   ⚠️  Job still pending after {wait_time}s - checking cluster status...")
-                    try:
-                        cluster_info = get_slurm_info_handler()
-                        partitions = cluster_info.get('partitions', [])
-                        for partition in partitions:
-                            if partition['partition'] == 'debug':
-                                print(f"   🔍 Debug partition state: {partition.get('state', 'unknown')}")
-                                print(f"   🔍 Available/Idle nodes: {partition.get('avail_idle', 'unknown')}")
-                                break
-                    except Exception:
-                        pass
                     
-                time.sleep(5)  # Check every 5 seconds to reduce system load
+                time.sleep(5)
                 wait_time += 5
                 
             except Exception as e:
-                print(f"   ❌ Error checking job status: {e}")
+                print(f"   Error checking job status: {e}")
                 break
         
-        # Enhanced handling of different outcomes
         if job_completed:
             try:
                 # Test job output capability
@@ -205,37 +181,15 @@ echo "End Time: $(date)"
                     print(f"\n📄 Actual job output from {output_file}:")
                     print("-" * 60)
                     with open(output_file, 'r') as f:
-                        content = f.read()
-                        # Show first 500 chars to avoid too much output
-                        if len(content) > 500:
-                            print(content[:500] + "\n... (truncated)")
-                        else:
-                            print(content)
+                        print(f.read())
                     print("-" * 60)
                 
             except Exception as e:
                 print(f"❌ Job output capability: FAILED - {e}")
                 results['job_output'] = f'❌ FAIL: {e}'
-        elif job_running:
-            print("⚠️  Job started running but didn't complete within timeout")
-            print("   This indicates the cluster is working, just slow execution")
-            results['job_output'] = '⚠️  TIMEOUT (but job was running)'
-            # Try to cancel the job since it didn't finish
-            try:
-                cancel_result = cancel_slurm_job_handler(test_job_id)
-                print(f"   🧹 Cancelled job {test_job_id}: {cancel_result.get('status', 'unknown')}")
-            except Exception as e:
-                print(f"   ⚠️  Could not cancel job: {e}")
         else:
-            print("⏰ Job remained in PENDING state - likely resource constraints")
-            print("   This suggests cluster resource issues, not code problems")
-            results['job_output'] = '⏰ TIMEOUT (job never started)'
-            # Try to cancel the pending job
-            try:
-                cancel_result = cancel_slurm_job_handler(test_job_id)
-                print(f"   🧹 Cancelled pending job {test_job_id}: {cancel_result.get('status', 'unknown')}")
-            except Exception as e:
-                print(f"   ⚠️  Could not cancel pending job: {e}")
+            print("⏰ Job did not complete within timeout period")
+            results['job_output'] = '⏰ TIMEOUT'
     
     # Test 6: Job Cancellation (submit a job specifically for cancellation)
     print_section("Test 6: Job Cancellation Capability")

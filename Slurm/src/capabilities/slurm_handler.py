@@ -14,6 +14,7 @@ For new code, consider importing directly from specific capability modules:
 - queue_info: get_queue_info
 - array_jobs: submit_array_job
 - node_info: get_node_info
+- node_allocation: allocate_nodes, deallocate_allocation, get_allocation_info
 - utils: check_slurm_available
 """
 
@@ -28,6 +29,7 @@ from .cluster_info import get_slurm_info
 from .queue_info import get_queue_info
 from .array_jobs import submit_array_job
 from .node_info import get_node_info
+from .node_allocation import allocate_nodes, deallocate_allocation, get_allocation_info
 from .utils import check_slurm_available
 
 # Keep old function name for backward compatibility
@@ -48,6 +50,9 @@ __all__ = [
     'get_queue_info',
     'submit_array_job',
     'get_node_info',
+    'allocate_nodes',
+    'deallocate_allocation',
+    'get_allocation_info',
     '_check_slurm_available',
     'check_slurm_available'
 ]

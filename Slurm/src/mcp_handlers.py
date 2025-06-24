@@ -14,7 +14,7 @@ from capabilities.job_output import get_job_output
 from capabilities.queue_info import get_queue_info
 from capabilities.array_jobs import submit_array_job
 from capabilities.node_info import get_node_info
-from capabilities.node_allocation import allocate_nodes, deallocate_nodes, get_allocation_status
+from capabilities.node_allocation import allocate_nodes, deallocate_allocation, get_allocation_info
 
 
 def submit_slurm_job_handler(script_path: str, cores: int, memory: Optional[str] = None, 
@@ -258,27 +258,48 @@ def get_node_info_handler() -> dict:
         }
 
 
-def allocate_nodes_handler(nodes: int = 1, cores: int = 1, memory: Optional[str] = None,
-                          time_limit: Optional[str] = None, partition: Optional[str] = None,
-                          job_name: Optional[str] = None, immediate: bool = False) -> dict:
+def allocate_nodes_handler(num_nodes: int = 1, time_limit: Optional[str] = None, 
+                          job_name: Optional[str] = None, exclusive: bool = False,
+                          specific_nodes: Optional[str] = None, partition: Optional[str] = None,
+                          cpus_per_task: Optional[int] = None, memory: Optional[str] = None,
+                          gres: Optional[str] = None, immediate: bool = False) -> dict:
     """
     Handler wrapping the node allocation capability for MCP.
-    Returns allocation information or an error payload on failure.
+    Allocates nodes interactively using salloc.
     
     Args:
-        nodes: Number of nodes to allocate
-        cores: Number of cores per node
-        memory: Memory requirement
-        time_limit: Time limit for allocation
-        partition: Slurm partition to use
-        job_name: Name for the allocation
-        immediate: Whether to return immediately without waiting
+        num_nodes: Number of nodes to allocate (default: 1)
+        time_limit: Time limit for allocation (format: HH:MM:SS, if None uses system default)
+        job_name: Optional job name
+        exclusive: Whether to request exclusive access to nodes
+        specific_nodes: Comma-separated list of specific node names to request
+        partition: Partition to submit to
+        cpus_per_task: Number of CPUs per task
+        memory: Memory requirement (e.g., "4G", "2048M")
+        gres: Generic resource requirement (e.g., "gpu:1")
+        immediate: Whether to request immediate allocation (fail if not available)
         
     Returns:
         MCP-compliant response dictionary
     """
     try:
-        result = allocate_nodes(nodes, cores, memory, time_limit, partition, job_name, immediate)
+        # Parse specific_nodes if provided as string
+        node_list = None
+        if specific_nodes:
+            node_list = [node.strip() for node in specific_nodes.split(',')]
+        
+        result = allocate_nodes(
+            num_nodes=num_nodes,
+            time_limit=time_limit,  # Can be None for system default
+            job_name=job_name,
+            exclusive=exclusive,
+            specific_nodes=node_list,
+            partition=partition,
+            cpus_per_task=cpus_per_task,
+            memory=memory,
+            gres=gres,
+            immediate=immediate
+        )
         return result
     except Exception as e:
         return {
@@ -288,45 +309,45 @@ def allocate_nodes_handler(nodes: int = 1, cores: int = 1, memory: Optional[str]
         }
 
 
-def deallocate_nodes_handler(allocation_id: str) -> dict:
+def deallocate_allocation_handler(allocation_id: str) -> dict:
     """
-    Handler wrapping the node deallocation capability for MCP.
-    Returns deallocation status or an error payload on failure.
+    Handler wrapping the allocation deallocation capability for MCP.
+    Cancels an existing node allocation.
     
     Args:
-        allocation_id: The allocation ID to cancel
+        allocation_id: The allocation/job ID to cancel
         
     Returns:
         MCP-compliant response dictionary
     """
     try:
-        result = deallocate_nodes(allocation_id)
+        result = deallocate_allocation(allocation_id)
         return result
     except Exception as e:
         return {
             "content": [{"text": json.dumps({"error": str(e)})}],
-            "_meta": {"tool": "deallocate_nodes", "error": type(e).__name__},
+            "_meta": {"tool": "deallocate_allocation", "error": type(e).__name__},
             "isError": True
         }
 
 
-def get_allocation_status_handler(allocation_id: str) -> dict:
+def get_allocation_info_handler(allocation_id: str) -> dict:
     """
-    Handler wrapping the allocation status capability for MCP.
-    Returns allocation status information or an error payload on failure.
+    Handler wrapping the allocation info capability for MCP.
+    Gets information about a specific allocation.
     
     Args:
-        allocation_id: The allocation ID to check
+        allocation_id: The allocation/job ID to query
         
     Returns:
         MCP-compliant response dictionary
     """
     try:
-        result = get_allocation_status(allocation_id)
+        result = get_allocation_info(allocation_id)
         return result
     except Exception as e:
         return {
             "content": [{"text": json.dumps({"error": str(e)})}],
-            "_meta": {"tool": "get_allocation_status", "error": type(e).__name__},
+            "_meta": {"tool": "get_allocation_info", "error": type(e).__name__},
             "isError": True
         }
