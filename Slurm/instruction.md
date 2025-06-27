@@ -5,4 +5,4 @@
 5. go to new terminal and run test files from test folder using pytest. if any test cases failed try to fix code immidiately.
 6. run all py files from slurm folder
 7. save all commands in a md file.
-8. create new readme_new.md file where you can add sections: overview,features,Prerequisites,Setup,Quick Start,test,Detailed Project Structure
+
