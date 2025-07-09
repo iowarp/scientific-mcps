@@ -13,37 +13,11 @@ sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..', 'src', 'node_ha
 
 
 @pytest.mark.asyncio
-async def test_server_tools():
-    """Test that server tools are properly registered."""
-    print("\n=== Testing Server Tools ===")
-    
-    # Import the FastMCP instance
-    from server import mcp
-    
-    # Check if tools are registered
-    tools = [
-        "get_cpu_info",
-        "get_memory_info",
-        "get_disk_info", 
-        "get_network_info",
-        "get_system_info",
-        "get_process_info",
-        "get_hardware_summary",
-        "monitor_performance",
-        "get_gpu_info",
-        "get_sensor_info"
-    ]
-    
-    # This is a basic check - in a real MCP test we'd use the protocol
-    print(f"Expected tools: {tools}")
-    print("✅ Server tools test passed")
-
-
-@pytest.mark.asyncio
 async def test_mcp_tool_cpu_info():
     """Test CPU info tool via MCP."""
     print("\n=== Testing MCP CPU Info Tool ===")
     
+    # Import and call the tool function directly
     try:
         from server import get_cpu_info_tool
         
@@ -162,7 +136,6 @@ if __name__ == "__main__":
     print("=" * 60)
     
     # Run async tests
-    asyncio.run(test_server_tools())
     asyncio.run(test_mcp_tool_cpu_info())
     asyncio.run(test_mcp_tool_memory_info())
     asyncio.run(test_mcp_tool_hardware_summary())

@@ -1,112 +1,171 @@
-# MCP Server
-
----
+# Node Hardware MCP Server
 
 ## Overview
-This project implements a basic **Model Context Protocol (MCP)** server in Python, exposing the following MCP capabilities:
 
-1. **Node Hardware Info** (`node_hardware`): Report logical and physical CPU core counts using `os` and `psutil`.
+The Node Hardware MCP Server is a comprehensive Model Context Protocol (MCP) server implementation that provides detailed hardware monitoring and system information capabilities. This server enables AI assistants and other MCP clients to retrieve comprehensive hardware information through a standardized protocol.
 
-The server adheres to JSON-RPC 2.0, built on **FastAPI**. Unit tests using **pytest** cover success and error cases for each capability and endpoint.
+The server acts as a bridge between MCP clients and system hardware information, providing detailed CPU, memory, disk, network, and system monitoring capabilities.
 
----
+## Features
 
-## Project Structure
-```text
-mcp-server-project/
-├── pyproject.toml                  # Project metadata & dependencies
-├── README.md                       # This file
-├── src/
-│   └── mcp_server/
-│       ├── __init__.py             # Package init
-│       ├── server.py               # FastAPI app
-│       ├── mcp_handlers.py         # MCP method dispatch
-│       └── capabilities/
-│           ├── __init__.py         # Subpackage init
-│           └── node_hardware.py    # CPU core reporting
-└── tests/
-    ├── test_mcp_handlers.py        # Tests for MCP handlers
-    └── test_server.py              # Tests for HTTP endpoints
-```
+### Core Capabilities
+- 🖥️ **CPU Information**: Detailed CPU information including cores, frequency, and usage statistics
+- 💾 **Memory Monitoring**: Comprehensive memory usage including virtual and swap memory
+- 💿 **Disk Information**: Disk usage, partitions, and I/O statistics
+- 🌐 **Network Monitoring**: Network interfaces, statistics, and connection information
+- 🖥️ **System Information**: OS details, uptime, users, and system metrics
+- 📊 **Process Monitoring**: Running processes with resource usage
+- 🔧 **Hardware Summary**: Comprehensive hardware overview
+- ⚡ **Performance Monitoring**: Real-time performance metrics
+- 🎮 **GPU Information**: GPU detection and information (if available)
+- 🌡️ **Sensor Information**: Temperature and sensor monitoring
 
----
+### MCP Tools Available
+1. **get_cpu_info** - Get detailed CPU information
+2. **get_memory_info** - Get memory usage statistics
+3. **get_disk_info** - Get disk usage and partition information
+4. **get_network_info** - Get network interface information
+5. **get_system_info** - Get general system information
+6. **get_process_info** - Get running process information
+7. **get_hardware_summary** - Get comprehensive hardware summary
+8. **monitor_performance** - Monitor real-time performance metrics
+9. **get_gpu_info** - Get GPU information (if available)
+10. **get_sensor_info** - Get temperature and sensor information
 
 ## Prerequisites
-- **Python** >= 3.8 (3.10+ recommended)  
-- **pip** (or use `uv` for virtual environment management)  
 
----
+### System Requirements
+- Linux, macOS, or Windows operating system
+- Python 3.10 or higher
+- UV package manager (recommended) or pip
+
+### Python Dependencies
+- `mcp[cli]>=0.1.0` - MCP framework
+- `pytest-asyncio>=1.0.0` - Async testing support
+- `python-dotenv>=1.0.0` - Environment variable management
+- `psutil>=5.9.0` - System and process utilities
+- `fastapi>=0.95.0` - Web framework (if using HTTP transport)
+- `uvicorn>=0.21.0` - ASGI server
+- `pydantic>=1.10.0` - Data validation
+- `pytest>=7.2.0` - Testing framework
+- `requests>=2.28.0` - HTTP client
 
 ## Setup
-1. Clone the repository:
-   ```bash
-   git clone https://github.com/iowarp/scientific-mcps
-   cd Node_Hardware
-   ```
-2. Create and activate an `uv` virtual environment:
-   ```bash
-   uv venv           # create a virtual environment based on pyproject.toml
-   uv lock           # generate or update the lock file
-   uv sync           # install dependencies into the venv
-   ```
-   This will create a `.venv/` folder and install all required packages.
 
-3. Confirm your environment is active (your prompt will show `(venv)`), then install development tools:
-   ```bash
-   uv sync --dev    # install pytest, psutil, and other dev dependencies
-   ```
-
-## Running the Server
-Start the FastAPI server with **uvicorn**:
+### 1. Navigate to Node_Hardware Directory
 ```bash
-uvicorn mcp_server.server:app --reload --host 0.0.0.0 --port 8000
+cd /path/to/scientific-mcps/Node_Hardware
 ```
 
-- **--reload** enables auto-reload on code changes.  
-- The server listens on `http://localhost:8000`.
-
----
-
-## JSON-RPC Usage Examples
-All requests are HTTP POSTs to `/mcp` with JSON-RPC 2.0 payloads.
-
-### 1. List Resources
+### 2. Install Dependencies
+Using UV (recommended):
 ```bash
-curl -X POST http://localhost:8000/mcp \
-  -H "Content-Type: application/json" \
-  -d '{"jsonrpc":"2.0","method":"mcp/listResources","id":1}'
+uv sync
 ```
 
-### 2. Node Hardware Info (`node_hardware`)
+Using pip:
 ```bash
-curl -X POST http://localhost:8000/mcp \
-  -H "Content-Type: application/json" \
-  -d '{
-        "jsonrpc":"2.0",
-        "method":"mcp/callTool",
-        "params":{ "tool":"node_hardware" },
-        "id":4
-      }'
+pip install -e .
 ```
 
----
+### 3. Check Configuration
+Ensure `pyproject.toml` is properly configured with all dependencies.
 
-## Running Tests
-Execute the full pytest suite:
+## Quick Start
+
+### 1. Start the MCP Server
 ```bash
-pytest -q -v
+# Using UV
+uv run python src/node_hardware/server.py
+
+# Or using Python directly
+python src/node_hardware/server.py
+
+# Or using the script entry point
+uv run node-hardware-mcp
 ```
 
-- **-q**: quiet mode (dots for passes)  
-- **-v**: verbose (test names with PASS/FAIL)  
-- **-s**: (optional) show print() output for debugging
+### 2. Test Basic Functionality
+The server will start and listen for MCP protocol connections via stdio transport by default.
 
-All tests cover success paths and edge cases for each capability and endpoint.
+### 3. Use with MCP Client
+Connect any MCP-compatible client to interact with the hardware monitoring tools.
 
----
+## Project Structure
 
-## Assumptions & Notes
-- CSVs have a single `value` column (or no header).  
-- HDF5 listing is simulated via filesystem globbing.  
-- Node hardware info relies on `psutil`; logical count falls back to `os.cpu_count()`.  
+```
+Node_Hardware/
+├── README.md                      # This documentation
+├── pyproject.toml                 # Project configuration and dependencies
+├── src/                           # Source code
+│   ├── __init__.py
+│   └── node_hardware/              # Main package directory
+│       ├── __init__.py
+│       ├── server.py              # Main MCP server
+│       ├── mcp_handlers.py        # MCP protocol handlers
+│       └── capabilities/          # Individual capability modules
+│           ├── __init__.py
+│           ├── utils.py           # Utility functions
+│           ├── cpu_info.py        # CPU information
+│           ├── memory_info.py     # Memory information
+│           ├── disk_info.py       # Disk information
+│           ├── network_info.py    # Network information
+│           ├── system_info.py     # System information
+│           ├── process_info.py    # Process information
+│           ├── hardware_summary.py # Hardware summary
+│           ├── performance_monitor.py # Performance monitoring
+│           ├── gpu_info.py        # GPU information
+│           └── sensor_info.py     # Sensor information
+└── tests/                         # Test suite
+    ├── __init__.py
+    ├── test_mcp_handlers.py       # MCP handler tests
+    └── test_server.py             # Server tests
+```
+
+## Configuration
+
+### Environment Variables
+- `MCP_TRANSPORT`: Transport type ("stdio" or "sse", default: "stdio")
+- `MCP_SSE_HOST`: Host for SSE transport (default: "0.0.0.0")
+- `MCP_SSE_PORT`: Port for SSE transport (default: "8000")
+
+### Transport Options
+- **stdio**: Standard input/output transport (default)
+- **sse**: Server-Sent Events transport for web clients
+
+## Testing
+
+### Running Tests
+```bash
+# Run all tests
+uv run pytest tests/ -v
+
+# Run specific test files
+uv run pytest tests/test_mcp_handlers.py -v
+uv run pytest tests/test_server.py -v
+
+
+# Run capability demo
+uv run python capability_test.py
+uv run python demo.py
+```
+
+## Development
+
+### Adding New Capabilities
+1. Create a new capability module in `src/node_hardware/capabilities/`
+2. Add the capability import to `mcp_handlers.py`
+3. Create a new handler function in `mcp_handlers.py`
+4. Add the MCP tool to `server.py`
+5. Write tests for the new capability
+
+### Code Structure
+- Each capability is a separate module with a single main function
+- Handlers wrap capabilities for MCP protocol compliance
+- Server.py defines the MCP tools and routes them to handlers
+- All capabilities use common utility functions from `utils.py`
+
+## License
+
+This project is part of the scientific-mcps collection and follows the same licensing terms.
 
