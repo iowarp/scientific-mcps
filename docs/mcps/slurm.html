@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Slurm MCP - Scientific MCPs</title>
+    <meta name="description" content="Job submission and management simulation for HPC environments through the Model Context Protocol.">
+    <link rel="stylesheet" href="../assets/css/style.css">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🔬</text></svg>">
+</head>
+<body>
+    <header class="header">
+        <div class="header-content">
+            <div class="logo">
+                <div class="logo-icon">🔬</div>
+                <div class="logo-text">Scientific MCPs</div>
+            </div>
+            <a href="../index.html" style="color: white; text-decoration: none; margin-left: auto;">← Back to Directory</a>
+        </div>
+    </header>
+
+    <main class="main-content" style="grid-template-columns: 1fr; max-width: 1000px;">
+        <div class="detail-header">
+            <div class="detail-title">
+                <div class="mcp-icon">🖥️</div>
+                <div>
+                    <h1>Slurm</h1>
+                    <span class="mcp-category">System Management</span>
+                </div>
+            </div>
+            <p class="mcp-description">Job submission and management simulation for High-Performance Computing (HPC) environments. Provides Slurm workload manager functionality through the Model Context Protocol.</p>
+            
+            <div class="detail-stats">
+                <div class="stat-card">
+                    <span class="stat-value">1.0.0</span>
+                    <span class="stat-label">Version</span>
+                </div>
+                <div class="stat-card">
+                    <span class="stat-value">4</span>
+                    <span class="stat-label">Actions</span>
+                </div>
+                <div class="stat-card">
+                    <span class="stat-value">Jan 15</span>
+                    <span class="stat-label">Updated</span>
+                </div>
+                <div class="stat-card">
+                    <span class="stat-value">Python</span>
+                    <span class="stat-label">Language</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="tabs">
+            <button class="tab active" data-tab="installation">Installation</button>
+            <button class="tab" data-tab="actions">Available Actions</button>
+            <button class="tab" data-tab="examples">Examples</button>
+        </div>
+
+        <div id="installation" class="tab-content active">
+            <h3>Installation Methods</h3>
+            
+            <h4>Global Installation</h4>
+            <div class="code-block">uv pip install scientific-mcps</div>
+            
+            <h4>Individual MCP Installation</h4>
+            <div class="code-block">uv pip install "scientific-mcps[slurm]"</div>
+            
+            <h4>Direct Server</h4>
+            <div class="code-block">uv run mcp_slurm</div>
+            
+            <h4>Claude Desktop Configuration</h4>
+            <div class="code-block">{
+  "mcpServers": {
+    "slurm": {
+      "command": "uv",
+      "args": ["run", "mcp_slurm"]
+    }
+  }
+}</div>
+        </div>
+
+        <div id="actions" class="tab-content">
+            <h3>Available Actions</h3>
+            <ul class="actions-list">
+                <li class="action-item">
+                    <div class="action-name">submit_job</div>
+                    <div class="action-description">Submit a job to the Slurm queue with specified parameters</div>
+                    <div class="action-params">Parameters: job_script, nodes, tasks, time_limit, partition</div>
+                </li>
+                <li class="action-item">
+                    <div class="action-name">check_status</div>
+                    <div class="action-description">Check the status of submitted jobs</div>
+                    <div class="action-params">Parameters: job_id, user</div>
+                </li>
+                <li class="action-item">
+                    <div class="action-name">cancel_job</div>
+                    <div class="action-description">Cancel a running or pending job</div>
+                    <div class="action-params">Parameters: job_id, signal</div>
+                </li>
+                <li class="action-item">
+                    <div class="action-name">get_queue</div>
+                    <div class="action-description">Get information about the job queue and partition status</div>
+                    <div class="action-params">Parameters: partition, user</div>
+                </li>
+            </ul>
+        </div>
+
+        <div id="examples" class="tab-content">
+            <h3>Usage Examples</h3>
+            
+            <h4>Job Submission and Management</h4>
+            <div class="code-block">// Submit a parallel job
+submit_job(
+  job_script: "#!/bin/bash\n#SBATCH --job-name=simulation\n#SBATCH --output=result.out\npython simulation.py",
+  nodes: 4,
+  tasks: 16,
+  time_limit: "02:00:00",
+  partition: "compute"
+)
+
+// Check job status
+check_status(job_id: "12345")
+
+// View queue information
+get_queue(partition: "compute")</div>
+            
+            <h4>Workflow Integration</h4>
+            <div class="code-block">// Submit data processing job
+submit_job(
+  job_script: "#!/bin/bash\n#SBATCH --job-name=data_analysis\nmcp_pandas process_data.py",
+  nodes: 2,
+  tasks: 8,
+  time_limit: "01:30:00"
+)
+
+// Monitor until completion
+while (check_status(job_id)["state"] == "RUNNING") {
+  sleep(30);
+}
+
+// Process results with other MCPs
+load_csv("processed_results.csv")</div>
+        </div>
+
+        <div style="margin-top: 2rem; padding: 1rem; background: var(--bg-secondary); border-radius: 8px;">
+            <h3>Repository</h3>
+            <p>
+                <a href="https://github.com/iowarp/scientific-mcps" target="_blank" style="color: var(--primary-color); text-decoration: none;">
+                    🔗 View on GitHub
+                </a>
+            </p>
+            <p style="margin-top: 0.5rem; color: var(--text-secondary);">
+                Part of the Scientific MCPs collection - bringing AI practically to science!
+            </p>
+        </div>
+    </main>
+
+    <script src="../assets/js/main.js"></script>
+</body>
+</html>

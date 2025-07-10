@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lmod MCP - Scientific MCPs</title>
+    <meta name="description" content="Environment module management for scientific computing through the Model Context Protocol.">
+    <link rel="stylesheet" href="../assets/css/style.css">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🔬</text></svg>">
+</head>
+<body>
+    <header class="header">
+        <div class="header-content">
+            <div class="logo">
+                <div class="logo-icon">🔬</div>
+                <div class="logo-text">Scientific MCPs</div>
+            </div>
+            <a href="../index.html" style="color: white; text-decoration: none; margin-left: auto;">← Back to Directory</a>
+        </div>
+    </header>
+
+    <main class="main-content" style="grid-template-columns: 1fr; max-width: 1000px;">
+        <div class="detail-header">
+            <div class="detail-title">
+                <div class="mcp-icon">📦</div>
+                <div>
+                    <h1>Lmod</h1>
+                    <span class="mcp-category">System Management</span>
+                </div>
+            </div>
+            <p class="mcp-description">Environment module management for scientific computing. Provides dynamic loading and unloading of software modules in HPC environments.</p>
+            
+            <div class="detail-stats">
+                <div class="stat-card">
+                    <span class="stat-value">1.0.0</span>
+                    <span class="stat-label">Version</span>
+                </div>
+                <div class="stat-card">
+                    <span class="stat-value">4</span>
+                    <span class="stat-label">Actions</span>
+                </div>
+                <div class="stat-card">
+                    <span class="stat-value">Jan 15</span>
+                    <span class="stat-label">Updated</span>
+                </div>
+                <div class="stat-card">
+                    <span class="stat-value">Python</span>
+                    <span class="stat-label">Language</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="tabs">
+            <button class="tab active" data-tab="installation">Installation</button>
+            <button class="tab" data-tab="actions">Available Actions</button>
+            <button class="tab" data-tab="examples">Examples</button>
+        </div>
+
+        <div id="installation" class="tab-content active">
+            <h3>Installation Methods</h3>
+            
+            <h4>Global Installation</h4>
+            <div class="code-block">uv pip install scientific-mcps</div>
+            
+            <h4>Individual MCP Installation</h4>
+            <div class="code-block">uv pip install "scientific-mcps[lmod]"</div>
+            
+            <h4>Direct Server</h4>
+            <div class="code-block">uv run mcp_lmod</div>
+            
+            <h4>Claude Desktop Configuration</h4>
+            <div class="code-block">{
+  "mcpServers": {
+    "lmod": {
+      "command": "uv",
+      "args": ["run", "mcp_lmod"]
+    }
+  }
+}</div>
+        </div>
+
+        <div id="actions" class="tab-content">
+            <h3>Available Actions</h3>
+            <ul class="actions-list">
+                <li class="action-item">
+                    <div class="action-name">list_modules</div>
+                    <div class="action-description">List available modules in the environment</div>
+                    <div class="action-params">Parameters: category, filter_pattern</div>
+                </li>
+                <li class="action-item">
+                    <div class="action-name">load_module</div>
+                    <div class="action-description">Load a module into the environment</div>
+                    <div class="action-params">Parameters: module_name, version</div>
+                </li>
+                <li class="action-item">
+                    <div class="action-name">unload_module</div>
+                    <div class="action-description">Unload a module from the environment</div>
+                    <div class="action-params">Parameters: module_name</div>
+                </li>
+                <li class="action-item">
+                    <div class="action-name">get_info</div>
+                    <div class="action-description">Get information about a specific module</div>
+                    <div class="action-params">Parameters: module_name</div>
+                </li>
+            </ul>
+        </div>
+
+        <div id="examples" class="tab-content">
+            <h3>Usage Examples</h3>
+            
+            <h4>Module Management</h4>
+            <div class="code-block">// List available modules
+list_modules(category: "compiler")
+
+// Load required modules
+load_module("gcc", version: "11.2.0")
+load_module("python", version: "3.9.0")
+
+// Get module information
+get_info("gcc")
+
+// Unload when done
+unload_module("gcc")</div>
+            
+            <h4>HPC Workflow Integration</h4>
+            <div class="code-block">// Set up environment for job
+load_module("gcc", "11.2.0")
+load_module("openmpi", "4.1.0")
+load_module("python", "3.9.0")
+
+// Submit job with loaded modules
+submit_job(
+  job_script: "#!/bin/bash\n#SBATCH --job-name=simulation\nmpirun ./simulation",
+  nodes: 4
+)</div>
+        </div>
+
+        <div style="margin-top: 2rem; padding: 1rem; background: var(--bg-secondary); border-radius: 8px;">
+            <h3>Repository</h3>
+            <p>
+                <a href="https://github.com/iowarp/scientific-mcps" target="_blank" style="color: var(--primary-color); text-decoration: none;">
+                    🔗 View on GitHub
+                </a>
+            </p>
+            <p style="margin-top: 0.5rem; color: var(--text-secondary);">
+                Part of the Scientific MCPs collection - bringing AI practically to science!
+            </p>
+        </div>
+    </main>
+
+    <script src="../assets/js/main.js"></script>
+</body>
+</html>

@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ArXiv MCP - Scientific MCPs</title>
+    <meta name="description" content="Fetch and search research papers from ArXiv repository through the Model Context Protocol.">
+    <link rel="stylesheet" href="../assets/css/style.css">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🔬</text></svg>">
+</head>
+<body>
+    <header class="header">
+        <div class="header-content">
+            <div class="logo">
+                <div class="logo-icon">🔬</div>
+                <div class="logo-text">Scientific MCPs</div>
+            </div>
+            <a href="../index.html" style="color: white; text-decoration: none; margin-left: auto;">← Back to Directory</a>
+        </div>
+    </header>
+
+    <main class="main-content" style="grid-template-columns: 1fr; max-width: 1000px;">
+        <div class="detail-header">
+            <div class="detail-title">
+                <div class="mcp-icon">📄</div>
+                <div>
+                    <h1>ArXiv</h1>
+                    <span class="mcp-category">Data Processing</span>
+                </div>
+            </div>
+            <p class="mcp-description">Fetch and search research papers from the ArXiv repository. Access scientific literature, abstracts, and metadata for research and analysis purposes.</p>
+            
+            <div class="detail-stats">
+                <div class="stat-card">
+                    <span class="stat-value">1.0.0</span>
+                    <span class="stat-label">Version</span>
+                </div>
+                <div class="stat-card">
+                    <span class="stat-value">3</span>
+                    <span class="stat-label">Actions</span>
+                </div>
+                <div class="stat-card">
+                    <span class="stat-value">Jan 15</span>
+                    <span class="stat-label">Updated</span>
+                </div>
+                <div class="stat-card">
+                    <span class="stat-value">Python</span>
+                    <span class="stat-label">Language</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="tabs">
+            <button class="tab active" data-tab="installation">Installation</button>
+            <button class="tab" data-tab="actions">Available Actions</button>
+            <button class="tab" data-tab="examples">Examples</button>
+        </div>
+
+        <div id="installation" class="tab-content active">
+            <h3>Installation Methods</h3>
+            
+            <h4>Global Installation</h4>
+            <div class="code-block">uv pip install scientific-mcps</div>
+            
+            <h4>Individual MCP Installation</h4>
+            <div class="code-block">uv pip install "scientific-mcps[arxiv]"</div>
+            
+            <h4>Direct Server</h4>
+            <div class="code-block">uv run mcp_arxiv</div>
+            
+            <h4>Claude Desktop Configuration</h4>
+            <div class="code-block">{
+  "mcpServers": {
+    "arxiv": {
+      "command": "uv",
+      "args": ["run", "mcp_arxiv"]
+    }
+  }
+}</div>
+        </div>
+
+        <div id="actions" class="tab-content">
+            <h3>Available Actions</h3>
+            <ul class="actions-list">
+                <li class="action-item">
+                    <div class="action-name">search_papers</div>
+                    <div class="action-description">Search ArXiv papers by keywords, authors, or categories</div>
+                    <div class="action-params">Parameters: query, category, max_results, sort_by</div>
+                </li>
+                <li class="action-item">
+                    <div class="action-name">fetch_paper</div>
+                    <div class="action-description">Fetch detailed information about a specific paper</div>
+                    <div class="action-params">Parameters: arxiv_id, include_abstract, include_authors</div>
+                </li>
+                <li class="action-item">
+                    <div class="action-name">get_metadata</div>
+                    <div class="action-description">Extract metadata from ArXiv papers</div>
+                    <div class="action-params">Parameters: arxiv_id, metadata_fields</div>
+                </li>
+            </ul>
+        </div>
+
+        <div id="examples" class="tab-content">
+            <h3>Usage Examples</h3>
+            
+            <h4>Literature Search</h4>
+            <div class="code-block">// Search for papers on machine learning
+search_papers(
+  query: "machine learning quantum computing",
+  category: "quant-ph",
+  max_results: 10,
+  sort_by: "relevance"
+)
+
+// Fetch specific paper details
+fetch_paper(
+  arxiv_id: "2301.12345",
+  include_abstract: true,
+  include_authors: true
+)
+
+// Get paper metadata
+get_metadata("2301.12345", ["title", "authors", "published", "categories"])</div>
+            
+            <h4>Research Workflow</h4>
+            <div class="code-block">// Search for recent papers
+search_papers("computational physics", max_results: 20)
+
+// Extract paper data for analysis
+papers_data = []
+for paper in results:
+    metadata = get_metadata(paper.id)
+    papers_data.append(metadata)
+
+// Analyze with pandas
+load_csv(papers_data)
+describe(dataframe, ["publication_date", "citation_count"])</div>
+        </div>
+
+        <div style="margin-top: 2rem; padding: 1rem; background: var(--bg-secondary); border-radius: 8px;">
+            <h3>Repository</h3>
+            <p>
+                <a href="https://github.com/iowarp/scientific-mcps" target="_blank" style="color: var(--primary-color); text-decoration: none;">
+                    🔗 View on GitHub
+                </a>
+            </p>
+            <p style="margin-top: 0.5rem; color: var(--text-secondary);">
+                Part of the Scientific MCPs collection - bringing AI practically to science!
+            </p>
+        </div>
+    </main>
+
+    <script src="../assets/js/main.js"></script>
+</body>
+</html>

@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Darshan MCP - Scientific MCPs</title>
+    <meta name="description" content="I/O performance analysis and monitoring tool through the Model Context Protocol.">
+    <link rel="stylesheet" href="../assets/css/style.css">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🔬</text></svg>">
+</head>
+<body>
+    <header class="header">
+        <div class="header-content">
+            <div class="logo">
+                <div class="logo-icon">🔬</div>
+                <div class="logo-text">Scientific MCPs</div>
+            </div>
+            <a href="../index.html" style="color: white; text-decoration: none; margin-left: auto;">← Back to Directory</a>
+        </div>
+    </header>
+
+    <main class="main-content" style="grid-template-columns: 1fr; max-width: 1000px;">
+        <div class="detail-header">
+            <div class="detail-title">
+                <div class="mcp-icon">⚡</div>
+                <div>
+                    <h1>Darshan</h1>
+                    <span class="mcp-category">Analysis & Visualization</span>
+                </div>
+            </div>
+            <p class="mcp-description">I/O performance analysis and monitoring tool for HPC applications. Provides detailed insights into file system usage patterns and performance bottlenecks.</p>
+            
+            <div class="detail-stats">
+                <div class="stat-card">
+                    <span class="stat-value">1.0.0</span>
+                    <span class="stat-label">Version</span>
+                </div>
+                <div class="stat-card">
+                    <span class="stat-value">3</span>
+                    <span class="stat-label">Actions</span>
+                </div>
+                <div class="stat-card">
+                    <span class="stat-value">Jan 15</span>
+                    <span class="stat-label">Updated</span>
+                </div>
+                <div class="stat-card">
+                    <span class="stat-value">Python</span>
+                    <span class="stat-label">Language</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="tabs">
+            <button class="tab active" data-tab="installation">Installation</button>
+            <button class="tab" data-tab="actions">Available Actions</button>
+            <button class="tab" data-tab="examples">Examples</button>
+        </div>
+
+        <div id="installation" class="tab-content active">
+            <h3>Installation Methods</h3>
+            
+            <h4>Global Installation</h4>
+            <div class="code-block">uv pip install scientific-mcps</div>
+            
+            <h4>Individual MCP Installation</h4>
+            <div class="code-block">uv pip install "scientific-mcps[darshan]"</div>
+            
+            <h4>Direct Server</h4>
+            <div class="code-block">uv run mcp_darshan</div>
+            
+            <h4>Claude Desktop Configuration</h4>
+            <div class="code-block">{
+  "mcpServers": {
+    "darshan": {
+      "command": "uv",
+      "args": ["run", "mcp_darshan"]
+    }
+  }
+}</div>
+        </div>
+
+        <div id="actions" class="tab-content">
+            <h3>Available Actions</h3>
+            <ul class="actions-list">
+                <li class="action-item">
+                    <div class="action-name">analyze_io</div>
+                    <div class="action-description">Analyze I/O patterns from Darshan log files</div>
+                    <div class="action-params">Parameters: log_file, analysis_type, time_range</div>
+                </li>
+                <li class="action-item">
+                    <div class="action-name">get_stats</div>
+                    <div class="action-description">Extract I/O statistics and performance metrics</div>
+                    <div class="action-params">Parameters: log_file, metric_type</div>
+                </li>
+                <li class="action-item">
+                    <div class="action-name">generate_report</div>
+                    <div class="action-description">Generate comprehensive I/O performance reports</div>
+                    <div class="action-params">Parameters: log_file, output_format, include_charts</div>
+                </li>
+            </ul>
+        </div>
+
+        <div id="examples" class="tab-content">
+            <h3>Usage Examples</h3>
+            
+            <h4>I/O Performance Analysis</h4>
+            <div class="code-block">// Analyze I/O patterns
+analyze_io(
+  log_file: "application.darshan",
+  analysis_type: "bandwidth",
+  time_range: "0:3600"
+)
+
+// Get performance statistics
+get_stats("application.darshan", metric_type: "throughput")
+
+// Generate comprehensive report
+generate_report(
+  log_file: "application.darshan",
+  output_format: "html",
+  include_charts: true
+)</div>
+            
+            <h4>HPC Workflow Integration</h4>
+            <div class="code-block">// Submit job with Darshan monitoring
+submit_job(
+  job_script: "#!/bin/bash\n#SBATCH --job-name=io_analysis\ndarshan-enabled-app input.dat",
+  nodes: 4
+)
+
+// Analyze results
+analyze_io("job_output.darshan")
+
+// Visualize with plot MCP
+create_plot(io_stats, "line", "time", "bandwidth")</div>
+        </div>
+
+        <div style="margin-top: 2rem; padding: 1rem; background: var(--bg-secondary); border-radius: 8px;">
+            <h3>Repository</h3>
+            <p>
+                <a href="https://github.com/iowarp/scientific-mcps" target="_blank" style="color: var(--primary-color); text-decoration: none;">
+                    🔗 View on GitHub
+                </a>
+            </p>
+            <p style="margin-top: 0.5rem; color: var(--text-secondary);">
+                Part of the Scientific MCPs collection - bringing AI practically to science!
+            </p>
+        </div>
+    </main>
+
+    <script src="../assets/js/main.js"></script>
+</body>
+</html>
