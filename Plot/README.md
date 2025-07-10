@@ -22,13 +22,6 @@ A comprehensive Model Context Protocol (MCP) server for advanced data visualizat
 - **Standardized MCP Interface**  
   Exposes all functionality via the MCP JSON-RPC protocol for seamless integration with language models.
 
-## Architecture
-
-The server follows a modular architecture with separate capability modules for different functionalities:
-- **plot_capabilities**: Core plotting and visualization functions
-- **data_handling**: Data loading, cleaning, and preprocessing
-- **output_management**: File output and format handling
-- **error_handling**: Comprehensive error management and validation
 
 ## Capabilities
 

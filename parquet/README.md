@@ -22,14 +22,6 @@ A comprehensive Model Context Protocol (MCP) server for Parquet file operations 
 - **Standardized MCP Interface**  
   Exposes all functionality via the MCP JSON-RPC protocol for seamless integration with language models.
 
-## Architecture
-
-The server follows a modular architecture with separate capability modules for different functionalities:
-- **parquet_io**: Core read/write operations
-- **metadata**: Schema and metadata extraction
-- **statistics**: Statistical analysis and data quality checks
-- **format_conversion**: Multi-format conversion capabilities
-
 ## Capabilities
 
 1. **read_parquet**: Read Parquet files with optional column selection and row limits.

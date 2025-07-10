@@ -22,18 +22,6 @@ A comprehensive Model Context Protocol (MCP) server for hardware monitoring and 
 - **Standardized MCP Interface**  
   Exposes all functionality via the MCP JSON-RPC protocol for seamless integration with language models.
 
-## Architecture
-
-The server follows a modular architecture with separate capability modules for different hardware components:
-- **cpu_info**: CPU information and usage statistics
-- **memory_info**: Memory monitoring and analysis
-- **disk_info**: Disk usage and I/O statistics
-- **network_info**: Network interface and connection monitoring
-- **system_info**: General system and OS information
-- **process_info**: Process monitoring and management
-- **performance_monitor**: Real-time performance metrics
-- **hardware_summary**: Comprehensive hardware overview
-
 ## Capabilities
 
 1. **get_cpu_info**: Get detailed CPU information including cores, frequency, architecture, and usage statistics.
