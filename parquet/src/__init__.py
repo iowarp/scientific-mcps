@@ -1,3 +1,1 @@
-"""
-MCP Server source package
-""" 
+"""Parquet MCP package."""

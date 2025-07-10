@@ -1,0 +1,2 @@
+[console_scripts]
+parquet-mcp = parquet.server:main
