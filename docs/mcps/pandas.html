@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pandas MCP - Scientific MCPs</title>
+    <meta name="description" content="Load, filter, and manipulate CSV data using pandas through the Model Context Protocol.">
+    <link rel="stylesheet" href="../assets/css/style.css">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🔬</text></svg>">
+</head>
+<body>
+    <header class="header">
+        <div class="header-content">
+            <div class="logo">
+                <div class="logo-icon">🔬</div>
+                <div class="logo-text">Scientific MCPs</div>
+            </div>
+            <a href="../index.html" style="color: white; text-decoration: none; margin-left: auto;">← Back to Directory</a>
+        </div>
+    </header>
+
+    <main class="main-content" style="grid-template-columns: 1fr; max-width: 1000px;">
+        <div class="detail-header">
+            <div class="detail-title">
+                <div class="mcp-icon">🐼</div>
+                <div>
+                    <h1>Pandas</h1>
+                    <span class="mcp-category">Data Processing</span>
+                </div>
+            </div>
+            <p class="mcp-description">Load, filter, and manipulate CSV data using pandas through the Model Context Protocol. Provides powerful data analysis capabilities for scientific computing workflows.</p>
+            
+            <div class="detail-stats">
+                <div class="stat-card">
+                    <span class="stat-value">1.0.0</span>
+                    <span class="stat-label">Version</span>
+                </div>
+                <div class="stat-card">
+                    <span class="stat-value">4</span>
+                    <span class="stat-label">Actions</span>
+                </div>
+                <div class="stat-card">
+                    <span class="stat-value">Jan 15</span>
+                    <span class="stat-label">Updated</span>
+                </div>
+                <div class="stat-card">
+                    <span class="stat-value">Python</span>
+                    <span class="stat-label">Language</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="tabs">
+            <button class="tab active" data-tab="installation">Installation</button>
+            <button class="tab" data-tab="actions">Available Actions</button>
+            <button class="tab" data-tab="examples">Examples</button>
+        </div>
+
+        <div id="installation" class="tab-content active">
+            <h3>Installation Methods</h3>
+            
+            <h4>Global Installation</h4>
+            <div class="code-block">uv pip install scientific-mcps</div>
+            
+            <h4>Individual MCP Installation</h4>
+            <div class="code-block">uv pip install "scientific-mcps[pandas]"</div>
+            
+            <h4>Direct Server</h4>
+            <div class="code-block">uv run mcp_pandas</div>
+            
+            <h4>Claude Desktop Configuration</h4>
+            <div class="code-block">{
+  "mcpServers": {
+    "pandas": {
+      "command": "uv",
+      "args": ["run", "mcp_pandas"]
+    }
+  }
+}</div>
+        </div>
+
+        <div id="actions" class="tab-content">
+            <h3>Available Actions</h3>
+            <ul class="actions-list">
+                <li class="action-item">
+                    <div class="action-name">load_csv</div>
+                    <div class="action-description">Load CSV files into pandas DataFrames for analysis</div>
+                    <div class="action-params">Parameters: file_path, separator, header_row</div>
+                </li>
+                <li class="action-item">
+                    <div class="action-name">filter_data</div>
+                    <div class="action-description">Filter DataFrame rows based on conditions</div>
+                    <div class="action-params">Parameters: dataframe, filter_condition, columns</div>
+                </li>
+                <li class="action-item">
+                    <div class="action-name">get_info</div>
+                    <div class="action-description">Get detailed information about DataFrame structure</div>
+                    <div class="action-params">Parameters: dataframe</div>
+                </li>
+                <li class="action-item">
+                    <div class="action-name">describe</div>
+                    <div class="action-description">Generate descriptive statistics for numerical columns</div>
+                    <div class="action-params">Parameters: dataframe, include_columns</div>
+                </li>
+            </ul>
+        </div>
+
+        <div id="examples" class="tab-content">
+            <h3>Usage Examples</h3>
+            
+            <h4>Loading and Analyzing Data</h4>
+            <div class="code-block">// Load a CSV file
+load_csv("data/experiments.csv", ",", 0)
+
+// Get basic information
+get_info(dataframe)
+
+// Filter data for specific conditions
+filter_data(dataframe, "temperature > 25", ["temperature", "pressure"])
+
+// Generate descriptive statistics
+describe(dataframe, ["temperature", "pressure", "volume"])</div>
+            
+            <h4>Integration with Other MCPs</h4>
+            <div class="code-block">// Load data with pandas
+load_csv("experiment_results.csv")
+
+// Create visualization with plot MCP
+create_plot(dataframe, "scatter", "temperature", "pressure")
+
+// Export processed data
+save_csv(filtered_data, "processed_results.csv")</div>
+        </div>
+
+        <div style="margin-top: 2rem; padding: 1rem; background: var(--bg-secondary); border-radius: 8px;">
+            <h3>Repository</h3>
+            <p>
+                <a href="https://github.com/iowarp/scientific-mcps" target="_blank" style="color: var(--primary-color); text-decoration: none;">
+                    🔗 View on GitHub
+                </a>
+            </p>
+            <p style="margin-top: 0.5rem; color: var(--text-secondary);">
+                Part of the Scientific MCPs collection - bringing AI practically to science!
+            </p>
+        </div>
+    </main>
+
+    <script src="../assets/js/main.js"></script>
+</body>
+</html>
