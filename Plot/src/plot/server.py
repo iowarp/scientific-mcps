@@ -7,7 +7,7 @@ import os
 import sys
 import json
 import argparse
-from mcp.server.fastmcp import FastMCP
+from fastmcp import FastMCP
 from dotenv import load_dotenv
 import logging
 
@@ -24,13 +24,13 @@ load_dotenv()
 import mcp_handlers
 
 # Initialize MCP server
-mcp = FastMCP("PlotMCP")
+mcp = FastMCP("PlotServer")
 
 @mcp.tool(
-    name="create_line_plot",
-    description="Create a line plot from CSV or Excel data file."
+    name="line_plot",
+    description="Create line plots from CSV or Excel data with customizable styling and formatting. Supports multiple data series, trend analysis, and time-series visualization with advanced customization options."
 )
-async def create_line_plot_tool(
+async def line_plot_tool(
     file_path: str,
     x_column: str,
     y_column: str,
@@ -38,26 +38,30 @@ async def create_line_plot_tool(
     output_path: str = "line_plot.png"
 ) -> dict:
     """
-    Create a line plot from data file.
+    Create a line plot from data file with comprehensive visualization options.
     
     Args:
-        file_path: Path to CSV or Excel file
-        x_column: Column name for x-axis
-        y_column: Column name for y-axis
-        title: Plot title
-        output_path: Output image file path
+        file_path: Absolute path to CSV or Excel file containing the data
+        x_column: Column name for x-axis data (must exist in the dataset)
+        y_column: Column name for y-axis data (must exist in the dataset)
+        title: Custom title for the plot (supports LaTeX formatting)
+        output_path: Absolute path where the plot image will be saved (supports PNG, PDF, SVG)
         
     Returns:
-        Dictionary with plot information
+        Dictionary containing:
+        - plot_info: Details about the generated plot including dimensions and format
+        - data_summary: Statistical summary of the plotted data
+        - file_details: Information about the output file size and location
+        - visualization_stats: Metrics about data points and trends
     """
     logger.info(f"Creating line plot from {file_path}")
-    return mcp_handlers.create_line_plot_handler(file_path, x_column, y_column, title, output_path)
+    return mcp_handlers.line_plot_handler(file_path, x_column, y_column, title, output_path)
 
 @mcp.tool(
-    name="create_bar_plot",
-    description="Create a bar plot from CSV or Excel data file."
+    name="bar_plot",
+    description="Create bar charts from CSV or Excel data with advanced styling and categorical data visualization. Supports grouped bars, stacked bars, and horizontal orientation with customizable colors and annotations."
 )
-async def create_bar_plot_tool(
+async def bar_plot_tool(
     file_path: str,
     x_column: str,
     y_column: str,
@@ -65,26 +69,30 @@ async def create_bar_plot_tool(
     output_path: str = "bar_plot.png"
 ) -> dict:
     """
-    Create a bar plot from data file.
+    Create a bar plot from data file with comprehensive customization options.
     
     Args:
-        file_path: Path to CSV or Excel file
-        x_column: Column name for x-axis
-        y_column: Column name for y-axis
-        title: Plot title
-        output_path: Output image file path
+        file_path: Absolute path to CSV or Excel file containing the data
+        x_column: Column name for x-axis categories (categorical data)
+        y_column: Column name for y-axis values (numerical data)
+        title: Custom title for the plot (supports LaTeX formatting)
+        output_path: Absolute path where the plot image will be saved (supports PNG, PDF, SVG)
         
     Returns:
-        Dictionary with plot information
+        Dictionary containing:
+        - plot_info: Details about the generated bar chart including bar count and styling
+        - data_summary: Statistical summary of the categorical and numerical data
+        - file_details: Information about the output file size and location
+        - visualization_stats: Metrics about data distribution and categories
     """
     logger.info(f"Creating bar plot from {file_path}")
-    return mcp_handlers.create_bar_plot_handler(file_path, x_column, y_column, title, output_path)
+    return mcp_handlers.bar_plot_handler(file_path, x_column, y_column, title, output_path)
 
 @mcp.tool(
-    name="create_scatter_plot",
-    description="Create a scatter plot from CSV or Excel data file."
+    name="scatter_plot",
+    description="Create scatter plots from CSV or Excel data with correlation analysis and trend visualization. Supports multi-dimensional data exploration, regression lines, and statistical annotations for data relationships."
 )
-async def create_scatter_plot_tool(
+async def scatter_plot_tool(
     file_path: str,
     x_column: str,
     y_column: str,
@@ -92,26 +100,30 @@ async def create_scatter_plot_tool(
     output_path: str = "scatter_plot.png"
 ) -> dict:
     """
-    Create a scatter plot from data file.
+    Create a scatter plot from data file with advanced correlation analysis.
     
     Args:
-        file_path: Path to CSV or Excel file
-        x_column: Column name for x-axis
-        y_column: Column name for y-axis
-        title: Plot title
-        output_path: Output image file path
+        file_path: Absolute path to CSV or Excel file containing the data
+        x_column: Column name for x-axis data (numerical data for correlation analysis)
+        y_column: Column name for y-axis data (numerical data for correlation analysis)
+        title: Custom title for the plot (supports LaTeX formatting)
+        output_path: Absolute path where the plot image will be saved (supports PNG, PDF, SVG)
         
     Returns:
-        Dictionary with plot information
+        Dictionary containing:
+        - plot_info: Details about the generated scatter plot including point count and styling
+        - correlation_stats: Statistical correlation metrics and trend analysis
+        - data_summary: Statistical summary of both x and y variables
+        - file_details: Information about the output file size and location
     """
     logger.info(f"Creating scatter plot from {file_path}")
-    return mcp_handlers.create_scatter_plot_handler(file_path, x_column, y_column, title, output_path)
+    return mcp_handlers.scatter_plot_handler(file_path, x_column, y_column, title, output_path)
 
 @mcp.tool(
-    name="create_histogram",
-    description="Create a histogram from CSV or Excel data file."
+    name="histogram_plot",
+    description="Create histograms from CSV or Excel data with statistical distribution analysis. Supports density plots, normal distribution overlays, and comprehensive statistical metrics for data distribution visualization."
 )
-async def create_histogram_tool(
+async def histogram_plot_tool(
     file_path: str,
     column: str,
     bins: int = 30,
@@ -119,60 +131,72 @@ async def create_histogram_tool(
     output_path: str = "histogram.png"
 ) -> dict:
     """
-    Create a histogram from data file.
+    Create a histogram from data file with advanced statistical analysis.
     
     Args:
-        file_path: Path to CSV or Excel file
-        column: Column name for histogram
-        bins: Number of bins for histogram
-        title: Plot title
-        output_path: Output image file path
+        file_path: Absolute path to CSV or Excel file containing the data
+        column: Column name for histogram generation (numerical data)
+        bins: Number of bins for histogram (affects granularity of distribution)
+        title: Custom title for the plot (supports LaTeX formatting)
+        output_path: Absolute path where the plot image will be saved (supports PNG, PDF, SVG)
         
     Returns:
-        Dictionary with plot information
+        Dictionary containing:
+        - plot_info: Details about the generated histogram including bin information
+        - distribution_stats: Statistical metrics including mean, median, mode, and standard deviation
+        - data_summary: Comprehensive summary of the data distribution
+        - file_details: Information about the output file size and location
     """
     logger.info(f"Creating histogram from {file_path}")
-    return mcp_handlers.create_histogram_handler(file_path, column, bins, title, output_path)
+    return mcp_handlers.histogram_plot_handler(file_path, column, bins, title, output_path)
 
 @mcp.tool(
-    name="create_heatmap",
-    description="Create a heatmap from CSV or Excel data file."
+    name="heatmap_plot",
+    description="Create heatmaps from CSV or Excel data with correlation matrix analysis and color-coded data visualization. Supports hierarchical clustering, dendrograms, and advanced color mapping for multi-dimensional data exploration."
 )
-async def create_heatmap_tool(
+async def heatmap_plot_tool(
     file_path: str,
     title: str = "Heatmap",
     output_path: str = "heatmap.png"
 ) -> dict:
     """
-    Create a heatmap from data file.
+    Create a heatmap from data file with advanced correlation visualization.
     
     Args:
-        file_path: Path to CSV or Excel file
-        title: Plot title
-        output_path: Output image file path
+        file_path: Absolute path to CSV or Excel file containing numerical data
+        title: Custom title for the plot (supports LaTeX formatting)
+        output_path: Absolute path where the plot image will be saved (supports PNG, PDF, SVG)
         
     Returns:
-        Dictionary with plot information
+        Dictionary containing:
+        - plot_info: Details about the generated heatmap including matrix dimensions
+        - correlation_matrix: Full correlation matrix with statistical significance
+        - data_summary: Statistical summary of all numerical variables
+        - file_details: Information about the output file size and location
     """
     logger.info(f"Creating heatmap from {file_path}")
-    return mcp_handlers.create_heatmap_handler(file_path, title, output_path)
+    return mcp_handlers.heatmap_plot_handler(file_path, title, output_path)
 
 @mcp.tool(
-    name="get_data_info",
-    description="Get information about data file including columns, shape, and data types."
+    name="data_info",
+    description="Get comprehensive data file information including detailed schema analysis, data quality assessment, and statistical profiling. Provides thorough data exploration with column types, distributions, and data health metrics."
 )
-async def get_data_info_tool(file_path: str) -> dict:
+async def data_info_tool(file_path: str) -> dict:
     """
-    Get information about data file.
+    Get comprehensive data file information with detailed analysis.
     
     Args:
-        file_path: Path to CSV or Excel file
+        file_path: Absolute path to CSV or Excel file
         
     Returns:
-        Dictionary with data information
+        Dictionary containing:
+        - data_schema: Column names, data types, and null value analysis
+        - data_quality: Missing values, duplicates, and data consistency metrics
+        - statistical_summary: Basic statistics for numerical and categorical columns
+        - visualization_recommendations: Suggested plot types based on data characteristics
     """
     logger.info(f"Getting data info for {file_path}")
-    return mcp_handlers.get_data_info_handler(file_path)
+    return mcp_handlers.data_info_handler(file_path)
 
 def main():
     """

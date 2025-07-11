@@ -13,13 +13,13 @@ from pathlib import Path
 # Add src to path using relative path
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..', 'src', 'plot'))
 
-from server import (
-    create_line_plot_tool,
-    create_bar_plot_tool,
-    create_scatter_plot_tool,
-    create_histogram_tool,
-    create_heatmap_tool,
-    get_data_info_tool
+from mcp_handlers import (
+    line_plot_handler,
+    bar_plot_handler,
+    scatter_plot_handler,
+    histogram_plot_handler,
+    heatmap_plot_handler,
+    data_info_handler
 )
 
 
@@ -73,11 +73,11 @@ def output_dir():
 class TestDataFormats:
     """Test different data formats."""
     
-    @pytest.mark.asyncio
-    async def test_csv_format(self, csv_file):
+    
+    def test_csv_format(self, csv_file):
         """Test CSV file format support."""
         print("\n=== Testing CSV Format ===")
-        result = await get_data_info_tool(csv_file)
+        result = data_info_handler(csv_file)
         print("CSV result:", result)
         
         assert result["status"] == "success"
@@ -85,11 +85,11 @@ class TestDataFormats:
         assert "timestamp" in result["columns"]
         assert "temperature" in result["columns"]
     
-    @pytest.mark.asyncio
-    async def test_excel_format(self, excel_file):
+    
+    def test_excel_format(self, excel_file):
         """Test Excel file format support."""
         print("\n=== Testing Excel Format ===")
-        result = await get_data_info_tool(excel_file)
+        result = data_info_handler(excel_file)
         print("Excel result:", result)
         
         assert result["status"] == "success"
@@ -101,19 +101,19 @@ class TestDataFormats:
 class TestPlotWorkflow:
     """Test complete plotting workflow."""
     
-    @pytest.mark.asyncio
-    async def test_complete_analysis_workflow(self, csv_file, output_dir):
+    
+    def test_complete_analysis_workflow(self, csv_file, output_dir):
         """Test complete data analysis workflow."""
         print("\n=== Testing Complete Analysis Workflow ===")
         
         # Step 1: Get data info
-        info_result = await get_data_info_tool(csv_file)
+        info_result = data_info_handler(csv_file)
         assert info_result["status"] == "success"
         print("Data info retrieved successfully")
         
         # Step 2: Create line plot for time series
         line_plot_path = os.path.join(output_dir, "workflow_line_plot.png")
-        line_result = await create_line_plot_tool(
+        line_result = line_plot_handler(
             csv_file, "timestamp", "temperature", "Temperature Over Time", line_plot_path
         )
         assert line_result["status"] == "success"
@@ -122,7 +122,7 @@ class TestPlotWorkflow:
         
         # Step 3: Create bar plot for categorical data
         bar_plot_path = os.path.join(output_dir, "workflow_bar_plot.png")
-        bar_result = await create_bar_plot_tool(
+        bar_result = bar_plot_handler(
             csv_file, "weather_station", "temperature", "Average Temperature by Station", bar_plot_path
         )
         assert bar_result["status"] == "success"
@@ -131,7 +131,7 @@ class TestPlotWorkflow:
         
         # Step 4: Create scatter plot for correlation
         scatter_plot_path = os.path.join(output_dir, "workflow_scatter_plot.png")
-        scatter_result = await create_scatter_plot_tool(
+        scatter_result = scatter_plot_handler(
             csv_file, "temperature", "humidity", "Temperature vs Humidity", scatter_plot_path
         )
         assert scatter_result["status"] == "success"
@@ -140,7 +140,7 @@ class TestPlotWorkflow:
         
         # Step 5: Create histogram for distribution
         histogram_path = os.path.join(output_dir, "workflow_histogram.png")
-        histogram_result = await create_histogram_tool(
+        histogram_result = histogram_plot_handler(
             csv_file, "wind_speed", 25, "Wind Speed Distribution", histogram_path
         )
         assert histogram_result["status"] == "success"
@@ -149,7 +149,7 @@ class TestPlotWorkflow:
         
         # Step 6: Create heatmap for correlation matrix
         heatmap_path = os.path.join(output_dir, "workflow_heatmap.png")
-        heatmap_result = await create_heatmap_tool(
+        heatmap_result = heatmap_plot_handler(
             csv_file, "Weather Data Correlation Matrix", heatmap_path
         )
         assert heatmap_result["status"] == "success"
@@ -162,8 +162,8 @@ class TestPlotWorkflow:
 class TestErrorHandling:
     """Test error handling scenarios."""
     
-    @pytest.mark.asyncio
-    async def test_file_not_found_errors(self, output_dir):
+    
+    def test_file_not_found_errors(self, output_dir):
         """Test error handling for missing files."""
         print("\n=== Testing File Not Found Errors ===")
         
@@ -172,49 +172,49 @@ class TestErrorHandling:
         output_path = os.path.join(output_dir, "error_test.png")
         
         # Line plot
-        result = await create_line_plot_tool(nonexistent_file, "x", "y", "Test", output_path)
+        result = line_plot_handler(nonexistent_file, "x", "y", "Test", output_path)
         assert result["status"] == "error"
         print("Line plot error handling: PASS")
         
         # Bar plot
-        result = await create_bar_plot_tool(nonexistent_file, "x", "y", "Test", output_path)
+        result = bar_plot_handler(nonexistent_file, "x", "y", "Test", output_path)
         assert result["status"] == "error"
         print("Bar plot error handling: PASS")
         
         # Scatter plot
-        result = await create_scatter_plot_tool(nonexistent_file, "x", "y", "Test", output_path)
+        result = scatter_plot_handler(nonexistent_file, "x", "y", "Test", output_path)
         assert result["status"] == "error"
         print("Scatter plot error handling: PASS")
         
         # Histogram
-        result = await create_histogram_tool(nonexistent_file, "x", 10, "Test", output_path)
+        result = histogram_plot_handler(nonexistent_file, "x", 10, "Test", output_path)
         assert result["status"] == "error"
         print("Histogram error handling: PASS")
         
         # Heatmap
-        result = await create_heatmap_tool(nonexistent_file, "Test", output_path)
+        result = heatmap_plot_handler(nonexistent_file, "Test", output_path)
         assert result["status"] == "error"
         print("Heatmap error handling: PASS")
     
-    @pytest.mark.asyncio
-    async def test_invalid_column_errors(self, csv_file, output_dir):
+    
+    def test_invalid_column_errors(self, csv_file, output_dir):
         """Test error handling for invalid column names."""
         print("\n=== Testing Invalid Column Errors ===")
         
         output_path = os.path.join(output_dir, "error_test.png")
         
         # Test invalid x column
-        result = await create_line_plot_tool(csv_file, "invalid_x", "temperature", "Test", output_path)
+        result = line_plot_handler(csv_file, "invalid_x", "temperature", "Test", output_path)
         assert result["status"] == "error"
         print("Invalid x column error handling: PASS")
         
         # Test invalid y column
-        result = await create_line_plot_tool(csv_file, "timestamp", "invalid_y", "Test", output_path)
+        result = line_plot_handler(csv_file, "timestamp", "invalid_y", "Test", output_path)
         assert result["status"] == "error"
         print("Invalid y column error handling: PASS")
         
         # Test invalid histogram column
-        result = await create_histogram_tool(csv_file, "invalid_column", 10, "Test", output_path)
+        result = histogram_plot_handler(csv_file, "invalid_column", 10, "Test", output_path)
         assert result["status"] == "error"
         print("Invalid histogram column error handling: PASS")
 
@@ -222,8 +222,8 @@ class TestErrorHandling:
 class TestPerformance:
     """Test performance with larger datasets."""
     
-    @pytest.mark.asyncio
-    async def test_large_dataset_performance(self, output_dir):
+    
+    def test_large_dataset_performance(self, output_dir):
         """Test performance with larger dataset."""
         print("\n=== Testing Large Dataset Performance ===")
         
@@ -244,7 +244,7 @@ class TestPerformance:
         try:
             # Test line plot with large dataset
             line_plot_path = os.path.join(output_dir, "large_line_plot.png")
-            result = await create_line_plot_tool(
+            result = line_plot_handler(
                 large_csv_file, "x", "y", "Large Dataset Line Plot", line_plot_path
             )
             assert result["status"] == "success"
@@ -254,7 +254,7 @@ class TestPerformance:
             
             # Test histogram with large dataset
             histogram_path = os.path.join(output_dir, "large_histogram.png")
-            result = await create_histogram_tool(
+            result = histogram_plot_handler(
                 large_csv_file, "y", 50, "Large Dataset Histogram", histogram_path
             )
             assert result["status"] == "success"

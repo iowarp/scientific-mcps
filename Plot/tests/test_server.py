@@ -13,13 +13,13 @@ from pathlib import Path
 # Add src to path using relative path
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..', 'src', 'plot'))
 
-from server import (
-    create_line_plot_tool,
-    create_bar_plot_tool,
-    create_scatter_plot_tool,
-    create_histogram_tool,
-    create_heatmap_tool,
-    get_data_info_tool
+from mcp_handlers import (
+    line_plot_handler,
+    bar_plot_handler,
+    scatter_plot_handler,
+    histogram_plot_handler,
+    heatmap_plot_handler,
+    data_info_handler
 )
 
 
@@ -53,11 +53,11 @@ def output_dir():
         yield temp_dir
 
 
-@pytest.mark.asyncio
-async def test_get_data_info_tool_success(sample_csv_file):
-    """Test get_data_info_tool with valid file."""
-    print("\n=== Testing Get Data Info Tool Success ===")
-    result = await get_data_info_tool(sample_csv_file)
+
+def test_data_info_handler_success(sample_csv_file):
+    """Test data_info_handler with valid file."""
+    print("\n=== Testing Data Info Tool Success ===")
+    result = data_info_handler(sample_csv_file)
     print("Tool result:", result)
     
     assert result["status"] == "success"
@@ -68,24 +68,24 @@ async def test_get_data_info_tool_success(sample_csv_file):
     assert "region" in result["columns"]
 
 
-@pytest.mark.asyncio
-async def test_get_data_info_tool_error():
-    """Test get_data_info_tool with invalid file."""
-    print("\n=== Testing Get Data Info Tool Error ===")
-    result = await get_data_info_tool("nonexistent_file.csv")
+
+def test_data_info_handler_error():
+    """Test data_info_handler with invalid file."""
+    print("\n=== Testing Data Info Tool Error ===")
+    result = data_info_handler("nonexistent_file.csv")
     print("Error result:", result)
     
     assert result["status"] == "error"
     assert "error" in result
 
 
-@pytest.mark.asyncio
-async def test_create_line_plot_tool_success(sample_csv_file, output_dir):
-    """Test create_line_plot_tool with valid parameters."""
+
+def test_line_plot_handler_success(sample_csv_file, output_dir):
+    """Test line_plot_handler with valid parameters."""
     print("\n=== Testing Create Line Plot Tool Success ===")
     output_path = os.path.join(output_dir, "tool_line_plot.png")
     
-    result = await create_line_plot_tool(
+    result = line_plot_handler(
         sample_csv_file, "date", "sales", "Sales Over Time", output_path
     )
     print("Tool result:", result)
@@ -98,12 +98,12 @@ async def test_create_line_plot_tool_success(sample_csv_file, output_dir):
     assert os.path.exists(output_path)
 
 
-@pytest.mark.asyncio
-async def test_create_line_plot_tool_default_params(sample_csv_file):
-    """Test create_line_plot_tool with default parameters."""
+
+def test_line_plot_handler_default_params(sample_csv_file):
+    """Test line_plot_handler with default parameters."""
     print("\n=== Testing Create Line Plot Tool Default Params ===")
     
-    result = await create_line_plot_tool(sample_csv_file, "date", "sales")
+    result = line_plot_handler(sample_csv_file, "date", "sales")
     print("Tool result:", result)
     
     assert result["status"] == "success"
@@ -118,13 +118,13 @@ async def test_create_line_plot_tool_default_params(sample_csv_file):
         os.unlink("line_plot.png")
 
 
-@pytest.mark.asyncio
-async def test_create_bar_plot_tool_success(sample_csv_file, output_dir):
-    """Test create_bar_plot_tool with valid parameters."""
+
+def test_bar_plot_handler_success(sample_csv_file, output_dir):
+    """Test bar_plot_handler with valid parameters."""
     print("\n=== Testing Create Bar Plot Tool Success ===")
     output_path = os.path.join(output_dir, "tool_bar_plot.png")
     
-    result = await create_bar_plot_tool(
+    result = bar_plot_handler(
         sample_csv_file, "region", "sales", "Sales by Region", output_path
     )
     print("Tool result:", result)
@@ -137,13 +137,13 @@ async def test_create_bar_plot_tool_success(sample_csv_file, output_dir):
     assert os.path.exists(output_path)
 
 
-@pytest.mark.asyncio
-async def test_create_scatter_plot_tool_success(sample_csv_file, output_dir):
-    """Test create_scatter_plot_tool with valid parameters."""
+
+def test_scatter_plot_handler_success(sample_csv_file, output_dir):
+    """Test scatter_plot_handler with valid parameters."""
     print("\n=== Testing Create Scatter Plot Tool Success ===")
     output_path = os.path.join(output_dir, "tool_scatter_plot.png")
     
-    result = await create_scatter_plot_tool(
+    result = scatter_plot_handler(
         sample_csv_file, "sales", "profit", "Sales vs Profit", output_path
     )
     print("Tool result:", result)
@@ -156,13 +156,13 @@ async def test_create_scatter_plot_tool_success(sample_csv_file, output_dir):
     assert os.path.exists(output_path)
 
 
-@pytest.mark.asyncio
-async def test_create_histogram_tool_success(sample_csv_file, output_dir):
-    """Test create_histogram_tool with valid parameters."""
+
+def test_histogram_plot_handler_success(sample_csv_file, output_dir):
+    """Test histogram_plot_handler with valid parameters."""
     print("\n=== Testing Create Histogram Tool Success ===")
     output_path = os.path.join(output_dir, "tool_histogram.png")
     
-    result = await create_histogram_tool(
+    result = histogram_plot_handler(
         sample_csv_file, "sales", 20, "Sales Distribution", output_path
     )
     print("Tool result:", result)
@@ -175,13 +175,13 @@ async def test_create_histogram_tool_success(sample_csv_file, output_dir):
     assert os.path.exists(output_path)
 
 
-@pytest.mark.asyncio
-async def test_create_histogram_tool_default_bins(sample_csv_file, output_dir):
-    """Test create_histogram_tool with default bins parameter."""
+
+def test_histogram_plot_handler_default_bins(sample_csv_file, output_dir):
+    """Test histogram_plot_handler with default bins parameter."""
     print("\n=== Testing Create Histogram Tool Default Bins ===")
     output_path = os.path.join(output_dir, "tool_histogram_default.png")
     
-    result = await create_histogram_tool(
+    result = histogram_plot_handler(
         sample_csv_file, "sales", title="Sales Distribution", output_path=output_path
     )
     print("Tool result:", result)
@@ -194,13 +194,13 @@ async def test_create_histogram_tool_default_bins(sample_csv_file, output_dir):
     assert os.path.exists(output_path)
 
 
-@pytest.mark.asyncio
-async def test_create_heatmap_tool_success(sample_csv_file, output_dir):
-    """Test create_heatmap_tool with valid parameters."""
+
+def test_heatmap_plot_handler_success(sample_csv_file, output_dir):
+    """Test heatmap_plot_handler with valid parameters."""
     print("\n=== Testing Create Heatmap Tool Success ===")
     output_path = os.path.join(output_dir, "tool_heatmap.png")
     
-    result = await create_heatmap_tool(
+    result = heatmap_plot_handler(
         sample_csv_file, "Sales Data Correlation", output_path
     )
     print("Tool result:", result)
@@ -212,12 +212,12 @@ async def test_create_heatmap_tool_success(sample_csv_file, output_dir):
     assert os.path.exists(output_path)
 
 
-@pytest.mark.asyncio
-async def test_create_heatmap_tool_default_params(sample_csv_file):
-    """Test create_heatmap_tool with default parameters."""
+
+def test_heatmap_plot_handler_default_params(sample_csv_file):
+    """Test heatmap_plot_handler with default parameters."""
     print("\n=== Testing Create Heatmap Tool Default Params ===")
     
-    result = await create_heatmap_tool(sample_csv_file)
+    result = heatmap_plot_handler(sample_csv_file)
     print("Tool result:", result)
     
     assert result["status"] == "success"
@@ -230,13 +230,13 @@ async def test_create_heatmap_tool_default_params(sample_csv_file):
         os.unlink("heatmap.png")
 
 
-@pytest.mark.asyncio
-async def test_tool_error_handling():
+
+def test_handler_error_handling():
     """Test error handling in tools."""
     print("\n=== Testing Tool Error Handling ===")
     
     # Test with non-existent file
-    result = await create_line_plot_tool("nonexistent_file.csv", "x", "y")
+    result = line_plot_handler("nonexistent_file.csv", "x", "y")
     assert result["status"] == "error"
     assert "error" in result
     
@@ -248,7 +248,7 @@ async def test_tool_error_handling():
         csv_file = f.name
     
     try:
-        result = await create_line_plot_tool(csv_file, "invalid_column", "b")
+        result = line_plot_handler(csv_file, "invalid_column", "b")
         assert result["status"] == "error"
         assert "error" in result
     finally:
