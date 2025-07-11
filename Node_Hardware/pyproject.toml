@@ -9,6 +9,7 @@ description = "Node Hardware MCP server implementation using Model Context Proto
 readme = "README.md"
 requires-python = ">=3.10"
 dependencies = [
+  "fastmcp>=0.1.0",
   "mcp[cli]>=0.1.0",
   "pytest-asyncio>=1.0.0",
   "python-dotenv>=1.0.0",

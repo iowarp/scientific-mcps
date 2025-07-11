@@ -24,25 +24,25 @@ A comprehensive Model Context Protocol (MCP) server for hardware monitoring and 
 
 ## Capabilities
 
-1. **get_cpu_info**: Get detailed CPU information including cores, frequency, architecture, and usage statistics.
+1. **cpu_info**: Get detailed CPU information including cores, frequency, architecture, and usage statistics.
 
-2. **get_memory_info**: Retrieve comprehensive memory usage including virtual memory, swap usage, and available memory.
+2. **memory_info**: Retrieve comprehensive memory usage including virtual memory, swap usage, and available memory.
 
-3. **get_disk_info**: Get disk usage statistics, partition information, and I/O performance metrics.
+3. **disk_info**: Get disk usage statistics, partition information, and I/O performance metrics.
 
-4. **get_network_info**: Monitor network interfaces, connection statistics, and network performance data.
+4. **network_info**: Monitor network interfaces, connection statistics, and network performance data.
 
-5. **get_system_info**: Retrieve general system information including OS details, uptime, and system configuration.
+5. **system_info**: Retrieve general system information including OS details, uptime, and system configuration.
 
-6. **get_process_info**: Monitor running processes with resource usage, PIDs, and process details.
+6. **process_info**: Monitor running processes with resource usage, PIDs, and process details.
 
-7. **get_hardware_summary**: Get comprehensive hardware overview combining all system components.
+7. **hardware_summary**: Get comprehensive hardware overview combining all system components.
 
-8. **monitor_performance**: Monitor real-time performance metrics including CPU, memory, and I/O utilization.
+8. **performance_monitor**: Monitor real-time performance metrics including CPU, memory, and I/O utilization.
 
-9. **get_gpu_info**: Get GPU information and statistics where available.
+9. **gpu_info**: Get GPU information and statistics where available.
 
-10. **get_sensor_info**: Access temperature sensors and hardware monitoring data.
+10. **sensor_info**: Access temperature sensors and hardware monitoring data.
 
 ---
 
@@ -142,34 +142,34 @@ claude add mcp node-hardware -- uv --directory ~/scientific-mcps/Node_Hardware r
 
    ```python
    # Get detailed CPU specifications and current usage
-   cpu_info = get_cpu_info()
+   cpu_info = cpu_info()
    ```
 
 2. **Monitor system performance in real-time**
 
    ```python
    # Get current performance metrics
-   performance = monitor_performance()
+   performance = performance_monitor()
    ```
 
 3. **Analyze memory usage and availability**
 
    ```python
    # Get detailed memory statistics
-   memory_info = get_memory_info()
+   memory_info = memory_info()
    
    # Get comprehensive hardware overview
-   hardware_summary = get_hardware_summary()
+   hardware_summary = hardware_summary()
    ```
 
 4. **Monitor running processes and resource usage**
 
    ```python
    # Get running process information
-   processes = get_process_info()
+   processes = process_info()
    
    # Get disk usage and I/O statistics
-   disk_info = get_disk_info()
+   disk_info = disk_info()
    ```
 
 **For detailed examples and use cases, see the [capability_test.py](capability_test.py) and [demo.py](demo.py) files.**

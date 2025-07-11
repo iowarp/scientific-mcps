@@ -6,7 +6,7 @@ Provides hardware information retrieval, system monitoring, and performance metr
 import os
 import sys
 import json
-from mcp.server.fastmcp import FastMCP
+from fastmcp import FastMCP
 from dotenv import load_dotenv
 import logging
 
@@ -20,16 +20,19 @@ sys.path.insert(0, os.path.dirname(__file__))
 # Load environment variables
 load_dotenv()
 
-import mcp_handlers
+from . import mcp_handlers
 
 # Initialize MCP server
-mcp = FastMCP("NodeHardwareMCP")
+mcp = FastMCP("NodeHardwareServer")
+
+# Export for tests
+app = mcp
 
 @mcp.tool(
-    name="get_cpu_info",
+    name="cpu_info",
     description="Get comprehensive CPU information including processor architecture, core counts, frequencies, cache sizes, and performance capabilities. Provides detailed insights into CPU specifications, instruction sets, and thermal characteristics."
 )
-async def get_cpu_info_tool() -> dict:
+async def cpu_info_tool() -> dict:
     """
     Get comprehensive CPU information and specifications.
     
@@ -43,14 +46,14 @@ async def get_cpu_info_tool() -> dict:
         - thermal_info: Temperature readings and thermal design power (TDP)
     """
     logger.info("Getting CPU information")
-    return mcp_handlers.get_cpu_info_handler()
+    return mcp_handlers.cpu_info_handler()
 
 
 @mcp.tool(
-    name="get_memory_info",
+    name="memory_info",
     description="Get comprehensive memory information including total capacity, available memory, usage statistics, swap information, and memory performance metrics. Provides detailed insights into RAM specifications, utilization patterns, and system memory health."
 )
-async def get_memory_info_tool() -> dict:
+async def memory_info_tool() -> dict:
     """
     Get comprehensive memory information and statistics.
     
@@ -64,14 +67,14 @@ async def get_memory_info_tool() -> dict:
         - memory_health: Error rates and stability indicators
     """
     logger.info("Getting memory information")
-    return mcp_handlers.get_memory_info_handler()
+    return mcp_handlers.memory_info_handler()
 
 
 @mcp.tool(
-    name="get_disk_info",
+    name="disk_info",
     description="Get comprehensive disk and storage information including disk usage, mount points, file system types, I/O statistics, and storage device specifications. Provides detailed insights into storage capacity, performance, and health metrics."
 )
-async def get_disk_info_tool() -> dict:
+async def disk_info_tool() -> dict:
     """
     Get comprehensive disk and storage information.
     
@@ -85,14 +88,14 @@ async def get_disk_info_tool() -> dict:
         - file_system_info: File system types, features, and configuration
     """
     logger.info("Getting disk information")
-    return mcp_handlers.get_disk_info_handler()
+    return mcp_handlers.disk_info_handler()
 
 
 @mcp.tool(
-    name="get_network_info",
+    name="network_info",
     description="Get comprehensive network information including interface configurations, bandwidth statistics, connection details, and network performance metrics. Provides detailed insights into network adapters, protocols, and communication patterns."
 )
-async def get_network_info_tool() -> dict:
+async def network_info_tool() -> dict:
     """
     Get comprehensive network information and statistics.
     
@@ -106,14 +109,14 @@ async def get_network_info_tool() -> dict:
         - protocol_info: Supported protocols and network stack information
     """
     logger.info("Getting network information")
-    return mcp_handlers.get_network_info_handler()
+    return mcp_handlers.network_info_handler()
 
 
 @mcp.tool(
-    name="get_system_info",
+    name="system_info",
     description="Get comprehensive system information including operating system details, hardware architecture, boot information, system uptime, and environmental metrics. Provides detailed insights into system configuration, performance, and operational status."
 )
-async def get_system_info_tool() -> dict:
+async def system_info_tool() -> dict:
     """
     Get comprehensive system information and operational metrics.
     
@@ -127,14 +130,14 @@ async def get_system_info_tool() -> dict:
         - system_health: Error logs, stability indicators, and diagnostic information
     """
     logger.info("Getting system information")
-    return mcp_handlers.get_system_info_handler()
+    return mcp_handlers.system_info_handler()
 
 
 @mcp.tool(
-    name="get_process_info",
+    name="process_info",
     description="Get comprehensive running process information with detailed resource usage analysis and process monitoring capabilities. Provides insights into CPU, memory, and I/O utilization patterns with process hierarchy and performance metrics."
 )
-async def get_process_info_tool(limit: int = 10) -> dict:
+async def process_info_tool(limit: int = 10) -> dict:
     """
     Get comprehensive process information with detailed resource analysis.
     
@@ -149,14 +152,14 @@ async def get_process_info_tool(limit: int = 10) -> dict:
         - performance_insights: Resource bottlenecks and optimization recommendations
     """
     logger.info(f"Getting process information (limit: {limit})")
-    return mcp_handlers.get_process_info_handler(limit)
+    return mcp_handlers.process_info_handler(limit)
 
 
 @mcp.tool(
-    name="get_hardware_summary",
+    name="hardware_summary",
     description="Get a comprehensive hardware summary with integrated analysis of all system components including CPU, memory, disk, network, and peripheral devices. Provides holistic system overview with performance correlations and optimization insights."
 )
-async def get_hardware_summary_tool() -> dict:
+async def hardware_summary_tool() -> dict:
     """
     Get comprehensive hardware summary with integrated system analysis.
     
@@ -168,7 +171,7 @@ async def get_hardware_summary_tool() -> dict:
         - optimization_recommendations: System-wide optimization suggestions
     """
     logger.info("Getting hardware summary")
-    return mcp_handlers.get_hardware_summary_handler()
+    return mcp_handlers.hardware_summary_handler()
 
 
 @mcp.tool(
@@ -190,14 +193,14 @@ async def monitor_performance_tool(duration: int = 5) -> dict:
         - anomaly_detection: Unusual behavior and performance spikes
     """
     logger.info(f"Monitoring performance for {duration} seconds")
-    return mcp_handlers.monitor_performance_handler(duration)
+    return mcp_handlers.performance_monitor_handler(duration)
 
 
 @mcp.tool(
-    name="get_gpu_info",
+    name="gpu_info",
     description="Get comprehensive GPU information including graphics card specifications, memory usage, compute capabilities, and performance metrics. Provides detailed insights into GPU hardware, driver information, and utilization patterns for graphics and compute workloads."
 )
-async def get_gpu_info_tool() -> dict:
+async def gpu_info_tool() -> dict:
     """
     Get comprehensive GPU information with detailed specifications and performance data.
     
@@ -209,14 +212,14 @@ async def get_gpu_info_tool() -> dict:
         - compute_capabilities: CUDA cores, OpenCL support, and parallel processing specs
     """
     logger.info("Getting GPU information")
-    return mcp_handlers.get_gpu_info_handler()
+    return mcp_handlers.gpu_info_handler()
 
 
 @mcp.tool(
-    name="get_sensor_info",
+    name="sensor_info",
     description="Get comprehensive temperature and sensor information including thermal monitoring, fan speeds, voltage readings, and environmental metrics. Provides detailed insights into system health monitoring and environmental conditions."
 )
-async def get_sensor_info_tool() -> dict:
+async def sensor_info_tool() -> dict:
     """
     Get comprehensive sensor information with detailed environmental monitoring.
     
@@ -228,7 +231,7 @@ async def get_sensor_info_tool() -> dict:
         - environmental_data: Humidity, pressure, and ambient conditions
     """
     logger.info("Getting sensor information")
-    return mcp_handlers.get_sensor_info_handler()
+    return mcp_handlers.sensor_info_handler()
 
 
 def main():
