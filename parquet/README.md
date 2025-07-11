@@ -28,11 +28,11 @@ A comprehensive Model Context Protocol (MCP) server for Parquet file operations 
 
 2. **write_parquet**: Write data to Parquet files with configurable compression algorithms.
 
-3. **get_parquet_schema**: Extract detailed schema information including column types and metadata.
+3. **parquet_schema**: Extract detailed schema information including column types and metadata.
 
-4. **get_parquet_metadata**: Retrieve comprehensive file metadata including row counts and compression stats.
+4. **parquet_metadata**: Retrieve comprehensive file metadata including row counts and compression stats.
 
-5. **get_column_statistics**: Calculate statistical measures for specified columns (min, max, mean, std, etc.).
+5. **column_statistics**: Calculate statistical measures for specified columns (min, max, mean, std, etc.).
 
 6. **check_data_quality**: Perform data quality assessment including null counts and uniqueness checks.
 
@@ -44,7 +44,7 @@ A comprehensive Model Context Protocol (MCP) server for Parquet file operations 
 
 10. **convert_json_to_parquet**: Import JSON data into Parquet format with automatic schema detection.
 
-11. **get_compression_stats**: Analyze compression efficiency and storage statistics.
+11. **compression_stats**: Analyze compression efficiency and storage statistics.
 
 ---
 
@@ -149,7 +149,7 @@ claude add mcp parquet -- uv --directory ~/scientific-mcps/parquet run parquet-m
 
    ```python
    # Analyze sales data statistics
-   stats = get_column_statistics("/data/sales.parquet", columns=["revenue", "quantity"])
+   stats = column_statistics("/data/sales.parquet", columns=["revenue", "quantity"])
    ```
 
 3. **Convert formats and analyze data quality**
@@ -164,8 +164,8 @@ claude add mcp parquet -- uv --directory ~/scientific-mcps/parquet run parquet-m
 
    ```python
    # Inspect file structure and metadata
-   schema = get_parquet_schema("/data/dataset.parquet")
-   metadata = get_parquet_metadata("/data/dataset.parquet")
+   schema = parquet_schema("/data/dataset.parquet")
+   metadata = parquet_metadata("/data/dataset.parquet")
    ```
 
 **For detailed examples and use cases, see the [capability_test.py](capability_test.py) file.**

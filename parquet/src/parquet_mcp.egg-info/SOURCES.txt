@@ -15,5 +15,6 @@ src/parquet_mcp.egg-info/entry_points.txt
 src/parquet_mcp.egg-info/requires.txt
 src/parquet_mcp.egg-info/top_level.txt
 tests/test_capabilities.py
-tests/test_handlers.py
 tests/test_integration.py
+tests/test_mcp_handlers.py
+tests/test_server.py

@@ -80,7 +80,7 @@ def write_parquet_handler(data: Any, file_path: str, compression: str = "snappy"
         }
 
 
-def get_schema_handler(file_path: str) -> dict:
+def schema_handler(file_path: str) -> dict:
     """
     Handler for getting Parquet file schema information.
     
@@ -95,23 +95,23 @@ def get_schema_handler(file_path: str) -> dict:
         if result.get("success"):
             return {
                 "content": [{"text": json.dumps(result, indent=2)}],
-                "_meta": {"tool": "get_schema", "success": True}
+                "_meta": {"tool": "schema", "success": True}
             }
         else:
             return {
                 "content": [{"text": json.dumps(result)}],
-                "_meta": {"tool": "get_schema", "error": result.get("error_type", "Unknown")},
+                "_meta": {"tool": "schema", "error": result.get("error_type", "Unknown")},
                 "isError": True
             }
     except Exception as e:
         return {
             "content": [{"text": json.dumps({"error": str(e)})}],
-            "_meta": {"tool": "get_schema", "error": type(e).__name__},
+            "_meta": {"tool": "schema", "error": type(e).__name__},
             "isError": True
         }
 
 
-def get_metadata_handler(file_path: str) -> dict:
+def metadata_handler(file_path: str) -> dict:
     """
     Handler for extracting file metadata.
     
@@ -126,23 +126,23 @@ def get_metadata_handler(file_path: str) -> dict:
         if result.get("success"):
             return {
                 "content": [{"text": json.dumps(result, indent=2)}],
-                "_meta": {"tool": "get_metadata", "success": True}
+                "_meta": {"tool": "metadata", "success": True}
             }
         else:
             return {
                 "content": [{"text": json.dumps(result)}],
-                "_meta": {"tool": "get_metadata", "error": result.get("error_type", "Unknown")},
+                "_meta": {"tool": "metadata", "error": result.get("error_type", "Unknown")},
                 "isError": True
             }
     except Exception as e:
         return {
             "content": [{"text": json.dumps({"error": str(e)})}],
-            "_meta": {"tool": "get_metadata", "error": type(e).__name__},
+            "_meta": {"tool": "metadata", "error": type(e).__name__},
             "isError": True
         }
 
 
-def get_statistics_handler(file_path: str, columns: Optional[List[str]] = None) -> dict:
+def statistics_handler(file_path: str, columns: Optional[List[str]] = None) -> dict:
     """
     Handler for getting column statistics.
     
@@ -158,18 +158,18 @@ def get_statistics_handler(file_path: str, columns: Optional[List[str]] = None) 
         if result.get("success"):
             return {
                 "content": [{"text": json.dumps(result, indent=2)}],
-                "_meta": {"tool": "get_statistics", "success": True}
+                "_meta": {"tool": "statistics", "success": True}
             }
         else:
             return {
                 "content": [{"text": json.dumps(result)}],
-                "_meta": {"tool": "get_statistics", "error": result.get("error_type", "Unknown")},
+                "_meta": {"tool": "statistics", "error": result.get("error_type", "Unknown")},
                 "isError": True
             }
     except Exception as e:
         return {
             "content": [{"text": json.dumps({"error": str(e)})}],
-            "_meta": {"tool": "get_statistics", "error": type(e).__name__},
+            "_meta": {"tool": "statistics", "error": type(e).__name__},
             "isError": True
         }
 
@@ -267,7 +267,7 @@ def convert_format_handler(input_path: str, output_path: str,
         }
 
 
-def get_compression_handler(file_path: str) -> dict:
+def compression_handler(file_path: str) -> dict:
     """
     Handler for getting compression statistics.
     
@@ -282,17 +282,17 @@ def get_compression_handler(file_path: str) -> dict:
         if result.get("success"):
             return {
                 "content": [{"text": json.dumps(result, indent=2)}],
-                "_meta": {"tool": "get_compression", "success": True}
+                "_meta": {"tool": "compression", "success": True}
             }
         else:
             return {
                 "content": [{"text": json.dumps(result)}],
-                "_meta": {"tool": "get_compression", "error": result.get("error_type", "Unknown")},
+                "_meta": {"tool": "compression", "error": result.get("error_type", "Unknown")},
                 "isError": True
             }
     except Exception as e:
         return {
             "content": [{"text": json.dumps({"error": str(e)})}],
-            "_meta": {"tool": "get_compression", "error": type(e).__name__},
+            "_meta": {"tool": "compression", "error": type(e).__name__},
             "isError": True
         }

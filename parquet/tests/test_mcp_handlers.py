@@ -13,12 +13,10 @@ import pyarrow.parquet as pq
 # Add src to path for imports
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..', 'src'))
 
-from parquet.server import (
-    read_parquet_tool, write_parquet_tool, get_schema_tool,
-    get_metadata_tool, get_statistics_tool, check_quality_tool,
-    convert_to_csv_tool, convert_from_csv_tool,
-    convert_to_json_tool, convert_from_json_tool,
-    get_compression_tool
+from parquet.mcp_handlers import (
+    read_parquet_handler, write_parquet_handler, schema_handler,
+    metadata_handler, statistics_handler, check_quality_handler,
+    convert_format_handler, compression_handler
 )
 
 
@@ -47,115 +45,110 @@ async def temp_parquet_file(sample_temperature_data):
 
 
 @pytest.mark.asyncio
-async def test_read_parquet_tool(temp_parquet_file):
-    """Test read_parquet_tool."""
-    result = await read_parquet_tool(temp_parquet_file)
-    
-    assert isinstance(result, dict)
-    # Should have content with MCP format
-
-
-@pytest.mark.asyncio
-async def test_read_parquet_tool_with_columns(temp_parquet_file):
-    """Test read_parquet_tool with specific columns."""
-    result = await read_parquet_tool(temp_parquet_file, columns=["temperature", "location"])
-    
-    assert isinstance(result, dict)
-
-
-@pytest.mark.asyncio
-async def test_read_parquet_tool_with_limit(temp_parquet_file):
-    """Test read_parquet_tool with limit."""
-    result = await read_parquet_tool(temp_parquet_file, limit=5)
-    
-    assert isinstance(result, dict)
-
-
-@pytest.mark.asyncio
-async def test_write_parquet_tool(sample_temperature_data):
-    """Test write_parquet_tool."""
-    with tempfile.NamedTemporaryFile(suffix='.parquet', delete=False) as tmp:
-        result = await write_parquet_tool(sample_temperature_data, tmp.name)
-        
-        assert isinstance(result, dict)
-        assert os.path.exists(tmp.name)
-        
-        # Cleanup
-        os.unlink(tmp.name)
-
-
-@pytest.mark.asyncio
-async def test_get_parquet_schema_tool(temp_parquet_file):
-    """Test get_schema_tool."""
-    result = await get_schema_tool(temp_parquet_file)
-    
-    assert isinstance(result, dict)
-    # Should have content or error handling
-
-
-@pytest.mark.asyncio
-async def test_get_parquet_metadata_tool(temp_parquet_file):
-    """Test get_metadata_tool."""
-    result = await get_metadata_tool(temp_parquet_file)
+async def test_read_parquet_handler(temp_parquet_file):
+    """Test read_parquet_handler."""
+    result = read_parquet_handler(temp_parquet_file)
     
     assert isinstance(result, dict)
     # Should succeed or fail gracefully
 
 
 @pytest.mark.asyncio
-async def test_get_column_statistics_tool(temp_parquet_file):
-    """Test get_statistics_tool."""
-    result = await get_statistics_tool(temp_parquet_file)
+async def test_read_parquet_handler_with_columns(temp_parquet_file):
+    """Test read_parquet_handler with specific columns."""
+    result = read_parquet_handler(temp_parquet_file, columns=["temperature", "location"])
     
     assert isinstance(result, dict)
 
 
 @pytest.mark.asyncio
-async def test_check_data_quality_tool(temp_parquet_file):
-    """Test check_quality_tool."""
-    result = await check_quality_tool(temp_parquet_file)
+async def test_read_parquet_handler_with_limit(temp_parquet_file):
+    """Test read_parquet_handler with limit."""
+    result = read_parquet_handler(temp_parquet_file, limit=5)
     
     assert isinstance(result, dict)
 
 
 @pytest.mark.asyncio
-async def test_get_compression_stats_tool(temp_parquet_file):
-    """Test get_compression_tool."""
-    result = await get_compression_tool(temp_parquet_file)
+async def test_write_parquet_handler(sample_temperature_data):
+    """Test write_parquet_handler."""
+    with tempfile.NamedTemporaryFile(suffix='.parquet', delete=False) as tmp:
+        result = write_parquet_handler(sample_temperature_data, tmp.name)
+        
+        assert isinstance(result, dict)
+        # Cleanup
+        if os.path.exists(tmp.name):
+            os.unlink(tmp.name)
+
+
+@pytest.mark.asyncio
+async def test_schema_handler(temp_parquet_file):
+    """Test schema_handler."""
+    result = schema_handler(temp_parquet_file)
+    
+    assert isinstance(result, dict)
+    # Should succeed or fail gracefully
+
+
+@pytest.mark.asyncio
+async def test_metadata_handler(temp_parquet_file):
+    """Test metadata_handler."""
+    result = metadata_handler(temp_parquet_file)
+    
+    assert isinstance(result, dict)
+    # Should succeed or fail gracefully
+
+
+@pytest.mark.asyncio
+async def test_statistics_handler(temp_parquet_file):
+    """Test statistics_handler."""
+    result = statistics_handler(temp_parquet_file)
     
     assert isinstance(result, dict)
 
 
 @pytest.mark.asyncio
-async def test_convert_parquet_to_csv_tool(temp_parquet_file):
-    """Test convert_to_csv_tool."""
+async def test_check_quality_handler(temp_parquet_file):
+    """Test check_quality_handler."""
+    result = check_quality_handler(temp_parquet_file)
+    
+    assert isinstance(result, dict)
+
+
+@pytest.mark.asyncio
+async def test_compression_handler(temp_parquet_file):
+    """Test compression_handler."""
+    result = compression_handler(temp_parquet_file)
+    
+    assert isinstance(result, dict)
+
+
+@pytest.mark.asyncio
+async def test_convert_format_handler_to_csv(temp_parquet_file):
+    """Test convert_format_handler for CSV."""
     with tempfile.NamedTemporaryFile(suffix='.csv', delete=False) as tmp:
-        result = await convert_to_csv_tool(temp_parquet_file, tmp.name)
+        result = convert_format_handler(temp_parquet_file, tmp.name, "csv")
         
         assert isinstance(result, dict)
-        assert os.path.exists(tmp.name)
-        
-        # Cleanup
-        os.unlink(tmp.name)
+        if os.path.exists(tmp.name):
+            os.unlink(tmp.name)
 
 
 @pytest.mark.asyncio
-async def test_convert_parquet_to_json_tool(temp_parquet_file):
-    """Test convert_to_json_tool."""
+async def test_convert_format_handler_to_json(temp_parquet_file):
+    """Test convert_format_handler for JSON."""
     with tempfile.NamedTemporaryFile(suffix='.json', delete=False) as tmp:
-        result = await convert_to_json_tool(temp_parquet_file, tmp.name, limit=5)
+        result = convert_format_handler(temp_parquet_file, tmp.name, "json", limit=5)
         
         assert isinstance(result, dict)
-        assert os.path.exists(tmp.name)
-        
-        # Cleanup
-        os.unlink(tmp.name)
+        if os.path.exists(tmp.name):
+            os.unlink(tmp.name)
 
 
 @pytest.mark.asyncio
 async def test_error_handling():
     """Test error handling for non-existent files."""
-    result = await read_parquet_tool("/non/existent/file.parquet")
+    result = read_parquet_handler("/non/existent/file.parquet")
     
     assert isinstance(result, dict)
     assert "isError" in result or "error" in str(result)

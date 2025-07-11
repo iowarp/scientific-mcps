@@ -7,7 +7,7 @@ import os
 import sys
 import json
 import argparse
-from mcp.server.fastmcp import FastMCP
+from fastmcp import FastMCP
 from dotenv import load_dotenv
 import logging
 from typing import Optional, List, Any
@@ -25,7 +25,7 @@ load_dotenv()
 from . import mcp_handlers
 
 # Initialize MCP server
-mcp = FastMCP("ParquetMCP")
+mcp = FastMCP("ParquetServer")
 
 @mcp.tool(
     name="read_parquet",
@@ -100,10 +100,10 @@ async def write_parquet_tool(
 
 
 @mcp.tool(
-    name="get_parquet_schema",
+    name="parquet_schema",
     description="Extract detailed schema information from a Parquet file including column names, data types, nullable constraints, and nested structure details for complex data types."
 )
-async def get_schema_tool(file_path: str) -> dict:
+async def parquet_schema_tool(file_path: str) -> dict:
     """
     Get comprehensive schema information from a Parquet file.
     
@@ -118,14 +118,14 @@ async def get_schema_tool(file_path: str) -> dict:
         - data_types: Detailed type information for each column
     """
     logger.info(f"Getting schema for: {file_path}")
-    return mcp_handlers.get_schema_handler(file_path)
+    return mcp_handlers.schema_handler(file_path)
 
 
 @mcp.tool(
-    name="get_parquet_metadata",
+    name="parquet_metadata",
     description="Extract comprehensive metadata from a Parquet file including file size, row groups, column chunks, compression statistics, and encoding information for performance analysis."
 )
-async def get_metadata_tool(file_path: str) -> dict:
+async def parquet_metadata_tool(file_path: str) -> dict:
     """
     Get detailed metadata from a Parquet file.
     
@@ -140,14 +140,14 @@ async def get_metadata_tool(file_path: str) -> dict:
         - performance_stats: Metrics for optimization analysis
     """
     logger.info(f"Getting metadata for: {file_path}")
-    return mcp_handlers.get_metadata_handler(file_path)
+    return mcp_handlers.metadata_handler(file_path)
 
 
 @mcp.tool(
-    name="get_column_statistics",
+    name="column_statistics",
     description="Calculate detailed statistics for columns in a Parquet file including min/max values, null counts, distinct value counts, and data distribution metrics for numerical and categorical columns."
 )
-async def get_statistics_tool(
+async def column_statistics_tool(
     file_path: str,
     columns: Optional[List[str]] = None
 ) -> dict:
@@ -166,14 +166,14 @@ async def get_statistics_tool(
         - data_quality: Null counts and data completeness metrics
     """
     logger.info(f"Getting statistics for: {file_path}")
-    return mcp_handlers.get_statistics_handler(file_path, columns)
+    return mcp_handlers.statistics_handler(file_path, columns)
 
 
 @mcp.tool(
     name="check_data_quality",
     description="Perform comprehensive data quality checks on a Parquet file including null value analysis, duplicate detection, data type validation, and consistency checks across columns."
 )
-async def check_quality_tool(file_path: str) -> dict:
+async def check_data_quality_tool(file_path: str) -> dict:
     """
     Check data quality of a Parquet file.
     
@@ -195,7 +195,7 @@ async def check_quality_tool(file_path: str) -> dict:
     name="convert_parquet_to_csv",
     description="Convert Parquet files to CSV format with optional column selection and row limiting. Maintains data integrity while providing human-readable output format."
 )
-async def convert_to_csv_tool(
+async def convert_parquet_to_csv_tool(
     parquet_path: str,
     csv_path: str,
     columns: Optional[List[str]] = None,
@@ -227,7 +227,7 @@ async def convert_to_csv_tool(
     name="convert_csv_to_parquet",
     description="Convert CSV files to Parquet format with configurable compression algorithms. Optimizes storage space and query performance while preserving data types and structure."
 )
-async def convert_from_csv_tool(
+async def convert_csv_to_parquet_tool(
     csv_path: str,
     parquet_path: str,
     compression: str = "snappy"
@@ -257,7 +257,7 @@ async def convert_from_csv_tool(
     name="convert_parquet_to_json",
     description="Convert Parquet files to JSON format with flexible output orientations. Supports various JSON structures including records, indexed, and nested formats for different use cases."
 )
-async def convert_to_json_tool(
+async def convert_parquet_to_json_tool(
     parquet_path: str,
     json_path: str,
     columns: Optional[List[str]] = None,
@@ -322,10 +322,10 @@ async def convert_from_json_tool(
 
 
 @mcp.tool(
-    name="get_compression_stats",
+    name="compression_stats",
     description="Get detailed compression statistics and efficiency metrics for a Parquet file including compression ratios, encoded sizes, and performance impact analysis for different compression algorithms."
 )
-async def get_compression_tool(file_path: str) -> dict:
+async def compression_stats_tool(file_path: str) -> dict:
     """
     Get compression statistics for a Parquet file.
     
@@ -340,7 +340,7 @@ async def get_compression_tool(file_path: str) -> dict:
         - algorithm_comparison: Comparative analysis of compression options
     """
     logger.info(f"Getting compression stats for: {file_path}")
-    return mcp_handlers.get_compression_handler(file_path)
+    return mcp_handlers.compression_handler(file_path)
 
 
 def main():

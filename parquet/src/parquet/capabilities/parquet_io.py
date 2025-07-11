@@ -43,14 +43,32 @@ def read_parquet_file(file_path: str, columns: Optional[List[str]] = None,
         # Convert to pandas for easier JSON serialization
         df = table.to_pandas()
         
-        # Convert any datetime/timestamp columns to strings for JSON serialization
+        # Convert any datetime/timestamp/date columns to strings for JSON serialization
         for col in df.columns:
             if pd.api.types.is_datetime64_any_dtype(df[col]):
                 df[col] = df[col].astype(str)
+            elif pd.api.types.is_object_dtype(df[col]):
+                # Check if object column contains date/datetime objects
+                if len(df[col].dropna()) > 0:
+                    first_val = df[col].dropna().iloc[0]
+                    if isinstance(first_val, (pd.Timestamp, pd.Timedelta, pd.Period)):
+                        df[col] = df[col].astype(str)
+        
+        # Additional safety: ensure all data is JSON serializable
+        try:
+            data_dict = df.to_dict(orient='records')
+            # Test serialization to catch any remaining issues
+            json.dumps(data_dict[:1])  # Test with first record
+        except (TypeError, ValueError) as e:
+            # If serialization fails, convert all object columns to strings
+            for col in df.columns:
+                if pd.api.types.is_object_dtype(df[col]):
+                    df[col] = df[col].astype(str)
+            data_dict = df.to_dict(orient='records')
         
         return {
             "success": True,
-            "data": df.to_dict(orient='records'),
+            "data": data_dict,
             "schema": {col: str(table.schema.field(col).type) for col in table.column_names},
             "num_rows": len(df),
             "num_columns": len(df.columns),
