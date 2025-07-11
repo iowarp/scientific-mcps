@@ -2,7 +2,6 @@ README.md
 pyproject.toml
 src/plot/__init__.py
 src/plot/mcp_handlers.py
-src/plot/mcp_handlers_new.py
 src/plot/server.py
 src/plot/capabilities/__init__.py
 src/plot/capabilities/plot_capabilities.py
