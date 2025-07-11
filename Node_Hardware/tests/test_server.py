@@ -1,6 +1,5 @@
 """
-Integration tests for Node Hardware MCP Server.
-Tests the server integration and MCP protocol compliance.
+Integration tests for Node Hardware MCP server integration and MCP protocol compliance.
 """
 import pytest
 import asyncio
@@ -18,122 +17,152 @@ async def test_server_tools():
     print("\n=== Testing Server Tools ===")
     
     # Import the FastMCP instance
-    from server import mcp
+    from node_hardware.server import app
     
     # Check if tools are registered
-    tools = [
-        "get_cpu_info",
-        "get_memory_info",
-        "get_disk_info", 
-        "get_network_info",
-        "get_system_info",
-        "get_process_info",
-        "get_hardware_summary",
-        "monitor_performance",
-        "get_gpu_info",
-        "get_sensor_info"
+    expected_tools = [
+        "cpu_info",
+        "memory_info",
+        "disk_info", 
+        "network_info",
+        "system_info",
+        "process_info",
+        "hardware_summary",
+        "performance_monitor",
+        "gpu_info",
+        "sensor_info"
     ]
     
     # This is a basic check - in a real MCP test we'd use the protocol
-    print(f"Expected tools: {tools}")
-    print(" Server tools test passed")
+    print(f"Expected tools: {expected_tools}")
+    print("✓ Server tools test passed")
 
 
 @pytest.mark.asyncio
 async def test_mcp_tool_cpu_info():
-    """Test CPU info tool via MCP."""
+    """Test CPU info tool via MCP handler."""
     print("\n=== Testing MCP CPU Info Tool ===")
     
     try:
-        from server import get_cpu_info_tool
+        from node_hardware.mcp_handlers import cpu_info_handler
         
-        result = await get_cpu_info_tool()
+        result = cpu_info_handler()
         print("CPU Info Tool Result:", result)
         
-        assert 'logical_cores' in result
-        assert 'physical_cores' in result
-        assert isinstance(result['logical_cores'], int)
-        print(" MCP CPU info tool test passed")
+        # Check that the result has the expected structure
+        assert 'content' in result
+        assert len(result['content']) > 0
+        
+        # Parse the actual data to verify it contains expected fields
+        data = json.loads(result['content'][0]['text'])
+        assert 'logical_cores' in data
+        assert 'physical_cores' in data
+        assert isinstance(data['logical_cores'], int)
+        print("✓ MCP CPU info tool test passed")
     except Exception as e:
-        print(f" Test failed: {e}")
+        print(f"✗ Test failed: {e}")
         raise
 
 
 @pytest.mark.asyncio
 async def test_mcp_tool_memory_info():
-    """Test memory info tool via MCP."""
+    """Test memory info tool via MCP handler."""
     print("\n=== Testing MCP Memory Info Tool ===")
     
     try:
-        from server import get_memory_info_tool
+        from node_hardware.mcp_handlers import memory_info_handler
         
-        result = await get_memory_info_tool()
+        result = memory_info_handler()
         print("Memory Info Tool Result:", result)
         
-        assert 'virtual_memory' in result
-        assert 'swap_memory' in result
-        print(" MCP memory info tool test passed")
+        # Check that the result has the expected structure
+        assert 'content' in result
+        assert len(result['content']) > 0
+        
+        # Parse the actual data to verify it contains expected fields
+        data = json.loads(result['content'][0]['text'])
+        assert 'virtual_memory' in data
+        assert 'swap_memory' in data
+        print("✓ MCP memory info tool test passed")
     except Exception as e:
-        print(f" Test failed: {e}")
+        print(f"✗ Test failed: {e}")
         raise
 
 
 @pytest.mark.asyncio
 async def test_mcp_tool_hardware_summary():
-    """Test hardware summary tool via MCP."""
+    """Test hardware summary tool via MCP handler."""
     print("\n=== Testing MCP Hardware Summary Tool ===")
     
     try:
-        from server import get_hardware_summary_tool
+        from node_hardware.mcp_handlers import hardware_summary_handler
         
-        result = await get_hardware_summary_tool()
+        result = hardware_summary_handler()
         print("Hardware Summary Tool Result:", result)
         
-        assert 'summary' in result
-        assert 'detailed' in result
-        print(" MCP hardware summary tool test passed")
+        # Check that the result has the expected structure
+        assert 'content' in result
+        assert len(result['content']) > 0
+        
+        # Parse the actual data to verify it contains expected fields
+        data = json.loads(result['content'][0]['text'])
+        assert 'summary' in data
+        assert 'detailed' in data
+        print("✓ MCP hardware summary tool test passed")
     except Exception as e:
-        print(f" Test failed: {e}")
+        print(f"✗ Test failed: {e}")
         raise
 
 
 @pytest.mark.asyncio
 async def test_mcp_tool_process_info():
-    """Test process info tool via MCP."""
+    """Test process info tool via MCP handler."""
     print("\n=== Testing MCP Process Info Tool ===")
     
     try:
-        from server import get_process_info_tool
+        from node_hardware.mcp_handlers import process_info_handler
         
-        result = await get_process_info_tool(limit=5)
+        result = process_info_handler(limit=5)
         print("Process Info Tool Result:", result)
         
-        assert 'processes' in result
-        assert 'total_processes' in result
-        assert len(result['processes']) <= 5
-        print(" MCP process info tool test passed")
+        # Check that the result has the expected structure
+        assert 'content' in result
+        assert len(result['content']) > 0
+        
+        # Parse the actual data to verify it contains expected fields
+        data = json.loads(result['content'][0]['text'])
+        assert 'processes' in data
+        assert 'total_processes' in data
+        assert len(data['processes']) <= 5
+        print("✓ MCP process info tool test passed")
     except Exception as e:
-        print(f" Test failed: {e}")
+        print(f"✗ Test failed: {e}")
         raise
 
 
 @pytest.mark.asyncio
 async def test_mcp_tool_performance_monitor():
-    """Test performance monitor tool via MCP."""
+    """Test performance monitor tool via MCP handler."""
     print("\n=== Testing MCP Performance Monitor Tool ===")
     
     try:
-        from server import monitor_performance_tool
+        from node_hardware.mcp_handlers import performance_monitor_handler
         
-        result = await monitor_performance_tool(duration=1)
+        result = performance_monitor_handler(duration=1)
         print("Performance Monitor Tool Result:", result)
         
-        assert 'monitoring_duration' in result
-        assert 'cpu' in result
-        assert 'memory' in result
-        print(" MCP performance monitor tool test passed")
+        # Check that the result has the expected structure
+        assert 'content' in result
+        assert len(result['content']) > 0
+        
+        # Parse the actual data to verify it contains expected fields
+        data = json.loads(result['content'][0]['text'])
+        assert 'monitoring_duration' in data
+        assert 'cpu' in data
+        assert 'memory' in data
+        print("✓ MCP performance monitor tool test passed")
     except Exception as e:
-        print(f" Test failed: {e}")
+        print(f"✗ Test failed: {e}")
         raise
 
 
@@ -143,17 +172,14 @@ def test_server_main_function():
     
     try:
         # Test that main function exists and can be imported
-        from server import main
-        
-        # Test environment variable handling
-        os.environ['MCP_TRANSPORT'] = 'stdio'
+        from node_hardware.server import main
         
         # We can't actually run main() as it starts the server
         # But we can test that it exists and is callable
         assert callable(main)
-        print(" Server main function test passed")
+        print("✓ Server main function test passed")
     except Exception as e:
-        print(f" Test failed: {e}")
+        print(f"✗ Test failed: {e}")
         raise
 
 

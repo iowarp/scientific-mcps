@@ -35,16 +35,16 @@ def demonstrate_capabilities():
         
         print("\nMCP Tools Available:")
         tools = [
-            "get_cpu_info - Get detailed CPU information",
-            "get_memory_info - Get memory usage statistics", 
-            "get_disk_info - Get disk usage and partition information",
-            "get_network_info - Get network interface information",
-            "get_system_info - Get general system information",
-            "get_process_info - Get running process information",
-            "get_hardware_summary - Get comprehensive hardware summary",
-            "monitor_performance - Monitor real-time performance metrics",
-            "get_gpu_info - Get GPU information (if available)",
-            "get_sensor_info - Get temperature and sensor information"
+            "cpu_info - Get detailed CPU information",
+            "memory_info - Get memory usage statistics", 
+            "disk_info - Get disk usage and partition information",
+            "network_info - Get network interface information",
+            "system_info - Get general system information",
+            "process_info - Get running process information",
+            "hardware_summary - Get comprehensive hardware summary",
+            "performance_monitor - Monitor real-time performance metrics",
+            "gpu_info - Get GPU information (if available)",
+            "sensor_info - Get temperature and sensor information"
         ]
         
         for i, tool in enumerate(tools, 1):

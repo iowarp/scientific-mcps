@@ -1,58 +1,60 @@
 # Node Hardware MCP Server
 
-## Overview
+A comprehensive Model Context Protocol (MCP) server for hardware monitoring and system information retrieval. This server enables LLMs to access detailed hardware information, monitor system performance, and analyze resource utilization through standardized MCP protocols.
 
-The Node Hardware MCP Server is a comprehensive Model Context Protocol (MCP) server implementation that provides detailed hardware monitoring and system information capabilities. This server enables AI assistants and other MCP clients to retrieve comprehensive hardware information through a standardized protocol.
+## Key Features
 
-The server acts as a bridge between MCP clients and system hardware information, providing detailed CPU, memory, disk, network, and system monitoring capabilities.
+- **Complete Hardware Monitoring**  
+  Provides detailed information about CPU, memory, disk, network, and GPU components with real-time statistics and performance metrics.
 
-## Features
+- **System Information**  
+  Retrieves comprehensive OS details, uptime, user information, and system configuration data for complete system analysis.
 
-### Core Capabilities
-- **CPU Information**: Detailed CPU information including cores, frequency, and usage statistics
-- **Memory Monitoring**: Comprehensive memory usage including virtual and swap memory
-- **Disk Information**: Disk usage, partitions, and I/O statistics
-- **Network Monitoring**: Network interfaces, statistics, and connection information
-- **System Information**: OS details, uptime, users, and system metrics
-- **Process Monitoring**: Running processes with resource usage
-- **Hardware Summary**: Comprehensive hardware overview
-- **Performance Monitoring**: Real-time performance metrics
-- **GPU Information**: GPU detection and information (if available)
-- **Sensor Information**: Temperature and sensor monitoring
+- **Process Management**  
+  Monitors running processes with resource usage statistics, providing insights into system performance and application behavior.
 
-### MCP Tools Available
-1. **get_cpu_info** - Get detailed CPU information
-2. **get_memory_info** - Get memory usage statistics
-3. **get_disk_info** - Get disk usage and partition information
-4. **get_network_info** - Get network interface information
-5. **get_system_info** - Get general system information
-6. **get_process_info** - Get running process information
-7. **get_hardware_summary** - Get comprehensive hardware summary
-8. **monitor_performance** - Monitor real-time performance metrics
-9. **get_gpu_info** - Get GPU information (if available)
-10. **get_sensor_info** - Get temperature and sensor information
+- **Performance Analytics**  
+  Offers real-time performance monitoring with CPU usage, memory utilization, and I/O statistics for system optimization.
+
+- **Sensor Integration**  
+  Accesses temperature sensors and hardware monitoring data where available for thermal management insights.
+
+- **Standardized MCP Interface**  
+  Exposes all functionality via the MCP JSON-RPC protocol for seamless integration with language models.
+
+## Capabilities
+
+1. **cpu_info**: Get detailed CPU information including cores, frequency, architecture, and usage statistics.
+
+2. **memory_info**: Retrieve comprehensive memory usage including virtual memory, swap usage, and available memory.
+
+3. **disk_info**: Get disk usage statistics, partition information, and I/O performance metrics.
+
+4. **network_info**: Monitor network interfaces, connection statistics, and network performance data.
+
+5. **system_info**: Retrieve general system information including OS details, uptime, and system configuration.
+
+6. **process_info**: Monitor running processes with resource usage, PIDs, and process details.
+
+7. **hardware_summary**: Get comprehensive hardware overview combining all system components.
+
+8. **performance_monitor**: Monitor real-time performance metrics including CPU, memory, and I/O utilization.
+
+9. **gpu_info**: Get GPU information and statistics where available.
+
+10. **sensor_info**: Access temperature sensors and hardware monitoring data.
+
+---
 
 ## Prerequisites
 
-### System Requirements
-- Linux, macOS, or Windows operating system
 - Python 3.10 or higher
-- UV package manager (recommended) or pip
-
-### Python Dependencies
-- `mcp[cli]>=0.1.0` - MCP framework
-- `pytest-asyncio>=1.0.0` - Async testing support
-- `python-dotenv>=1.0.0` - Environment variable management
-- `psutil>=5.9.0` - System and process utilities
-- `fastapi>=0.95.0` - Web framework (if using HTTP transport)
-- `uvicorn>=0.21.0` - ASGI server
-- `pydantic>=1.10.0` - Data validation
-- `pytest>=7.2.0` - Testing framework
-- `requests>=2.28.0` - HTTP client
+- [uv](https://docs.astral.sh/uv/) package manager
+- Linux/macOS environment (for optimal compatibility)
 
 ## Setup
 
-### 1. Navigate to Node_Hardware Directory
+### 1. Navigate to Node Hardware Directory
 ```bash
 cd /path/to/scientific-mcps/Node_Hardware
 ```
@@ -68,40 +70,121 @@ Using pip:
 pip install -e .
 ```
 
-### 3. Check Configuration
-Ensure `pyproject.toml` is properly configured with all dependencies.
+**Run the MCP Server directly:**
 
-## Quick Start
+   ```bash
+   uv run node-hardware-mcp
+   ```
+   
+   This will create a `.venv/` folder, install all required packages, and run the server directly.
 
-### 1. Start the MCP Server
+--- 
+
+## Running the Server with Different Types of Clients:
+
+### Running the Server with the WARP Client
+To interact with the Node Hardware MCP server, use the main `wrp.py` client. You will need to configure it to point to the Node Hardware server.
+
+1.  **Configure:** Ensure that `Node_Hardware` is listed in the `MCP` section of your chosen configuration file (e.g., in `bin/confs/Gemini.yaml` or `bin/confs/Ollama.yaml`).
+    ```yaml
+    # In bin/confs/Gemini.yaml
+    MCP:
+      - Node_Hardware
+      # - Adios
+      # - HDF5
+    ```
+
+2.  **Run:** Start the client from the repository root with your desired configuration:
+    ```bash
+    # Example using the Gemini configuration 
+    python3 bin/wrp.py --conf=bin/confs/Gemini.yaml
+    ```
+    
+    For detailed setup with local LLMs and other providers, see the [Complete Installation Guide](../bin/docs/Installation.md).
+
+### Running the Server on Claude Command Line Interface Tool.
+
+1. Install the Claude Code using NPM,
+Install [NodeJS 18+](https://nodejs.org/en/download), then run:
+
 ```bash
-# Using UV
-uv run python src/node_hardware/server.py
-
-# Or using Python directly
-python src/node_hardware/server.py
-
-# Or using the script entry point
-uv run node-hardware-mcp
+npm install -g @anthropic-ai/claude-code
 ```
 
-### 2. Test Basic Functionality
-The server will start and listen for MCP protocol connections via stdio transport by default.
+2. Running the server:
+```bash
+claude add mcp node-hardware -- uv --directory ~/scientific-mcps/Node_Hardware run node-hardware-mcp
+```
 
-### 3. Use with MCP Client
-Connect any MCP-compatible client to interact with the hardware monitoring tools.
+### Running the Server on open source LLM client (Claude, Copilot, etc.)
+
+**Put the following in settings.json of any open source LLMs like Claude or Microsoft Co-pilot:**
+
+```json
+"node-hardware-mcp": {
+    "command": "uv",
+    "args": [
+        "--directory",
+        "path/to/directory/scientific-mcps/Node_Hardware/",
+        "run",
+        "node-hardware-mcp"
+    ]
+}
+```
+
+---
+
+## Examples
+
+**Note: Use absolute paths for all file operations to ensure proper file access.**
+
+1. **Get comprehensive CPU information**
+
+   ```python
+   # Get detailed CPU specifications and current usage
+   cpu_info = cpu_info()
+   ```
+
+2. **Monitor system performance in real-time**
+
+   ```python
+   # Get current performance metrics
+   performance = performance_monitor()
+   ```
+
+3. **Analyze memory usage and availability**
+
+   ```python
+   # Get detailed memory statistics
+   memory_info = memory_info()
+   
+   # Get comprehensive hardware overview
+   hardware_summary = hardware_summary()
+   ```
+
+4. **Monitor running processes and resource usage**
+
+   ```python
+   # Get running process information
+   processes = process_info()
+   
+   # Get disk usage and I/O statistics
+   disk_info = disk_info()
+   ```
+
+**For detailed examples and use cases, see the [capability_test.py](capability_test.py) and [demo.py](demo.py) files.**
 
 ## Project Structure
-
-```
+```text
 Node_Hardware/
-├── README.md                      # This documentation
-├── pyproject.toml                 # Project configuration and dependencies
-├── src/                           # Source code
-│   ├── __init__.py
-│   └── node_hardware/              # Main package directory
-│       ├── __init__.py
-│       ├── server.py              # Main MCP server
+├── pyproject.toml                 # Project metadata & dependencies
+├── README.md                      # Project documentation
+├── capability_test.py             # Comprehensive functionality tests
+├── demo.py                        # Demo script for capabilities
+├── src/                           # Source code directory
+│   └── node_hardware/             # Main package directory
+│       ├── __init__.py            # Package init
+│       ├── server.py              # Main MCP server with FastMCP
 │       ├── mcp_handlers.py        # MCP protocol handlers
 │       └── capabilities/          # Individual capability modules
 │           ├── __init__.py
@@ -116,56 +199,86 @@ Node_Hardware/
 │           ├── performance_monitor.py # Performance monitoring
 │           ├── gpu_info.py        # GPU information
 │           └── sensor_info.py     # Sensor information
-└── tests/                         # Test suite
-    ├── __init__.py
-    ├── test_mcp_handlers.py       # MCP handler tests
-    └── test_server.py             # Server tests
+├── tests/                         # Test suite
+│   ├── __init__.py
+│   ├── test_mcp_handlers.py       # Integration tests for MCP handlers
+│   └── test_server.py             # Server tests
+└── uv.lock                        # Dependency lock file
 ```
 
-## Configuration
+## Hardware Information Support
 
-### Environment Variables
-- `MCP_TRANSPORT`: Transport type ("stdio" or "sse", default: "stdio")
-- `MCP_SSE_HOST`: Host for SSE transport (default: "0.0.0.0")
-- `MCP_SSE_PORT`: Port for SSE transport (default: "8000")
+The server provides comprehensive information about:
+- **CPU**: Architecture, cores, threads, frequency, cache, instruction sets
+- **Memory**: Total RAM, available memory, swap usage, memory type
+- **Storage**: Disk usage, partition information, filesystem details, I/O statistics
+- **Network**: Interface information, IP addresses, connection statistics
+- **GPU**: Graphics card information, memory, driver details (where available)
+- **Sensors**: Temperature monitoring, fan speeds, voltage readings
 
-### Transport Options
-- **stdio**: Standard input/output transport (default)
-- **sse**: Server-Sent Events transport for web clients
+## System Monitoring Features
+
+Supported monitoring capabilities:
+- **Real-time metrics** - Current CPU, memory, and I/O usage
+- **Process monitoring** - Running processes with resource consumption
+- **Performance analytics** - Historical and current performance data
+- **System health** - Temperature, load averages, uptime statistics
+- **Resource utilization** - Detailed breakdown of system resource usage
 
 ## Testing
 
-### Running Tests
+### Run Capability Tests
 ```bash
-# Run all tests
-uv run pytest tests/ -v
-
-# Run specific test files
-uv run pytest tests/test_mcp_handlers.py -v
-uv run pytest tests/test_server.py -v
-
-
-# Run capability demo
 uv run python capability_test.py
+```
+
+### Run Demo Script
+```bash
 uv run python demo.py
 ```
 
-## Development
+### Run Unit Tests
+```bash
+uv run pytest tests/ -v
+```
 
-### Adding New Capabilities
-1. Create a new capability module in `src/node_hardware/capabilities/`
-2. Add the capability import to `mcp_handlers.py`
-3. Create a new handler function in `mcp_handlers.py`
-4. Add the MCP tool to `server.py`
-5. Write tests for the new capability
+All tests pass with zero warnings, ensuring reliable functionality across all hardware monitoring capabilities.
 
-### Code Structure
-- Each capability is a separate module with a single main function
-- Handlers wrap capabilities for MCP protocol compliance
-- Server.py defines the MCP tools and routes them to handlers
-- All capabilities use common utility functions from `utils.py`
+## Error Handling
+
+The server provides comprehensive error handling with:
+- Detailed error messages for debugging
+- Error type classification for different failure modes
+- Graceful handling of missing hardware components
+- Platform-specific error handling for different operating systems
+- Permission-based error handling for restricted system information
+
+## Performance Features
+
+- **Efficient data collection** using psutil library
+- **Caching mechanisms** for frequently accessed data
+- **Async operations** for non-blocking system queries
+- **Resource optimization** for minimal system impact
+- **Cross-platform compatibility** with Linux, macOS, and Windows
+
+## Dependencies
+
+Key dependencies managed through `pyproject.toml`:
+- `fastmcp>=0.1.0` - FastMCP framework for MCP server implementation
+- `psutil>=5.9.0` - System and process utilities for hardware monitoring
+- `pytest>=7.2.0` - Testing framework
+- `pytest-asyncio>=1.0.0` - Async testing support
+- `python-dotenv>=1.0.0` - Environment variable management
+
+## Contributing
+
+1. Fork the repository
+2. Create a feature branch
+3. Add tests for new functionality
+4. Ensure all tests pass: `uv run pytest`
+5. Submit a pull request
 
 ## License
 
-This project is part of the scientific-mcps collection and follows the same licensing terms.
+This project is part of the Scientific MCPs collection and follows the same licensing terms.
 
