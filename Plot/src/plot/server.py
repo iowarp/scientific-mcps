@@ -7,7 +7,7 @@ import os
 import sys
 import json
 import argparse
-from mcp.server.fastmcp import FastMCP
+from fastmcp import FastMCP
 from dotenv import load_dotenv
 import logging
 
@@ -24,13 +24,13 @@ load_dotenv()
 import mcp_handlers
 
 # Initialize MCP server
-mcp = FastMCP("PlotMCP")
+mcp = FastMCP("PlotServer")
 
 @mcp.tool(
-    name="create_line_plot",
+    name="line_plot",
     description="Create line plots from CSV or Excel data with customizable styling and formatting. Supports multiple data series, trend analysis, and time-series visualization with advanced customization options."
 )
-async def create_line_plot_tool(
+async def line_plot_tool(
     file_path: str,
     x_column: str,
     y_column: str,
@@ -55,13 +55,13 @@ async def create_line_plot_tool(
         - visualization_stats: Metrics about data points and trends
     """
     logger.info(f"Creating line plot from {file_path}")
-    return mcp_handlers.create_line_plot_handler(file_path, x_column, y_column, title, output_path)
+    return mcp_handlers.line_plot_handler(file_path, x_column, y_column, title, output_path)
 
 @mcp.tool(
-    name="create_bar_plot",
+    name="bar_plot",
     description="Create bar charts from CSV or Excel data with advanced styling and categorical data visualization. Supports grouped bars, stacked bars, and horizontal orientation with customizable colors and annotations."
 )
-async def create_bar_plot_tool(
+async def bar_plot_tool(
     file_path: str,
     x_column: str,
     y_column: str,
@@ -86,13 +86,13 @@ async def create_bar_plot_tool(
         - visualization_stats: Metrics about data distribution and categories
     """
     logger.info(f"Creating bar plot from {file_path}")
-    return mcp_handlers.create_bar_plot_handler(file_path, x_column, y_column, title, output_path)
+    return mcp_handlers.bar_plot_handler(file_path, x_column, y_column, title, output_path)
 
 @mcp.tool(
-    name="create_scatter_plot",
+    name="scatter_plot",
     description="Create scatter plots from CSV or Excel data with correlation analysis and trend visualization. Supports multi-dimensional data exploration, regression lines, and statistical annotations for data relationships."
 )
-async def create_scatter_plot_tool(
+async def scatter_plot_tool(
     file_path: str,
     x_column: str,
     y_column: str,
@@ -117,13 +117,13 @@ async def create_scatter_plot_tool(
         - file_details: Information about the output file size and location
     """
     logger.info(f"Creating scatter plot from {file_path}")
-    return mcp_handlers.create_scatter_plot_handler(file_path, x_column, y_column, title, output_path)
+    return mcp_handlers.scatter_plot_handler(file_path, x_column, y_column, title, output_path)
 
 @mcp.tool(
-    name="create_histogram",
+    name="histogram_plot",
     description="Create histograms from CSV or Excel data with statistical distribution analysis. Supports density plots, normal distribution overlays, and comprehensive statistical metrics for data distribution visualization."
 )
-async def create_histogram_tool(
+async def histogram_plot_tool(
     file_path: str,
     column: str,
     bins: int = 30,
@@ -148,13 +148,13 @@ async def create_histogram_tool(
         - file_details: Information about the output file size and location
     """
     logger.info(f"Creating histogram from {file_path}")
-    return mcp_handlers.create_histogram_handler(file_path, column, bins, title, output_path)
+    return mcp_handlers.histogram_plot_handler(file_path, column, bins, title, output_path)
 
 @mcp.tool(
-    name="create_heatmap",
+    name="heatmap_plot",
     description="Create heatmaps from CSV or Excel data with correlation matrix analysis and color-coded data visualization. Supports hierarchical clustering, dendrograms, and advanced color mapping for multi-dimensional data exploration."
 )
-async def create_heatmap_tool(
+async def heatmap_plot_tool(
     file_path: str,
     title: str = "Heatmap",
     output_path: str = "heatmap.png"
@@ -175,13 +175,13 @@ async def create_heatmap_tool(
         - file_details: Information about the output file size and location
     """
     logger.info(f"Creating heatmap from {file_path}")
-    return mcp_handlers.create_heatmap_handler(file_path, title, output_path)
+    return mcp_handlers.heatmap_plot_handler(file_path, title, output_path)
 
 @mcp.tool(
-    name="get_data_info",
+    name="data_info",
     description="Get comprehensive data file information including detailed schema analysis, data quality assessment, and statistical profiling. Provides thorough data exploration with column types, distributions, and data health metrics."
 )
-async def get_data_info_tool(file_path: str) -> dict:
+async def data_info_tool(file_path: str) -> dict:
     """
     Get comprehensive data file information with detailed analysis.
     
@@ -196,7 +196,7 @@ async def get_data_info_tool(file_path: str) -> dict:
         - visualization_recommendations: Suggested plot types based on data characteristics
     """
     logger.info(f"Getting data info for {file_path}")
-    return mcp_handlers.get_data_info_handler(file_path)
+    return mcp_handlers.data_info_handler(file_path)
 
 def main():
     """

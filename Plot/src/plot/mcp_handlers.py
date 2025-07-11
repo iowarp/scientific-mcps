@@ -20,7 +20,7 @@ from capabilities.plot_capabilities import (
 
 logger = logging.getLogger(__name__)
 
-def get_data_info_handler(file_path: str) -> Dict[str, Any]:
+def data_info_handler(file_path: str) -> Dict[str, Any]:
     """
     Handler for getting data information.
     
@@ -33,7 +33,7 @@ def get_data_info_handler(file_path: str) -> Dict[str, Any]:
     logger.info(f"Getting data info for: {file_path}")
     return get_data_info(file_path)
 
-def create_line_plot_handler(
+def line_plot_handler(
     file_path: str, 
     x_column: str, 
     y_column: str, 
@@ -56,7 +56,7 @@ def create_line_plot_handler(
     logger.info(f"Creating line plot: {file_path} -> {output_path}")
     return create_line_plot(file_path, x_column, y_column, title, output_path)
 
-def create_bar_plot_handler(
+def bar_plot_handler(
     file_path: str, 
     x_column: str, 
     y_column: str, 
@@ -79,7 +79,7 @@ def create_bar_plot_handler(
     logger.info(f"Creating bar plot: {file_path} -> {output_path}")
     return create_bar_plot(file_path, x_column, y_column, title, output_path)
 
-def create_scatter_plot_handler(
+def scatter_plot_handler(
     file_path: str, 
     x_column: str, 
     y_column: str, 
@@ -102,7 +102,7 @@ def create_scatter_plot_handler(
     logger.info(f"Creating scatter plot: {file_path} -> {output_path}")
     return create_scatter_plot(file_path, x_column, y_column, title, output_path)
 
-def create_histogram_handler(
+def histogram_plot_handler(
     file_path: str, 
     column: str, 
     bins: int = 30,
@@ -125,7 +125,7 @@ def create_histogram_handler(
     logger.info(f"Creating histogram: {file_path} -> {output_path}")
     return create_histogram(file_path, column, bins, title, output_path)
 
-def create_heatmap_handler(
+def heatmap_plot_handler(
     file_path: str, 
     title: str = "Heatmap",
     output_path: str = "heatmap.png"

@@ -25,17 +25,17 @@ A comprehensive Model Context Protocol (MCP) server for advanced data visualizat
 
 ## Capabilities
 
-1. **get_data_info**: Get comprehensive information about data files including columns, data types, shape, and preview.
+1. **data_info**: Get comprehensive information about data files including columns, data types, shape, and preview.
 
-2. **create_line_plot**: Create line plots for time series or continuous data visualization with customizable parameters.
+2. **line_plot**: Create line plots for time series or continuous data visualization with customizable parameters.
 
-3. **create_bar_plot**: Create bar charts with automatic data aggregation and smart categorical grouping.
+3. **bar_plot**: Create bar charts with automatic data aggregation and smart categorical grouping.
 
-4. **create_scatter_plot**: Create scatter plots for correlation analysis and pattern identification.
+4. **scatter_plot**: Create scatter plots for correlation analysis and pattern identification.
 
-5. **create_histogram**: Create histograms for distribution analysis with configurable bins and styling.
+5. **histogram_plot**: Create histograms for distribution analysis with configurable bins and styling.
 
-6. **create_heatmap**: Create correlation heatmaps for numeric data with automatic column selection.
+6. **heatmap_plot**: Create correlation heatmaps for numeric data with automatic column selection.
 
 ---
 
@@ -136,34 +136,34 @@ claude add mcp plot -- uv --directory ~/scientific-mcps/Plot run plot-mcp
 
    ```python
    # Plot temperature trends over time
-   result = create_line_plot("/data/temperature.csv", "date", "temperature", "Temperature Trends")
+   result = line_plot("/data/temperature.csv", "date", "temperature", "Temperature Trends")
    ```
 
 2. **Generate comprehensive data analysis**
 
    ```python
    # Get detailed information about your dataset
-   info = get_data_info("/data/sales.csv")
+   info = data_info("/data/sales.csv")
    ```
 
 3. **Create multiple visualizations for data exploration**
 
    ```python
    # Create scatter plot for correlation analysis
-   scatter = create_scatter_plot("/data/sales.csv", "price", "quantity", "Price vs Quantity")
+   scatter = scatter_plot("/data/sales.csv", "price", "quantity", "Price vs Quantity")
    
    # Generate histogram for distribution analysis
-   hist = create_histogram("/data/sales.csv", "revenue", bins=50, "Revenue Distribution")
+   hist = histogram_plot("/data/sales.csv", "revenue", bins=50, "Revenue Distribution")
    
    # Create correlation heatmap
-   heatmap = create_heatmap("/data/sales.csv", "Sales Correlation Matrix")
+   heatmap = heatmap_plot("/data/sales.csv", "Sales Correlation Matrix")
    ```
 
 4. **Bar chart with automatic data aggregation**
 
    ```python
    # Create bar chart with smart categorical grouping
-   bar = create_bar_plot("/data/categories.csv", "category", "sales", "Sales by Category")
+   bar = bar_plot("/data/categories.csv", "category", "sales", "Sales by Category")
    ```
 
 **For detailed examples and use cases, see the [capability_test.py](capability_test.py) file.**
