@@ -28,34 +28,7 @@ mcp = FastMCP("PlotMCP")
 
 @mcp.tool(
     name="create_line_plot",
-    description="Create line plots from CSV or Excel data with customizable styling and formatting. Supports multiple data series, trend analysis, and time-series visualization with advanced customization options.",
-    parameters={
-        "file_path": {
-            "type": "string",
-            "description": "Absolute path to CSV or Excel file containing the data to plot",
-            "required": True
-        },
-        "x_column": {
-            "type": "string", 
-            "description": "Column name for x-axis data (must exist in the dataset)",
-            "required": True
-        },
-        "y_column": {
-            "type": "string",
-            "description": "Column name for y-axis data (must exist in the dataset)", 
-            "required": True
-        },
-        "title": {
-            "type": "string",
-            "description": "Custom title for the plot (supports LaTeX formatting)",
-            "default": "Line Plot"
-        },
-        "output_path": {
-            "type": "string",
-            "description": "Absolute path where the plot image will be saved (supports PNG, PDF, SVG)",
-            "default": "line_plot.png"
-        }
-    }
+    description="Create line plots from CSV or Excel data with customizable styling and formatting. Supports multiple data series, trend analysis, and time-series visualization with advanced customization options."
 )
 async def create_line_plot_tool(
     file_path: str,
