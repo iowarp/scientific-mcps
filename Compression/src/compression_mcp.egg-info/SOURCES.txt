@@ -1,0 +1,14 @@
+README.md
+pyproject.toml
+src/compression/__init__.py
+src/compression/mcp_handlers.py
+src/compression/server.py
+src/compression/capabilities/__init__.py
+src/compression/capabilities/compression_utils.py
+src/compression_mcp.egg-info/PKG-INFO
+src/compression_mcp.egg-info/SOURCES.txt
+src/compression_mcp.egg-info/dependency_links.txt
+src/compression_mcp.egg-info/entry_points.txt
+src/compression_mcp.egg-info/requires.txt
+src/compression_mcp.egg-info/top_level.txt
+tests/test_compression_handlers.py

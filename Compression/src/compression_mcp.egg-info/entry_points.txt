@@ -1,0 +1,2 @@
+[console_scripts]
+compression-mcp = compression.server:main

@@ -1,0 +1,325 @@
+Metadata-Version: 2.4
+Name: compression-mcp
+Version: 0.1.0
+Summary: Compression MCP server implementation using Model Context Protocol with multi-format compression support
+Requires-Python: >=3.10
+Description-Content-Type: text/markdown
+Requires-Dist: mcp>=0.1.0
+Requires-Dist: pytest-asyncio>=1.0.0
+Requires-Dist: python-dotenv>=1.0.0
+Requires-Dist: fastapi>=0.95.0
+Requires-Dist: uvicorn>=0.21.0
+Requires-Dist: pydantic>=1.10.0
+Requires-Dist: pytest>=7.2.0
+Requires-Dist: requests>=2.28.0
+Requires-Dist: numpy>=1.24.0
+Requires-Dist: tqdm>=4.64.0
+Requires-Dist: tabulate>=0.9.0
+Provides-Extra: test
+Requires-Dist: pytest>=7.0.0; extra == "test"
+Requires-Dist: httpx; extra == "test"
+
+# Compression MCP Server
+
+A comprehensive Model Context Protocol (MCP) server for file compression and decompression operations. This server enables LLMs to compress, decompress, and manage compressed files with support for multiple compression formats and advanced features like batch processing, integrity verification, and password protection.
+
+## Key Features
+
+- **Multi-Format Support**  
+  Supports gzip, bz2, zip, zlib, tar.gz, and tar.bz2 compression formats with automatic format detection.
+
+- **Advanced Compression Operations**  
+  Provides single file compression, directory compression, batch processing, and memory-efficient streaming for large files.
+
+- **Integrity & Security**  
+  Includes checksum verification, password-protected archives, and comprehensive error handling.
+
+- **Performance Optimization**  
+  Configurable compression levels, progress tracking, and memory-efficient streaming for optimal performance.
+
+- **Cross-Platform Compatibility**  
+  Works seamlessly across Windows, Linux, and macOS with consistent behavior and file handling.
+
+- **Standardized MCP Interface**  
+  Exposes all functionality via the MCP JSON-RPC protocol for seamless integration with language models.
+
+## Capabilities
+
+1. **compress_file**: Compress single files using gzip, bz2, zip, or zlib formats.
+
+2. **decompress_file**: Decompress compressed files with automatic format detection.
+
+3. **compress_directory**: Compress entire directories into zip, tar.gz, or tar.bz2 archives.
+
+4. **extract_archive**: Extract files from various archive formats.
+
+5. **list_archive_contents**: List archive contents without extracting files.
+
+6. **batch_compress**: Compress multiple files in batch with progress tracking.
+
+7. **verify_integrity**: Verify file integrity using MD5, SHA1, or SHA256 checksums.
+
+8. **get_compression_stats**: Analyze compression efficiency and get format recommendations.
+
+9. **create_password_protected_archive**: Create password-protected ZIP archives.
+
+10. **stream_compress**: Memory-efficient streaming compression for large files.
+
+11. **detect_compression_format**: Auto-detect compression format from file headers.
+
+---
+
+## Prerequisites
+
+- Python 3.10 or higher
+- uv package manager
+
+## Installation
+
+1. Clone the repository:
+```bash
+git clone <repository-url>
+cd scientific-mcps/Compression
+```
+
+2. Install dependencies using uv:
+```bash
+uv sync
+```
+
+3. Activate the virtual environment:
+```bash
+source .venv/bin/activate  # On Windows: .venv\Scripts\activate
+```
+
+## Usage
+
+### Running the Server
+
+Start the compression MCP server:
+```bash
+uv run compression-mcp
+```
+
+The server will start and listen for MCP protocol messages on stdin/stdout.
+
+### Testing Capabilities
+
+Run the comprehensive capability test:
+```bash
+uv run python capability_test.py
+```
+
+Run the test suite:
+```bash
+uv run pytest tests/ -v
+```
+
+### Example Operations
+
+#### Single File Compression
+```python
+# Compress a file with gzip
+result = await mcp.call_tool("compress_file", {
+    "file_path": "/path/to/file.txt",
+    "compression_type": "gzip",
+    "compression_level": 6
+})
+```
+
+#### Directory Compression
+```python
+# Compress entire directory to ZIP
+result = await mcp.call_tool("compress_directory", {
+    "directory_path": "/path/to/directory",
+    "compression_type": "zip",
+    "exclude_patterns": ["*.tmp", "*.log"]
+})
+```
+
+#### Batch Compression
+```python
+# Compress multiple files
+result = await mcp.call_tool("batch_compress", {
+    "file_paths": ["/path/to/file1.txt", "/path/to/file2.txt"],
+    "compression_type": "gzip",
+    "preserve_original": True
+})
+```
+
+#### Password-Protected Archive
+```python
+# Create encrypted archive
+result = await mcp.call_tool("create_password_protected_archive", {
+    "file_paths": ["/path/to/secret.txt"],
+    "archive_path": "/path/to/secure.zip",
+    "password": "mypassword"
+})
+```
+
+## Supported Compression Formats
+
+| Format | Extensions | Description | Best For |
+|--------|------------|-------------|----------|
+| **gzip** | `.gz` | Fast compression/decompression | General purpose, streaming |
+| **bz2** | `.bz2` | High compression ratio | Storage optimization |
+| **zip** | `.zip` | Archive format with password support | Multiple files, security |
+| **zlib** | `.zlib` | Raw compression for memory efficiency | In-memory operations |
+| **tar.gz** | `.tar.gz`, `.tgz` | Compressed tar archive | Unix/Linux directories |
+| **tar.bz2** | `.tar.bz2`, `.tbz2` | High-ratio compressed tar | Long-term storage |
+
+## Performance Characteristics
+
+### Compression Levels
+- **Level 1**: Fastest compression, lower ratio
+- **Level 6**: Balanced speed and compression (default)
+- **Level 9**: Maximum compression, slower speed
+
+### Memory Usage
+- **Standard compression**: Loads entire file into memory
+- **Streaming compression**: Processes files in chunks (configurable)
+- **Large file support**: Automatic streaming for files > 100MB
+
+### Speed Comparison (typical)
+1. **zlib**: Fastest
+2. **gzip**: Fast
+3. **bz2**: Slower, better compression
+4. **zip**: Moderate (depends on content)
+
+## Error Handling
+
+The server provides comprehensive error handling for:
+- **File not found**: Clear error messages for missing files
+- **Permission errors**: Detailed access permission issues
+- **Corrupted files**: Integrity verification failures
+- **Format errors**: Unsupported or invalid compression formats
+- **Memory errors**: Handling of large files and memory constraints
+
+## Security Features
+
+- **Password protection**: ZIP archives with encryption
+- **Integrity verification**: MD5, SHA1, SHA256 checksums
+- **Safe extraction**: Path validation to prevent directory traversal
+- **Permission preservation**: Maintains file permissions during compression
+
+## Integration Examples
+
+### Claude Desktop Integration
+```json
+{
+  "mcpServers": {
+    "compression": {
+      "command": "uv",
+      "args": ["run", "compression-mcp"],
+      "cwd": "/path/to/scientific-mcps/Compression"
+    }
+  }
+}
+```
+
+### Programmatic Usage
+```python
+import asyncio
+from mcp.client import MCPClient
+
+async def compress_files():
+    async with MCPClient() as client:
+        result = await client.call_tool("compress_file", {
+            "file_path": "document.txt",
+            "compression_type": "gzip"
+        })
+        print(f"Compression ratio: {result['compression_ratio']:.2f}%")
+```
+
+## Development
+
+### Project Structure
+```
+Compression/
+├── src/
+│   └── compression/
+│       ├── __init__.py
+│       ├── server.py          # Main MCP server
+│       ├── mcp_handlers.py    # Compression handlers
+│       └── capabilities/
+│           ├── __init__.py
+│           └── compression_utils.py
+├── tests/
+│   ├── __init__.py
+│   └── test_compression_handlers.py
+├── data/                      # Test data directory
+├── capability_test.py         # Comprehensive capability test
+├── pyproject.toml            # Project configuration
+└── README.md                 # This file
+```
+
+### Adding New Compression Formats
+
+1. Add format definition to `compression_utils.py`
+2. Implement handlers in `mcp_handlers.py`
+3. Add format detection logic
+4. Update tests and documentation
+
+### Testing
+
+Run all tests:
+```bash
+# Unit tests
+uv run pytest tests/ -v
+
+# Capability tests
+uv run python capability_test.py
+
+# Integration tests
+uv run pytest tests/test_integration.py
+```
+
+## Troubleshooting
+
+### Common Issues
+
+1. **Import errors**: Ensure all dependencies are installed via `uv sync`
+2. **Permission errors**: Check file/directory permissions
+3. **Memory issues**: Use streaming compression for large files
+4. **Format detection**: Manually specify compression type if auto-detection fails
+
+### Performance Tips
+
+1. **Use appropriate compression levels**: Level 6 for balanced performance
+2. **Enable streaming**: For files larger than available memory
+3. **Batch operations**: Process multiple files together for efficiency
+4. **Exclude unnecessary files**: Use exclude patterns for directory compression
+
+### Debug Mode
+
+Enable debug logging:
+```bash
+export PYTHONPATH=/path/to/src
+export MCP_LOG_LEVEL=DEBUG
+uv run compression-mcp
+```
+
+## Contributing
+
+1. Fork the repository
+2. Create a feature branch
+3. Make your changes
+4. Add tests for new functionality
+5. Run the test suite
+6. Submit a pull request
+
+## License
+
+This project is licensed under the MIT License. See the LICENSE file for details.
+
+## Changelog
+
+### v0.1.0
+- Initial release
+- Support for gzip, bz2, zip, zlib compression
+- Directory and batch compression
+- Integrity verification
+- Password-protected archives
+- Streaming compression
+- Auto-format detection
+- Comprehensive test suite

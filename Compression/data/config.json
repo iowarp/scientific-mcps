@@ -1,0 +1,10 @@
+{
+  "compression": {
+    "level": 6,
+    "algorithm": "gzip"
+  },
+  "files": [
+    "data1.txt",
+    "data2.txt"
+  ]
+}

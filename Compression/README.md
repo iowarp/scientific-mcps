@@ -1,261 +1,289 @@
-# MCP Server Implementation
+# Compression MCP Server
 
-## MCP Capabilities
+A comprehensive Model Context Protocol (MCP) server for file compression and decompression operations. This server enables LLMs to compress, decompress, and manage compressed files with support for multiple compression formats and advanced features like batch processing, integrity verification, and password protection.
 
+## Key Features
 
-**Compression Handler**
-- Compresses files into .gz format using gzip
-- Outputs compressed files to the same directory as the original
-- Preserves the original files
-- Provides compression statistics:
-  - Original size
-  - Compressed size
-  - Compression ratio
-- Skips compression for empty files and raises a warning/error
+- **Multi-Format Support**  
+  Supports gzip, bz2, zip, zlib, tar.gz, and tar.bz2 compression formats with automatic format detection.
 
+- **Advanced Compression Operations**  
+  Provides single file compression, directory compression, batch processing, and memory-efficient streaming for large files.
 
+- **Integrity & Security**  
+  Includes checksum verification, password-protected archives, and comprehensive error handling.
 
-## Environment Setup (Linux)
+- **Performance Optimization**  
+  Configurable compression levels, progress tracking, and memory-efficient streaming for optimal performance.
 
-1. Install uv:
+- **Cross-Platform Compatibility**  
+  Works seamlessly across Windows, Linux, and macOS with consistent behavior and file handling.
+
+- **Standardized MCP Interface**  
+  Exposes all functionality via the MCP JSON-RPC protocol for seamless integration with language models.
+
+## Capabilities
+
+1. **compress_file**: Compress single files using gzip, bz2, zip, or zlib formats.
+
+2. **decompress_file**: Decompress compressed files with automatic format detection.
+
+3. **compress_directory**: Compress entire directories into zip, tar.gz, or tar.bz2 archives.
+
+4. **extract_archive**: Extract files from various archive formats.
+
+5. **list_archive_contents**: List archive contents without extracting files.
+
+6. **batch_compress**: Compress multiple files in batch with progress tracking.
+
+7. **verify_integrity**: Verify file integrity using MD5, SHA1, or SHA256 checksums.
+
+8. **get_compression_stats**: Analyze compression efficiency and get format recommendations.
+
+9. **create_password_protected_archive**: Create password-protected ZIP archives.
+
+10. **stream_compress**: Memory-efficient streaming compression for large files.
+
+11. **detect_compression_format**: Auto-detect compression format from file headers.
+
+---
+
+## Prerequisites
+
+- Python 3.10 or higher
+- [uv](https://docs.astral.sh/uv/) package manager
+- Linux/macOS environment (for optimal compatibility)
+
+## Setup
+
+### 1. Navigate to Compression Directory
 ```bash
-pip install uv
+cd /path/to/scientific-mcps/Compression
 ```
-
-2. Create and activate environment using uv:
+### 2. Install Dependencies
+Using UV (recommended):
 ```bash
-uv venv mcp-server
-source mcp-server/bin/activate
+uv sync
 ```
 
-3. Install dependencies using uv:
+Using pip:
 ```bash
-# Install dependencies from pyproject.toml
-uv pip install --requirement pyproject.toml
+pip install -e .
 ```
+**Run the MCP Server directly:**
 
-Dependencies are specified in pyproject.toml:
-```toml
-[project]
-name = "mcp_server"
-version = "0.1.0"
-dependencies = [
-    "fastapi>=0.115.12",
-    "numpy>=2.2.4",
-    "pandas>=2.2.3",
-    "pyarrow>=19.0.1",
-    "pydantic>=2.11.3",
-    "pytest>=8.3.5",
-    "pytest-asyncio==0.26.0",
-    "requests>=2.32.3",
-    "uvicorn>=0.34.1",
-]
+   ```bash
+   uv run compression-mcp
+   ```
+   
+   This will create a `.venv/` folder, install all required packages, and run the server directly.
 
-python = ">=3.10"
-```
+--- 
 
-## Running the MCP Server
+## Running the Server with Different Types of Clients:
 
-1. Ensure you're in the virtual environment
-2. Start the FastAPI server using uvicorn:
+### Running the Server with the WARP Client
+To interact with the Compression MCP server, use the main `wrp.py` client. You will need to configure it to point to the Compression server.
+
+1.  **Configure:** Ensure that `Compression` is listed in the `MCP` section of your chosen configuration file (e.g., in `bin/confs/Gemini.yaml` or `bin/confs/Ollama.yaml`).
+    ```yaml
+    # In bin/confs/Gemini.yaml
+    MCP:
+      - Compression
+      # - Adios
+      # - HDF5
+    ```
+
+2.  **Run:** Start the client from the repository root with your desired configuration:
+    ```bash
+    # Example using the Gemini configuration 
+    python3 bin/wrp.py --conf=bin/confs/Gemini.yaml
+    ```
+    
+    For detailed setup with local LLMs and other providers, see the [Complete Installation Guide](../bin/docs/Installation.md).
+
+### Running the Server on Claude Command Line Interface Tool.
+
+1. Install the Claude Code using NPM,
+Install [NodeJS 18+](https://nodejs.org/en/download), then run:
+
 ```bash
-uvicorn src.server:app --reload --host 0.0.0.0 --port 8000
+npm install -g @anthropic-ai/claude-code
 ```
 
-The server will start on `http://localhost:8000` by default.
-
-## Running Tests
-
-Run all tests:
+2. Running the server:
 ```bash
-python3 -m pytest
+claude add mcp compression -- uv --directory ~/scientific-mcps/Compression run compression-mcp
 ```
-![Successful Tests](images/tests.png)
 
-Run specific test files:
-```bash
-python3 -m pytest tests/test_sort_handler.py
-python3 -m pytest tests/test_parquet_handler.py
-python3 -m pytest tests/test_compression_handler.py
-python3 -m pytest tests/test_pandas_handler.py
+### Running the Server on open source LLM client (Claude, Copilot, etc.)
+
+**Put the following in settings.json of any open source LLMs like Claude or Microsoft Co-pilot:**
+
+```json
+"compression-mcp": {
+    "command": "uv",
+    "args": [
+        "--directory",
+        "path/to/directory/scientific-mcps/Compression/",
+        "run",
+        "compression-mcp"
+    ]
+}
 ```
+
+---
+
+## Examples
+
+**Note: Use absolute paths for all file operations to ensure proper file access.**
+
+1. **Compress a single file with gzip**
+
+   ```python
+   # Compress a large log file with high compression
+   result = compress_file("/data/server.log", compression_type="gzip", compression_level=9)
+   ```
+
+2. **Compress entire directory to archive**
+
+   ```python
+   # Archive project directory excluding temporary files
+   result = compress_directory("/data/project", compression_type="zip", exclude_patterns=["*.tmp", "*.log"])
+   ```
+
+3. **Batch compress multiple files**
+
+   ```python
+   # Compress multiple data files with progress tracking
+   result = batch_compress(["/data/file1.txt", "/data/file2.txt"], compression_type="bz2")
+   ```
+
+4. **Create password-protected archive**
+
+   ```python
+   # Create secure archive with password protection
+   result = create_password_protected_archive(["/data/sensitive.txt"], "/data/secure.zip", "mypassword")
+   ```
+
+5. **Verify file integrity and get compression statistics**
+
+   ```python
+   # Verify compressed file integrity and analyze compression efficiency
+   integrity = verify_integrity("/data/compressed.gz", checksum_type="sha256")
+   stats = get_compression_stats("/data/compressed.gz")
+   ```
+
+**For detailed examples and use cases, see the [capability_test.py](capability_test.py) file.**
+
+## Supported Compression Formats
+
+| Format | Extensions | Description | Best For |
+|--------|------------|-------------|----------|
+| **gzip** | `.gz` | Fast compression/decompression | General purpose, streaming |
+| **bz2** | `.bz2` | High compression ratio | Storage optimization |
+| **zip** | `.zip` | Archive format with password support | Multiple files, security |
+| **zlib** | `.zlib` | Raw compression for memory efficiency | In-memory operations |
+| **tar.gz** | `.tar.gz`, `.tgz` | Compressed tar archive | Unix/Linux directories |
+| **tar.bz2** | `.tar.bz2`, `.tbz2` | High-ratio compressed tar | Long-term storage |
+
+## Performance Characteristics
+
+### Compression Levels
+- **Level 1**: Fastest compression, lower ratio
+- **Level 6**: Balanced speed and compression (default)
+- **Level 9**: Maximum compression, slower speed
+
+### Memory Usage
+- **Standard compression**: Loads entire file into memory
+- **Streaming compression**: Processes files in chunks (configurable)
+- **Large file support**: Automatic streaming for files > 100MB
+
+### Speed Comparison (typical)
+1. **zlib**: Fastest
+2. **gzip**: Fast
+3. **bz2**: Slower, better compression
+4. **zip**: Moderate (depends on content)
+
+## Error Handling
+
+The server provides comprehensive error handling with:
+- Detailed error messages for debugging
+- Error type classification for different failure modes
+- Validation for file paths and compression formats
+- Graceful handling of memory limitations
+- Permission and access control validation
+- Integrity verification and corruption detection
 
 ## Project Structure
-```
-MCP-Server/
-├── src/
-│   ├── capabilities/
-│   │   ├── __init__.py
-│   │   ├── compression_handler.py      # Compression capabilities (Compress File)
-│   ├── __init__.py
-│   ├── mcp_handlers.py
-|   └── server.py                       # Compression MCP Server
-├── tests/
-│   ├── __init__.py
-│   ├── test_compression_handler.py     # Compression test
-│ 
-├── data/
-├── images/             #images
-├── README.md           # ← This file
-├── pyproject.toml      # Python package config
-├── pytest.ini          # Pytest config file
-└── uv.lock             # Dependency lock file
-```
-
-## JSON-RPC Requests and Responses
-
-### 1. List Resources
-
-![List Resources Request/Response](images/listResources.png)
-
-Request:
-```json
-{
-    "jsonrpc": "2.0",
-    "method": "mcp/listResources",
-    "id": 1
-}
+```text
+Compression/
+├── pyproject.toml           # Project metadata & dependencies
+├── README.md                # Project documentation
+├── pytest.ini              # Test configuration
+├── capability_test.py       # Comprehensive functionality tests
+├── data/                    # Sample data directory
+├── src/                     # Source code directory
+│   └── compression/
+│       ├── __init__.py      # Package init
+│       ├── server.py        # Main MCP server with FastMCP
+│       ├── mcp_handlers.py  # MCP protocol handlers
+│       └── capabilities/
+│           ├── __init__.py
+│           └── compression_utils.py    # Core compression utilities
+├── tests/                   # Test suite
+│   ├── test_compression_handlers.py # Unit tests for handlers
+│   └── conftest.py          # Test fixtures
+└── uv.lock                  # Dependency lock file
 ```
 
-Response:
-```json
-{
-    "jsonrpc": "2.0",
-    "result": [
-        {
-            "id": "resource1",
-            "name": "Weather Data",
-            "type": "Parquet",
-            "description": "Weather measurements including temperature, humidity, and pressure",
-            "path": "data/weather_data.parquet",
-            "format": "parquet",
-            "columns": ["temperature", "humidity", "pressure", "timestamp"]
-        },
-        {
-            "id": "resource2",
-            "name": "System Logs",
-            "type": "Log",
-            "description": "System event logs with timestamps",
-            "path": "data/huge_log.txt",
-            "format": "text",
-            "schema": "timestamp:string message:string level:string"
-        },
-        {
-            "id": "resource3",
-            "name": "Student Records",
-            "type": "CSV",
-            "description": "Student academic records with marks",
-            "path": "data/data.csv",
-            "format": "csv",
-            "columns": ["id", "name", "subject", "marks"]
-        },
-        {
-            "id": "resource4",
-            "name": "Application Logs",
-            "type": "Log",
-            "description": "Application startup and runtime logs with timestamps and log levels",
-            "path": "data/output.log",
-            "format": "text",
-            "schema": "timestamp:string level:string message:string",
-            "sample": "[2024-03-16 00:00:15] INFO: Application startup"
-        }
-    ],
-    "id": 1
-}
+### Adding New Compression Formats
+
+1. Add format definition to `compression_utils.py`
+2. Implement handlers in `mcp_handlers.py`
+3. Add format detection logic
+4. Update tests and documentation
+
+## Testing
+
+### Run Capability Tests
+```bash
+uv run python capability_test.py
 ```
 
-### 2. Get Resource
-
-![Get Resource Request/Response](images/getResource.png)
-
-Request:
-```json
-{
-    "jsonrpc": "2.0",
-    "method": "mcp/getResource",
-    "params": {
-        "id": "resource1"
-    },
-    "id": 1
-}
+### Run Unit Tests
+```bash
+uv run pytest tests/ -v
 ```
 
-Response:
-```json
-{
-    "jsonrpc": "2.0",
-    "result": {
-        "id": "resource1",
-        "name": "Weather Data",
-        "type": "Parquet",
-        "description": "Weather measurements including temperature, humidity, and pressure",
-        "path": "data/weather_data.parquet",
-        "format": "parquet",
-        "columns": ["temperature", "humidity", "pressure", "timestamp"]
-    },
-    "id": 1
-}
-```
+All tests pass with zero warnings, ensuring reliable functionality across all compression capabilities.
 
-### 3. List Available Tools
+## Performance Features
 
-![List Tools Request/Response](images/listTools.png)
+- **Memory optimization** for large files with streaming compression
+- **Batch processing** capabilities for multiple files
+- **Configurable compression levels** (1-9) for speed/ratio balance
+- **Progress tracking** with visual progress bars
+- **Cross-platform compatibility** with consistent behavior
+- **Automatic format detection** from file headers
 
-Request:
-```json
-{
-    "jsonrpc": "2.0",
-    "method": "mcp/listTools",
-    "id": 1
-}
-```
+## Dependencies
 
-Response:
-```json
-{
-    "jsonrpc": "2.0",
-    "result": [
-        {
-            "id": "tool3",
-            "name": "Compression Tool",
-            "description": "Compresses files using gzip",
-            "usage": "'tool': 'compress', 'file': 'filename' in params."
-        },
-    ],
-    "id": 1
-}
-```
+Key dependencies managed through `pyproject.toml`:
+- `fastmcp>=0.1.0` - FastMCP framework for MCP server implementation
+- `tqdm>=4.66.0` - Progress bars for batch operations
+- `tabulate>=0.9.0` - Table formatting for statistics
+- `pytest>=8.3.5` - Testing framework
+- `pytest-asyncio>=0.26.0` - Async testing support
 
+## Contributing
 
-### 4. Compress File
+1. Fork the repository
+2. Create a feature branch
+3. Add tests for new functionality
+4. Ensure all tests pass: `uv run pytest`
+5. Submit a pull request
 
-![Compress File Request/Response](images/compress.png)
+## License
 
-Request:
-```json
-{
-    "jsonrpc": "2.0",
-    "method": "mcp/callTool",
-    "params": {
-        "tool": "compress",
-        "file": "output.log"
-    },
-    "id": 1
-}
-```
-
-Response:
-```json
-{
-    "jsonrpc": "2.0",
-    "id": 1,
-    "result": {
-        "status": "success",
-        "original_file": "data/output.log",
-        "compressed_file": "data/output.log.gz",
-        "original_size": 603,
-        "compressed_size": 337,
-        "compression_ratio": "44.11%"
-    }
-}
-```
+This project is part of the Scientific MCPs collection and follows the same licensing terms.
