@@ -1,4 +1,3 @@
 """
-MCP Server test package
-Contains test cases for all MCP capabilities
-""" 
+Test package for Parallel Sort MCP server.
+"""
