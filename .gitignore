@@ -9,3 +9,4 @@ env/
 .idea/
 .vscode/
 Jarvis-MCP/src/jarvis_mcp/.env
+Parallel_Sort/src/parallel_sort_mcp.egg-info/

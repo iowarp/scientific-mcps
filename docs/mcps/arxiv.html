@@ -36,7 +36,7 @@
                     <span class="stat-label">Version</span>
                 </div>
                 <div class="stat-card">
-                    <span class="stat-value">3</span>
+                    <span class="stat-value">10</span>
                     <span class="stat-label">Actions</span>
                 </div>
                 <div class="stat-card">
@@ -83,19 +83,54 @@
             <h3>Available Actions</h3>
             <ul class="actions-list">
                 <li class="action-item">
-                    <div class="action-name">search_papers</div>
-                    <div class="action-description">Search ArXiv papers by keywords, authors, or categories</div>
-                    <div class="action-params">Parameters: query, category, max_results, sort_by</div>
+                    <div class="action-name">search_arxiv</div>
+                    <div class="action-description">Search ArXiv for research papers by category or topic</div>
+                    <div class="action-params">Parameters: query (default: "cs.AI"), max_results (default: 5)</div>
                 </li>
                 <li class="action-item">
-                    <div class="action-name">fetch_paper</div>
-                    <div class="action-description">Fetch detailed information about a specific paper</div>
-                    <div class="action-params">Parameters: arxiv_id, include_abstract, include_authors</div>
+                    <div class="action-name">get_recent_papers</div>
+                    <div class="action-description">Get recent papers from a specific ArXiv category</div>
+                    <div class="action-params">Parameters: category (default: "cs.AI"), max_results (default: 5)</div>
                 </li>
                 <li class="action-item">
-                    <div class="action-name">get_metadata</div>
-                    <div class="action-description">Extract metadata from ArXiv papers</div>
-                    <div class="action-params">Parameters: arxiv_id, metadata_fields</div>
+                    <div class="action-name">search_papers_by_author</div>
+                    <div class="action-description">Search ArXiv papers by author name</div>
+                    <div class="action-params">Parameters: author (required), max_results (default: 10)</div>
+                </li>
+                <li class="action-item">
+                    <div class="action-name">search_by_title</div>
+                    <div class="action-description">Search ArXiv papers by title keywords</div>
+                    <div class="action-params">Parameters: title_keywords (required), max_results (default: 10)</div>
+                </li>
+                <li class="action-item">
+                    <div class="action-name">search_by_abstract</div>
+                    <div class="action-description">Search ArXiv papers by abstract keywords</div>
+                    <div class="action-params">Parameters: abstract_keywords (required), max_results (default: 10)</div>
+                </li>
+                <li class="action-item">
+                    <div class="action-name">search_by_subject</div>
+                    <div class="action-description">Search ArXiv papers by subject classification</div>
+                    <div class="action-params">Parameters: subject (required), max_results (default: 10)</div>
+                </li>
+                <li class="action-item">
+                    <div class="action-name">search_date_range</div>
+                    <div class="action-description">Search ArXiv papers within a specific date range</div>
+                    <div class="action-params">Parameters: start_date (YYYY-MM-DD, required), end_date (YYYY-MM-DD, required), category (optional), max_results (default: 20)</div>
+                </li>
+                <li class="action-item">
+                    <div class="action-name">get_paper_details</div>
+                    <div class="action-description">Get detailed information about a specific ArXiv paper by ID</div>
+                    <div class="action-params">Parameters: arxiv_id (required)</div>
+                </li>
+                <li class="action-item">
+                    <div class="action-name">export_to_bibtex</div>
+                    <div class="action-description">Export search results to BibTeX format for citation management</div>
+                    <div class="action-params">Parameters: papers_json (JSON string, required)</div>
+                </li>
+                <li class="action-item">
+                    <div class="action-name">find_similar_papers</div>
+                    <div class="action-description">Find papers similar to a reference paper based on categories and keywords</div>
+                    <div class="action-params">Parameters: reference_paper_id (required), max_results (default: 10)</div>
                 </li>
             </ul>
         </div>
