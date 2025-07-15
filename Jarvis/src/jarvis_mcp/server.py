@@ -17,7 +17,8 @@ from jarvis_mcp.capabilities.jarvis_handler import (
     destroy_pipeline,
     get_pkg_config,
     update_pipeline,
-    build_pipeline_env
+    build_pipeline_env,
+    get_all_packages
 )
 
 # Import JarvisManager (singleton-based configuration and repo manager)
@@ -101,6 +102,20 @@ async def run_pipeline_tool(pipeline_id: str) -> dict:
 async def destroy_pipeline_tool(pipeline_id: str) -> dict:
     """Completely destroy the pipeline and clean up associated resources."""
     return await destroy_pipeline(pipeline_id)
+
+
+# ─── ELEVATED API TOOLS ─────────────────────────────────────────────────────────
+
+@mcp.tool(
+    name="get_all_packages", 
+    description="Get all available packages from all repositories with their descriptions and capabilities."
+)
+async def get_all_packages_tool() -> dict:
+    """
+    Get a comprehensive list of all available packages across all repositories.
+    Returns package names, types, descriptions, capabilities, and configuration options.
+    """
+    return await get_all_packages()
 
 
 @mcp.tool(name="jm_create_config", description="Initialize JarvisManager config directories.")
