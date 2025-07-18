@@ -1,7 +1,8 @@
 import pytest
 import os
 import tempfile
-from src.capabilities.compression_handler import compress_file
+import asyncio
+from src.compression_mcp.capabilities.compression_base import compress_file
 
 @pytest.fixture
 def sample_file():
@@ -12,28 +13,34 @@ def sample_file():
     os.unlink(f.name)
 
 # test successful compression of a file
-def test_compress_success(sample_file):
-    result = compress_file(sample_file)
+@pytest.mark.asyncio
+async def test_compress_success(sample_file):
+    result = await compress_file(sample_file)
     assert isinstance(result, dict)
-    assert result["status"] == "success"
-    assert os.path.exists(result["compressed_file"])
-    os.unlink(result["compressed_file"])
+    assert result["isError"] == False
+    assert result["_meta"]["tool"] == "compress_file"
+    assert os.path.exists(result["_meta"]["compressed_file"])
+    os.unlink(result["_meta"]["compressed_file"])
 
 # test compression of non-existent file
-def test_compress_nonexistent_file():
-    result = compress_file("nonexistent_file.txt")
-    assert isinstance(result, dict)
-    assert result["status"] == "error"
-    assert "compression failed" in result["message"].lower()
+@pytest.mark.asyncio
+async def test_compress_nonexistent_file():
+    with pytest.raises(Exception) as exc_info:
+        await compress_file("nonexistent_file.txt")
+    assert "File not found" in str(exc_info.value)
 
 # test compression of empty file
-def test_compress_empty_file():
+@pytest.mark.asyncio
+async def test_compress_empty_file():
     with tempfile.NamedTemporaryFile(mode='w', delete=False) as f:
         f.write("")
     try:
-        result = compress_file(f.name)
+        result = await compress_file(f.name)
         assert isinstance(result, dict)
-        assert result["status"] == "error"
-        assert "compression failed" in result["message"].lower()
+        assert result["isError"] == False
+        assert result["_meta"]["tool"] == "compress_file"
+        # Empty file should still compress successfully
+        assert os.path.exists(result["_meta"]["compressed_file"])
+        os.unlink(result["_meta"]["compressed_file"])
     finally:
         os.unlink(f.name) 
