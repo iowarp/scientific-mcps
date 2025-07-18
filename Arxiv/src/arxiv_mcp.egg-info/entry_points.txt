@@ -1,2 +1,0 @@
-[console_scripts]
-arxiv-mcp = arxiv_mcp.server:main

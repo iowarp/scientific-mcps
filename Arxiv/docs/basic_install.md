@@ -26,11 +26,6 @@ Using uv (recommended):
 uv sync
 ```
 
-Using pip:
-```bash
-pip install -r requirements.txt
-```
-
 ### 3. Test Installation
 
 Run the demo to verify everything works:
@@ -47,7 +42,7 @@ uv run python demo.py
 uv run arxiv-mcp
 
 # Direct execution
-uv run python src/arxiv_mcp/server.py
+uv run python src/server.py
 ```
 
 ### Configuration
@@ -60,16 +55,26 @@ The server supports environment variables for configuration:
 
 ### Available Tools
 
-1. **search_arxiv** - Search by category
-2. **get_recent_papers** - Get recent papers
-3. **search_papers_by_author** - Search by author
+#### Search & Discovery Tools
+1. **search_arxiv** - Search by category or topic
+2. **get_recent_papers** - Get recent papers from specific category
+3. **search_papers_by_author** - Search by author name
 4. **search_by_title** - Search by title keywords
-5. **search_by_abstract** - Search by abstract
-6. **search_by_subject** - Search by subject
+5. **search_by_abstract** - Search by abstract keywords
+6. **search_by_subject** - Search by subject classification
 7. **search_date_range** - Search by date range
-8. **get_paper_details** - Get paper details
-9. **export_to_bibtex** - Export to BibTeX
-10. **find_similar_papers** - Find similar papers
+
+#### Paper Analysis Tools
+8. **get_paper_details** - Get detailed paper information by ID
+9. **find_similar_papers** - Find papers similar to reference paper
+
+#### Export & Citation Tools
+10. **export_to_bibtex** - Export search results to BibTeX format
+
+#### PDF Download Tools
+11. **download_paper_pdf** - Download PDF of a paper from ArXiv
+12. **get_pdf_url** - Get direct PDF URL without downloading
+13. **download_multiple_pdfs** - Download multiple PDFs concurrently
 
 ## Common ArXiv Categories
 

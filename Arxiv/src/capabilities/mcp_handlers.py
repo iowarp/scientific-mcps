@@ -4,12 +4,12 @@ These handlers wrap the ArXiv capabilities for MCP protocol compliance.
 """
 import json
 from typing import Dict, Any
-from capabilities.category_search import search_arxiv, get_recent_papers, search_by_subject
-from capabilities.text_search import search_by_title, search_by_abstract, search_papers_by_author
-from capabilities.date_search import search_date_range
-from capabilities.paper_details import get_paper_details, find_similar_papers
-from capabilities.export_utils import export_to_bibtex
-from capabilities.download_paper import download_paper_pdf, get_pdf_url, download_multiple_pdfs
+from .category_search import search_arxiv, get_recent_papers, search_by_subject
+from .text_search import search_by_title, search_by_abstract, search_papers_by_author
+from .date_search import search_date_range
+from .paper_details import get_paper_details, find_similar_papers
+from .export_utils import export_to_bibtex
+from .download_paper import download_paper_pdf, get_pdf_url, download_multiple_pdfs
 
 
 async def search_arxiv_handler(query: str = "cs.AI", max_results: int = 5) -> Dict[str, Any]:

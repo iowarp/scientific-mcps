@@ -29,11 +29,11 @@ dependencies = [
 test = ["pytest>=7.0.0", "httpx"]
 
 [project.scripts]
-arxiv-mcp = "arxiv_mcp.server:main"
+arxiv-mcp = "server:main"
 
 [tool.setuptools.packages.find]
 where = ["src"]
-include = ["arxiv_mcp*"]
+include = ["*"]
 
 [tool.setuptools.package-dir]
-"arxiv_mcp" = "src/arxiv_mcp"
+"" = "src"

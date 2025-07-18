@@ -20,7 +20,7 @@ sys.path.insert(0, os.path.dirname(__file__))
 # Load environment variables
 load_dotenv()
 
-import mcp_handlers
+from capabilities import mcp_handlers
 
 # Initialize MCP server
 mcp = FastMCP("ArxivMCP")
