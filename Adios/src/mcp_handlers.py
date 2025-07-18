@@ -1,7 +1,7 @@
 # mcp_handlers.py
 import json
 from typing import Any, Dict, Optional
-from capabilities import bp5_list, bp5_inspect_variables, bp5_attributes, bp5_read_variable_at_step, bp5_inspect_variables_at_step
+from implementation import bp5_list, bp5_inspect_variables, bp5_attributes, bp5_read_variable_at_step, bp5_inspect_variables_at_step
 
 class UnknownToolError(Exception):
     """Raised when an unsupported tool_name is requested."""

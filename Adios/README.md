@@ -52,6 +52,30 @@ A read-only Model Context Protocol (MCP) server for ADIOS datasets, enabling LLM
    ```
    
    This will create a `.venv/` folder, install all required packages, and run the server directly.
+
+## Testing
+
+To run the test suite:
+
+```bash
+# Install test dependencies (pytest is included in dev dependencies)
+uv sync --dev
+
+# Run all tests
+uv run pytest
+
+# Run tests with verbose output
+uv run pytest -v
+
+# Run specific test file
+uv run pytest tests/test_bp5_attributes.py
+
+# Run tests with coverage report
+uv run pytest --cov=src --cov-report=html
+```
+
+The test suite includes comprehensive unit tests for all BP5 functionality modules with mocked ADIOS2 dependencies for fast, reliable testing.
+
 --- 
 
 ## Running the Server with different types of Clients:
@@ -102,7 +126,7 @@ claude add mcp adios -- uv --directory ~/scientific-mcps/Adios run adios-mcp
     "command": "uv",
     "args": [
         "--directory",
-        "path/to/directory/src/adiosmcp/",
+        "path/to/directory/src/",
         "run",
         "server.py"
     ]
@@ -138,20 +162,22 @@ Adios/
 ├── docs/                    # Additional documentation
 │     ├── adios_setup        # Detailed guide on installing the Adios2
 │     └── example_uses       # Example use cases with prompt, answers and pictures
-├── pyproject.toml           # Project metadata & dependencies
 ├── src/                     # Source code directory
-│   └── adiosmcp/
-│       ├── __init__.py      # Package init
-│       ├── server.py        # The MCP server
-│       ├── mcp_handlers.py  # MCP methods
-│       └── capabilities/
-│           ├── __init__.py
-│           ├── bp5_add.py                    # Add variables functionality
-│           ├── bp5_attributes.py             # Inspect attributes functionality
-│           ├── bp5_inspect_variables.py      # Inspect variables functionality
-│           ├── bp5_list.py                   # List BP5 files functionality
-│           ├── bp5_minmax.py                 # Get min/max functionality
-│           ├── bp5_read_all_variables.py     # Read all variables functionality
-│           ├── bp5_read_variable_at_step.py  # Read variable at step functionality
+│   ├── server.py            # The MCP server
+│   ├── mcp_handlers.py      # MCP methods
+│   └── implementation/      # Core functionality modules
+│       ├── __init__.py
+│       ├── bp5_attributes.py                 # Inspect attributes functionality
+│       ├── bp5_inspect_variables.py          # Inspect variables functionality
+│       ├── bp5_inspect_variables_at_step.py  # Inspect variables at step functionality
+│       ├── bp5_list.py                       # List BP5 files functionality
+│       └── bp5_read_variable_at_step.py      # Read variable at step functionality
+├── tests/                   # Test directory
+│   ├── __init__.py
+│   ├── test_bp5_attributes.py                 # Tests for attribute inspection
+│   ├── test_bp5_inspect_variables.py          # Tests for variable inspection
+│   ├── test_bp5_inspect_variables_at_step.py  # Tests for step-specific inspection
+│   ├── test_bp5_list.py                       # Tests for BP5 file listing
+│   └── test_bp5_read_variable_at_step.py      # Tests for reading variables at steps
 ├── uv.lock                  # Dependency lock file
 ```

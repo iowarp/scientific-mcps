@@ -20,8 +20,14 @@ dependencies = [
     "adios2"
 ]
 
+[dependency-groups]
+dev = [
+    "pytest>=8.0.0",
+    "pytest-cov>=4.0.0"
+]
+
 [project.scripts]
-adios-mcp = "adiosmcp.server:main"
+adios-mcp = "server:main"
 
 [tool.setuptools.packages.find]
 where = ["src"]
