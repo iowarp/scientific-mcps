@@ -28,7 +28,7 @@
                     <span class="mcp-category">Analysis & Visualization</span>
                 </div>
             </div>
-            <p class="mcp-description">Create powerful visualizations and plots from CSV data using matplotlib and seaborn. Supports multiple chart types and customization options for scientific data presentation.</p>
+            <p class="mcp-description">Advanced data visualization with comprehensive plotting capabilities for data analysis using matplotlib and seaborn. Supports multiple chart types including line plots, bar plots, scatter plots, histograms, and heatmaps with extensive customization options.</p>
             
             <div class="detail-stats">
                 <div class="stat-card">
@@ -36,11 +36,11 @@
                     <span class="stat-label">Version</span>
                 </div>
                 <div class="stat-card">
-                    <span class="stat-value">4</span>
+                    <span class="stat-value">6</span>
                     <span class="stat-label">Actions</span>
                 </div>
                 <div class="stat-card">
-                    <span class="stat-value">Jan 15</span>
+                    <span class="stat-value">Jul 19</span>
                     <span class="stat-label">Updated</span>
                 </div>
                 <div class="stat-card">
@@ -59,48 +59,75 @@
         <div id="installation" class="tab-content active">
             <h3>Installation Methods</h3>
             
-            <h4>Global Installation</h4>
-            <div class="code-block">uv pip install scientific-mcps</div>
+            <h4>Quick Start</h4>
+            <div class="code-block">cd /path/to/scientific-mcps/Plot
+uv sync && uv run plot-mcp</div>
             
-            <h4>Individual MCP Installation</h4>
-            <div class="code-block">uv pip install "scientific-mcps[plot]"</div>
+            <h4>UV Package Manager</h4>
+            <div class="code-block">uv sync
+uv run plot-mcp</div>
             
-            <h4>Direct Server</h4>
-            <div class="code-block">uv run mcp_plot</div>
+            <h4>Traditional pip</h4>
+            <div class="code-block">pip install -e .
+uv run python -m src.server</div>
             
-            <h4>Claude Desktop Configuration</h4>
+            <h4>Claude Desktop</h4>
             <div class="code-block">{
   "mcpServers": {
-    "plot": {
+    "plot-mcp": {
       "command": "uv",
-      "args": ["run", "mcp_plot"]
+      "args": [
+        "--directory",
+        "path/to/directory/scientific-mcps/Plot/",
+        "run",
+        "plot-mcp"
+      ]
     }
   }
 }</div>
+            
+            <h4>WARP Client</h4>
+            <div class="code-block">MCP:
+  - Plot
+python3 bin/wrp.py --conf=bin/confs/Gemini.yaml</div>
+            
+            <h4>Claude CLI</h4>
+            <div class="code-block">npm install -g @anthropic-ai/claude-code
+claude add mcp plot -- uv --directory ~/scientific-mcps/Plot run plot-mcp</div>
         </div>
 
         <div id="actions" class="tab-content">
             <h3>Available Actions</h3>
             <ul class="actions-list">
                 <li class="action-item">
-                    <div class="action-name">create_plot</div>
-                    <div class="action-description">Create various types of plots from CSV data</div>
-                    <div class="action-params">Parameters: data_file, plot_type, x_column, y_column, title, labels</div>
+                    <div class="action-name">data_info</div>
+                    <div class="action-description">Get detailed information about dataset structure, column types, and basic statistics</div>
+                    <div class="action-params">Parameters: data_file</div>
+                </li>
+                <li class="action-item">
+                    <div class="action-name">line_plot</div>
+                    <div class="action-description">Create line plots for time series data and continuous relationships</div>
+                    <div class="action-params">Parameters: data_file, x_column, y_column, title, save_path</div>
+                </li>
+                <li class="action-item">
+                    <div class="action-name">bar_plot</div>
+                    <div class="action-description">Generate bar charts for categorical data visualization</div>
+                    <div class="action-params">Parameters: data_file, x_column, y_column, title, save_path</div>
                 </li>
                 <li class="action-item">
                     <div class="action-name">scatter_plot</div>
-                    <div class="action-description">Generate scatter plots with customizable markers and colors</div>
-                    <div class="action-params">Parameters: data_file, x_column, y_column, color_column, size_column</div>
+                    <div class="action-description">Create scatter plots to visualize relationships between two continuous variables</div>
+                    <div class="action-params">Parameters: data_file, x_column, y_column, title, save_path</div>
                 </li>
                 <li class="action-item">
-                    <div class="action-name">histogram</div>
-                    <div class="action-description">Create histograms and distribution plots</div>
-                    <div class="action-params">Parameters: data_file, column, bins, normalize, overlay</div>
+                    <div class="action-name">histogram_plot</div>
+                    <div class="action-description">Generate histograms to show distribution of continuous data</div>
+                    <div class="action-params">Parameters: data_file, column, bins, title, save_path</div>
                 </li>
                 <li class="action-item">
-                    <div class="action-name">save_plot</div>
-                    <div class="action-description">Save generated plots to various formats</div>
-                    <div class="action-params">Parameters: plot_object, filename, format, dpi, transparent</div>
+                    <div class="action-name">heatmap_plot</div>
+                    <div class="action-description">Create correlation heatmaps and matrix visualizations</div>
+                    <div class="action-params">Parameters: data_file, title, save_path</div>
                 </li>
             </ul>
         </div>
@@ -108,57 +135,19 @@
         <div id="examples" class="tab-content">
             <h3>Usage Examples</h3>
             
-            <h4>Basic Plotting</h4>
-            <div class="code-block">// Create a line plot
-create_plot(
-  data_file: "experiment_data.csv",
-  plot_type: "line",
-  x_column: "time",
-  y_column: "temperature",
-  title: "Temperature Over Time",
-  labels: {"x": "Time (hours)", "y": "Temperature (°C)"}
-)
-
-// Generate a scatter plot
-scatter_plot(
-  data_file: "measurements.csv",
-  x_column: "pressure",
-  y_column: "volume",
-  color_column: "temperature"
-)
-
-// Create histogram
-histogram(
-  data_file: "results.csv",
-  column: "reaction_time",
-  bins: 20,
-  normalize: true
-)</div>
+            <h4>Create line plot from time series data</h4>
+            <div class="code-block">result = line_plot("/data/temperature.csv", "date", "temperature", "Temperature Trends")</div>
             
-            <h4>Advanced Visualization Workflow</h4>
-            <div class="code-block">// Load and process data with pandas
-load_csv("raw_data.csv")
-filter_data(dataframe, "quality > 0.8")
-
-// Create multiple visualizations
-create_plot(filtered_data, "scatter", "x", "y", "Filtered Results")
-histogram(filtered_data, "measurement", bins=30)
-
-// Save all plots
-save_plot(scatter_plot, "scatter_analysis.png", "png", 300)
-save_plot(histogram, "distribution.pdf", "pdf")</div>
+            <h4>Generate comprehensive data analysis</h4>
+            <div class="code-block">info = data_info("/data/sales.csv")</div>
             
-            <h4>Integration with HPC Workflows</h4>
-            <div class="code-block">// Submit analysis job via Slurm
-submit_job(
-  job_script: "#!/bin/bash\n#SBATCH --job-name=visualization\nmcp_plot analyze_results.py",
-  nodes: 1,
-  tasks: 4
-)
-
-// Create plots from processed results
-create_plot("simulation_output.csv", "heatmap", title="Simulation Results")
-save_plot(plot, "simulation_heatmap.png")</div>
+            <h4>Create multiple visualizations for data exploration</h4>
+            <div class="code-block">scatter = scatter_plot("/data/sales.csv", "price", "quantity", "Price vs Quantity")
+hist = histogram_plot("/data/sales.csv", "revenue", bins=50, "Revenue Distribution")
+heatmap = heatmap_plot("/data/sales.csv", "Sales Correlation Matrix")</div>
+            
+            <h4>Bar chart with automatic data aggregation</h4>
+            <div class="code-block">bar = bar_plot("/data/categories.csv", "category", "sales", "Sales by Category")</div>
         </div>
 
         <div style="margin-top: 2rem; padding: 1rem; background: var(--bg-secondary); border-radius: 8px;">

@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Slurm MCP - Scientific MCPs</title>
-    <meta name="description" content="Job submission and management simulation for HPC environments through the Model Context Protocol.">
+    <meta name="description" content="Comprehensive HPC workload management with job submission, monitoring, and resource allocation through the Model Context Protocol.">
     <link rel="stylesheet" href="../assets/css/style.css">
     <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🔬</text></svg>">
 </head>
@@ -28,7 +28,7 @@
                     <span class="mcp-category">System Management</span>
                 </div>
             </div>
-            <p class="mcp-description">Job submission and management simulation for High-Performance Computing (HPC) environments. Provides Slurm workload manager functionality through the Model Context Protocol.</p>
+            <p class="mcp-description">Comprehensive HPC workload management with job submission, monitoring, and resource allocation. Provides complete Slurm workload manager functionality through the Model Context Protocol.</p>
             
             <div class="detail-stats">
                 <div class="stat-card">
@@ -36,11 +36,11 @@
                     <span class="stat-label">Version</span>
                 </div>
                 <div class="stat-card">
-                    <span class="stat-value">4</span>
+                    <span class="stat-value">12</span>
                     <span class="stat-label">Actions</span>
                 </div>
                 <div class="stat-card">
-                    <span class="stat-value">Jan 15</span>
+                    <span class="stat-value">Jul 19</span>
                     <span class="stat-label">Updated</span>
                 </div>
                 <div class="stat-card">
@@ -59,48 +59,107 @@
         <div id="installation" class="tab-content active">
             <h3>Installation Methods</h3>
             
-            <h4>Global Installation</h4>
-            <div class="code-block">uv pip install scientific-mcps</div>
+            <h4>Quick Start</h4>
+            <div class="code-block">cd /path/to/scientific-mcps/Slurm
+uv sync && uv run slurm-mcp</div>
             
-            <h4>Individual MCP Installation</h4>
-            <div class="code-block">uv pip install "scientific-mcps[slurm]"</div>
+            <h4>UV Package Manager</h4>
+            <div class="code-block">uv sync
+uv run slurm-mcp</div>
             
-            <h4>Direct Server</h4>
-            <div class="code-block">uv run mcp_slurm</div>
+            <h4>Traditional pip</h4>
+            <div class="code-block">pip install -e .
+python -m src.server</div>
             
-            <h4>Claude Desktop Configuration</h4>
+            <h4>Direct Execution</h4>
+            <div class="code-block">uv run slurm-mcp</div>
+            
+            <h4>Claude Desktop</h4>
             <div class="code-block">{
   "mcpServers": {
-    "slurm": {
+    "slurm-mcp": {
       "command": "uv",
-      "args": ["run", "mcp_slurm"]
+      "args": [
+        "--directory",
+        "/path/to/scientific-mcps/Slurm",
+        "run", 
+        "slurm-mcp"
+      ]
     }
   }
 }</div>
+            
+            <h4>WARP Client</h4>
+            <div class="code-block">MCP:
+  - Slurm
+python3 bin/wrp.py --conf=bin/confs/Gemini.yaml</div>
+            
+            <h4>Claude CLI</h4>
+            <div class="code-block">claude add mcp slurm -- uv --directory ~/path/to/scientific-mcps/Slurm run slurm-mcp</div>
         </div>
 
         <div id="actions" class="tab-content">
             <h3>Available Actions</h3>
             <ul class="actions-list">
                 <li class="action-item">
-                    <div class="action-name">submit_job</div>
-                    <div class="action-description">Submit a job to the Slurm queue with specified parameters</div>
-                    <div class="action-params">Parameters: job_script, nodes, tasks, time_limit, partition</div>
+                    <div class="action-name">submit_slurm_job</div>
+                    <div class="action-description">Submit a job to the Slurm queue with comprehensive job parameters</div>
+                    <div class="action-params">Parameters: job_script, job_name, nodes, tasks, time_limit, partition, memory, output_file</div>
                 </li>
                 <li class="action-item">
-                    <div class="action-name">check_status</div>
-                    <div class="action-description">Check the status of submitted jobs</div>
-                    <div class="action-params">Parameters: job_id, user</div>
+                    <div class="action-name">check_job_status</div>
+                    <div class="action-description">Check detailed status of specific jobs or all user jobs</div>
+                    <div class="action-params">Parameters: job_id (optional), user (optional)</div>
                 </li>
                 <li class="action-item">
-                    <div class="action-name">cancel_job</div>
-                    <div class="action-description">Cancel a running or pending job</div>
-                    <div class="action-params">Parameters: job_id, signal</div>
+                    <div class="action-name">cancel_slurm_job</div>
+                    <div class="action-description">Cancel running or pending jobs with optional signal specification</div>
+                    <div class="action-params">Parameters: job_id, signal (optional)</div>
                 </li>
                 <li class="action-item">
-                    <div class="action-name">get_queue</div>
-                    <div class="action-description">Get information about the job queue and partition status</div>
-                    <div class="action-params">Parameters: partition, user</div>
+                    <div class="action-name">list_jobs</div>
+                    <div class="action-description">List all jobs with filtering options by user, state, or partition</div>
+                    <div class="action-params">Parameters: user (optional), state (optional), partition (optional)</div>
+                </li>
+                <li class="action-item">
+                    <div class="action-name">get_job_details</div>
+                    <div class="action-description">Get comprehensive job details including resource usage and timing</div>
+                    <div class="action-params">Parameters: job_id</div>
+                </li>
+                <li class="action-item">
+                    <div class="action-name">get_slurm_info</div>
+                    <div class="action-description">Get general Slurm cluster information and configuration</div>
+                    <div class="action-params">Parameters: None</div>
+                </li>
+                <li class="action-item">
+                    <div class="action-name">get_queue_info</div>
+                    <div class="action-description">Get detailed partition and queue information</div>
+                    <div class="action-params">Parameters: partition (optional)</div>
+                </li>
+                <li class="action-item">
+                    <div class="action-name">get_node_info</div>
+                    <div class="action-description">Get information about cluster nodes and their states</div>
+                    <div class="action-params">Parameters: node_name (optional)</div>
+                </li>
+                <li class="action-item">
+                    <div class="action-name">estimate_job_start</div>
+                    <div class="action-description">Estimate when a pending job will start execution</div>
+                    <div class="action-params">Parameters: job_id</div>
+                </li>
+                <li class="action-item">
+                    <div class="action-name">get_job_efficiency</div>
+                    <div class="action-description">Calculate job efficiency metrics for completed jobs</div>
+                    <div class="action-params">Parameters: job_id</div>
+                </li>
+                <li class="action-item">
+                    <div class="action-name">get_accounting_info</div>
+                    <div class="action-description">Get accounting information for jobs and resource usage</div>
+                    <div class="action-params">Parameters: job_id (optional), user (optional), start_time (optional)</div>
+                </li>
+                <li class="action-item">
+                    <div class="action-name">sacct_query</div>
+                    <div class="action-description">Execute custom sacct queries for detailed job accounting</div>
+                    <div class="action-params">Parameters: query_options</div>
                 </li>
             </ul>
         </div>
@@ -108,38 +167,54 @@
         <div id="examples" class="tab-content">
             <h3>Usage Examples</h3>
             
-            <h4>Job Submission and Management</h4>
-            <div class="code-block">// Submit a parallel job
-submit_job(
-  job_script: "#!/bin/bash\n#SBATCH --job-name=simulation\n#SBATCH --output=result.out\npython simulation.py",
-  nodes: 4,
-  tasks: 16,
-  time_limit: "02:00:00",
-  partition: "compute"
+            <h4>Job Submission</h4>
+            <div class="code-block">submit_slurm_job(script_path="my_job.sh", cores=4, memory="8GB")
+submit_slurm_job(
+    script_path="simulation.sh",
+    cores=16,
+    memory="32GB", 
+    time_limit="02:00:00",
+    partition="compute"
 )
-
-// Check job status
-check_status(job_id: "12345")
-
-// View queue information
-get_queue(partition: "compute")</div>
+submit_slurm_job(
+    script_path="analysis.py",
+    cores=8,
+    memory="16GB",
+    job_name="data_analysis"
+)</div>
             
-            <h4>Workflow Integration</h4>
-            <div class="code-block">// Submit data processing job
-submit_job(
-  job_script: "#!/bin/bash\n#SBATCH --job-name=data_analysis\nmcp_pandas process_data.py",
-  nodes: 2,
-  tasks: 8,
-  time_limit: "01:30:00"
+            <h4>Job Monitoring</h4>
+            <div class="code-block">check_job_status(job_id="12345")
+check_job_status(job_id="67890")</div>
+            
+            <h4>Job Management</h4>
+            <div class="code-block">list_slurm_jobs()
+list_slurm_jobs(user="username", state="RUNNING")
+list_slurm_jobs(state="PENDING")</div>
+            
+            <h4>Array Jobs</h4>
+            <div class="code-block">submit_array_job(
+    script_path="parallel_task.sh",
+    array_range="1-100",
+    cores=2,
+    memory="4GB"
 )
-
-// Monitor until completion
-while (check_status(job_id)["state"] == "RUNNING") {
-  sleep(30);
-}
-
-// Process results with other MCPs
-load_csv("processed_results.csv")</div>
+submit_array_job(
+    script_path="parameter_sweep.py",
+    array_range="1-1000:10",
+    cores=4,
+    memory="8GB",
+    time_limit="01:00:00"
+)</div>
+            
+            <h4>Interactive Sessions</h4>
+            <div class="code-block">allocate_slurm_nodes(nodes=1, cores=4, memory="8GB", time_limit="02:00:00")
+allocate_slurm_nodes(
+    nodes=2,
+    cores=8, 
+    memory="16GB",
+    partition="interactive"
+)</div>
         </div>
 
         <div style="margin-top: 2rem; padding: 1rem; background: var(--bg-secondary); border-radius: 8px;">

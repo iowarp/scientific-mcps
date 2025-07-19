@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Pandas MCP - Scientific MCPs</title>
-    <meta name="description" content="Load, filter, and manipulate CSV data using pandas through the Model Context Protocol.">
+    <title>Jarvis MCP - Scientific MCPs</title>
+    <meta name="description" content="HPC ecosystem management with package discovery, repository management, and resource monitoring.">
     <link rel="stylesheet" href="../assets/css/style.css">
     <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🔬</text></svg>">
 </head>
@@ -22,13 +22,13 @@
     <main class="main-content" style="grid-template-columns: 1fr; max-width: 1000px;">
         <div class="detail-header">
             <div class="detail-title">
-                <div class="mcp-icon">🐼</div>
+                <div class="mcp-icon">🤖</div>
                 <div>
-                    <h1>Pandas</h1>
-                    <span class="mcp-category">Data Processing</span>
+                    <h1>Jarvis</h1>
+                    <span class="mcp-category">System Management</span>
                 </div>
             </div>
-            <p class="mcp-description">Load, filter, and manipulate CSV data using pandas through the Model Context Protocol. Provides powerful data analysis capabilities for scientific computing workflows.</p>
+            <p class="mcp-description">HPC ecosystem management with package discovery, repository management, and resource monitoring. Provides comprehensive tools for managing HPC software environments.</p>
             
             <div class="detail-stats">
                 <div class="stat-card">
@@ -36,11 +36,11 @@
                     <span class="stat-label">Version</span>
                 </div>
                 <div class="stat-card">
-                    <span class="stat-value">4</span>
+                    <span class="stat-value">5</span>
                     <span class="stat-label">Actions</span>
                 </div>
                 <div class="stat-card">
-                    <span class="stat-value">Jan 15</span>
+                    <span class="stat-value">Jul 19</span>
                     <span class="stat-label">Updated</span>
                 </div>
                 <div class="stat-card">
@@ -59,48 +59,70 @@
         <div id="installation" class="tab-content active">
             <h3>Installation Methods</h3>
             
-            <h4>Global Installation</h4>
-            <div class="code-block">uv pip install scientific-mcps</div>
+            <h4>Quick Start</h4>
+            <div class="code-block">cd /path/to/scientific-mcps/Jarvis
+uv sync && uv run jarvis-mcp</div>
             
-            <h4>Individual MCP Installation</h4>
-            <div class="code-block">uv pip install "scientific-mcps[pandas]"</div>
+            <h4>UV Package Manager</h4>
+            <div class="code-block">uv sync
+uv run jarvis-mcp</div>
             
-            <h4>Direct Server</h4>
-            <div class="code-block">uv run mcp_pandas</div>
+            <h4>Traditional pip</h4>
+            <div class="code-block">pip install -e .
+cd src && python server.py</div>
             
-            <h4>Claude Desktop Configuration</h4>
+            <h4>Direct Execution</h4>
+            <div class="code-block">uv run jarvis-mcp
+cd src && python server.py</div>
+            
+            <h4>Claude Desktop</h4>
             <div class="code-block">{
   "mcpServers": {
-    "pandas": {
+    "jarvis-mcp": {
       "command": "uv",
-      "args": ["run", "mcp_pandas"]
+      "args": [
+        "--directory",
+        "/path/to/scientific-mcps/Jarvis",
+        "run", 
+        "jarvis-mcp"
+      ]
     }
   }
 }</div>
+            
+            <h4>WARP Client</h4>
+            <div class="code-block">MCP:
+  - Jarvis
+python3 bin/wrp.py --conf=bin/confs/Gemini.yaml</div>
         </div>
 
         <div id="actions" class="tab-content">
             <h3>Available Actions</h3>
             <ul class="actions-list">
                 <li class="action-item">
-                    <div class="action-name">load_csv</div>
-                    <div class="action-description">Load CSV files into pandas DataFrames for analysis</div>
-                    <div class="action-params">Parameters: file_path, separator, header_row</div>
+                    <div class="action-name">get_all_packages</div>
+                    <div class="action-description">Get comprehensive list of all available packages in Jarvis ecosystem</div>
+                    <div class="action-params">Parameters: None</div>
                 </li>
                 <li class="action-item">
-                    <div class="action-name">filter_data</div>
-                    <div class="action-description">Filter DataFrame rows based on conditions</div>
-                    <div class="action-params">Parameters: dataframe, filter_condition, columns</div>
+                    <div class="action-name">get_package_info</div>
+                    <div class="action-description">Get detailed information about specific packages including dependencies and versions</div>
+                    <div class="action-params">Parameters: package_name</div>
                 </li>
                 <li class="action-item">
-                    <div class="action-name">get_info</div>
-                    <div class="action-description">Get detailed information about DataFrame structure</div>
-                    <div class="action-params">Parameters: dataframe</div>
+                    <div class="action-name">get_all_repos</div>
+                    <div class="action-description">Get list of all configured repositories in the system</div>
+                    <div class="action-params">Parameters: None</div>
                 </li>
                 <li class="action-item">
-                    <div class="action-name">describe</div>
-                    <div class="action-description">Generate descriptive statistics for numerical columns</div>
-                    <div class="action-params">Parameters: dataframe, include_columns</div>
+                    <div class="action-name">modify_repo</div>
+                    <div class="action-description">Modify repository configuration and settings</div>
+                    <div class="action-params">Parameters: repo_name, action, config</div>
+                </li>
+                <li class="action-item">
+                    <div class="action-name">get_resource_status</div>
+                    <div class="action-description">Get current status of HPC resources and system health</div>
+                    <div class="action-params">Parameters: resource_type</div>
                 </li>
             </ul>
         </div>
@@ -108,28 +130,41 @@
         <div id="examples" class="tab-content">
             <h3>Usage Examples</h3>
             
-            <h4>Loading and Analyzing Data</h4>
-            <div class="code-block">// Load a CSV file
-load_csv("data/experiments.csv", ",", 0)
-
-// Get basic information
-get_info(dataframe)
-
-// Filter data for specific conditions
-filter_data(dataframe, "temperature > 25", ["temperature", "pressure"])
-
-// Generate descriptive statistics
-describe(dataframe, ["temperature", "pressure", "volume"])</div>
+            <h4>Package Discovery</h4>
+            <div class="code-block">get_all_packages()
+get_all_packages(package_type="application")
+get_all_packages(repository_filter="custom_repo")
+get_all_packages(sort_by="popularity")
+get_all_packages(include_descriptions=True, sort_by="name")</div>
             
-            <h4>Integration with Other MCPs</h4>
-            <div class="code-block">// Load data with pandas
-load_csv("experiment_results.csv")
-
-// Create visualization with plot MCP
-create_plot(dataframe, "scatter", "temperature", "pressure")
-
-// Export processed data
-save_csv(filtered_data, "processed_results.csv")</div>
+            <h4>Package Information</h4>
+            <div class="code-block">get_package_info("incompact3d")
+get_package_info(
+    "incompact3d",
+    return_config_params=True,
+    return_examples=True,
+    return_dependencies=True
+)
+get_package_info(
+    "ior",
+    return_description=True,
+    return_outputs=True,
+    return_performance_notes=True,
+    summary_level="comprehensive"
+)</div>
+            
+            <h4>Repository Management</h4>
+            <div class="code-block">get_all_repos(include_health_status=True, include_package_counts=True)
+get_all_repos(show_priority_order=True)
+modify_repo(
+    repo_name="custom_tools",
+    operation="add",
+    repo_path="/path/to/custom_tools"
+)
+modify_repo(
+    repo_name="custom_tools", 
+    operation="promote"
+)</div>
         </div>
 
         <div style="margin-top: 2rem; padding: 1rem; background: var(--bg-secondary); border-radius: 8px;">

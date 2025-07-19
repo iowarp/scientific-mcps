@@ -27,10 +27,10 @@ const mcpData = {
   "pandas": {
     name: "Pandas",
     category: "Data Processing",
-    description: "Load, filter, and manipulate CSV data using pandas",
+    description: "Comprehensive data analysis with statistical operations, cleaning, transformations, and time series analysis",
     icon: "🐼",
-    actions: ["load_csv", "filter_data", "get_info", "describe"],
-    stats: { version: "1.0.0", updated: "2024-01-15" }
+    actions: ["load_csv", "get_info", "describe_data", "filter_data", "sort_data", "group_data", "merge_data", "pivot_data", "clean_data", "handle_missing", "detect_outliers", "correlation_analysis", "time_series_analysis", "resample_data", "export_data"],
+    stats: { version: "1.0.0", updated: "2025-07-19" }
   },
   "parquet": {
     name: "Parquet",
@@ -43,10 +43,10 @@ const mcpData = {
   "plot": {
     name: "Plot",
     category: "Analysis & Visualization",
-    description: "Create visualizations and plots from CSV data",
+    description: "Advanced data visualization with comprehensive plotting capabilities for data analysis",
     icon: "📈",
-    actions: ["create_plot", "scatter_plot", "histogram", "save_plot"],
-    stats: { version: "1.0.0", updated: "2024-01-15" }
+    actions: ["data_info", "line_plot", "bar_plot", "scatter_plot", "histogram_plot", "heatmap_plot"],
+    stats: { version: "1.0.0", updated: "2025-07-19" }
   },
   "darshan": {
     name: "Darshan",
@@ -59,10 +59,10 @@ const mcpData = {
   "slurm": {
     name: "Slurm",
     category: "System Management",
-    description: "Job submission and management simulation for HPC environments",
+    description: "Comprehensive HPC workload management with job submission, monitoring, and resource allocation",
     icon: "🖥️",
-    actions: ["submit_job", "check_status", "cancel_job", "get_queue"],
-    stats: { version: "1.0.0", updated: "2024-01-15" }
+    actions: ["submit_slurm_job", "check_job_status", "cancel_slurm_job", "list_jobs", "get_job_details", "get_slurm_info", "get_queue_info", "get_node_info", "estimate_job_start", "get_job_efficiency", "get_accounting_info", "sacct_query"],
+    stats: { version: "1.0.0", updated: "2025-07-19" }
   },
   "lmod": {
     name: "Lmod",
@@ -75,10 +75,10 @@ const mcpData = {
   "node_hardware": {
     name: "Node Hardware",
     category: "System Management",
-    description: "CPU core and hardware information reporting",
+    description: "Comprehensive system monitoring and hardware information with remote node support and health checks",
     icon: "💻",
-    actions: ["get_cores", "get_memory", "get_info"],
-    stats: { version: "1.0.0", updated: "2024-01-15" }
+    actions: ["get_node_info", "get_remote_node_info", "health_check"],
+    stats: { version: "1.0.0", updated: "2025-07-19" }
   },
   "compression": {
     name: "Compression",
@@ -98,11 +98,11 @@ const mcpData = {
   },
   "jarvis": {
     name: "Jarvis",
-    category: "Utilities",
-    description: "Data pipeline management and workflow automation",
+    category: "System Management",
+    description: "HPC ecosystem management with package discovery, repository management, and resource monitoring",
     icon: "🤖",
-    actions: ["create_pipeline", "run_workflow", "get_status", "manage_data"],
-    stats: { version: "1.0.0", updated: "2024-01-15" }
+    actions: ["get_all_packages", "get_package_info", "get_all_repos", "modify_repo", "get_resource_status"],
+    stats: { version: "1.0.0", updated: "2025-07-19" }
   }
 };
 
@@ -111,8 +111,8 @@ const categories = {
   "All": { count: Object.keys(mcpData).length, color: "#6b7280" },
   "Data Processing": { count: 5, color: "#3b82f6" },
   "Analysis & Visualization": { count: 2, color: "#10b981" },
-  "System Management": { count: 3, color: "#f59e0b" },
-  "Utilities": { count: 3, color: "#ef4444" }
+  "System Management": { count: 4, color: "#f59e0b" },
+  "Utilities": { count: 2, color: "#ef4444" }
 };
 
 // DOM elements
