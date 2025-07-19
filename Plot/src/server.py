@@ -21,7 +21,11 @@ sys.path.insert(0, os.path.dirname(__file__))
 # Load environment variables
 load_dotenv()
 
-import mcp_handlers
+# Import implementation module directly
+from implementation.plot_capabilities import (
+    create_line_plot, create_bar_plot, create_scatter_plot, 
+    create_histogram, create_heatmap, get_data_info
+)
 
 # Initialize MCP server
 mcp = FastMCP("PlotServer")
@@ -55,7 +59,7 @@ async def line_plot_tool(
         - visualization_stats: Metrics about data points and trends
     """
     logger.info(f"Creating line plot from {file_path}")
-    return mcp_handlers.line_plot_handler(file_path, x_column, y_column, title, output_path)
+    return create_line_plot(file_path, x_column, y_column, title, output_path)
 
 @mcp.tool(
     name="bar_plot",
@@ -86,7 +90,7 @@ async def bar_plot_tool(
         - visualization_stats: Metrics about data distribution and categories
     """
     logger.info(f"Creating bar plot from {file_path}")
-    return mcp_handlers.bar_plot_handler(file_path, x_column, y_column, title, output_path)
+    return create_bar_plot(file_path, x_column, y_column, title, output_path)
 
 @mcp.tool(
     name="scatter_plot",
@@ -117,7 +121,7 @@ async def scatter_plot_tool(
         - file_details: Information about the output file size and location
     """
     logger.info(f"Creating scatter plot from {file_path}")
-    return mcp_handlers.scatter_plot_handler(file_path, x_column, y_column, title, output_path)
+    return create_scatter_plot(file_path, x_column, y_column, title, output_path)
 
 @mcp.tool(
     name="histogram_plot",
@@ -148,7 +152,7 @@ async def histogram_plot_tool(
         - file_details: Information about the output file size and location
     """
     logger.info(f"Creating histogram from {file_path}")
-    return mcp_handlers.histogram_plot_handler(file_path, column, bins, title, output_path)
+    return create_histogram(file_path, column, bins, title, output_path)
 
 @mcp.tool(
     name="heatmap_plot",
@@ -175,7 +179,7 @@ async def heatmap_plot_tool(
         - file_details: Information about the output file size and location
     """
     logger.info(f"Creating heatmap from {file_path}")
-    return mcp_handlers.heatmap_plot_handler(file_path, title, output_path)
+    return create_heatmap(file_path, title, output_path)
 
 @mcp.tool(
     name="data_info",
@@ -196,15 +200,20 @@ async def data_info_tool(file_path: str) -> dict:
         - visualization_recommendations: Suggested plot types based on data characteristics
     """
     logger.info(f"Getting data info for {file_path}")
-    return mcp_handlers.data_info_handler(file_path)
+    return get_data_info(file_path)
 
 def main():
     """
     Main entry point for the Plot MCP server.
     Supports both stdio and SSE transports based on environment variables.
     """
+    # Handle 'help' command (without dashes) by converting to --help
+    if len(sys.argv) > 1 and sys.argv[1] == "help":
+        sys.argv[1] = "--help"
+    
     parser = argparse.ArgumentParser(
-        description="Plot MCP Server - Data visualization server with comprehensive plotting capabilities"
+        description="Plot MCP Server - Data visualization server with comprehensive plotting capabilities",
+        prog="plot-mcp"
     )
     parser.add_argument(
         "--version", 

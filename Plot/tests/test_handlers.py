@@ -10,15 +10,15 @@ import pandas as pd
 from pathlib import Path
 
 # Add src to path using relative path
-sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..', 'src', 'plot'))
+sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..'))
 
-from mcp_handlers import (
-    data_info_handler,
-    line_plot_handler,
-    bar_plot_handler,
-    scatter_plot_handler,
-    histogram_plot_handler,
-    heatmap_plot_handler
+from src.implementation.plot_capabilities import (
+    get_data_info,
+    create_line_plot,
+    create_bar_plot,
+    create_scatter_plot,
+    create_histogram,
+    create_heatmap
 )
 
 
@@ -53,10 +53,10 @@ def output_dir():
         yield temp_dir
 
 
-def test_data_info_handler_success(sample_csv_file):
-    """Test data_info_handler with valid file."""
+def test_get_data_info_success(sample_csv_file):
+    """Test get_data_info with valid file."""
     print("\n=== Testing Data Info Handler Success ===")
-    result = data_info_handler(sample_csv_file)
+    result = get_data_info(sample_csv_file)
     print("Handler result:", result)
     
     assert result["status"] == "success"
@@ -68,22 +68,22 @@ def test_data_info_handler_success(sample_csv_file):
     assert "city" in result["columns"]
 
 
-def test_data_info_handler_error():
-    """Test data_info_handler with invalid file."""
+def test_get_data_info_error():
+    """Test get_data_info with invalid file."""
     print("\n=== Testing Data Info Handler Error ===")
-    result = data_info_handler("nonexistent_file.csv")
+    result = get_data_info("nonexistent_file.csv")
     print("Error result:", result)
     
     assert result["status"] == "error"
     assert "error" in result
 
 
-def test_line_plot_handler_success(sample_csv_file, output_dir):
-    """Test line_plot_handler with valid parameters."""
+def test_create_line_plot_success(sample_csv_file, output_dir):
+    """Test create_line_plot with valid parameters."""
     print("\n=== Testing Line Plot Handler Success ===")
     output_path = os.path.join(output_dir, "handler_line_plot.png")
     
-    result = line_plot_handler(
+    result = create_line_plot(
         sample_csv_file, "timestamp", "temperature", "Temperature Over Time", output_path
     )
     print("Handler result:", result)
@@ -96,12 +96,12 @@ def test_line_plot_handler_success(sample_csv_file, output_dir):
     assert os.path.exists(output_path)
 
 
-def test_line_plot_handler_invalid_column(sample_csv_file, output_dir):
-    """Test line_plot_handler with invalid column."""
+def test_create_line_plot_invalid_column(sample_csv_file, output_dir):
+    """Test create_line_plot with invalid column."""
     print("\n=== Testing Line Plot Handler Invalid Column ===")
     output_path = os.path.join(output_dir, "handler_line_plot_error.png")
     
-    result = line_plot_handler(
+    result = create_line_plot(
         sample_csv_file, "invalid_column", "temperature", "Test Plot", output_path
     )
     print("Error result:", result)
@@ -110,12 +110,12 @@ def test_line_plot_handler_invalid_column(sample_csv_file, output_dir):
     assert "error" in result
 
 
-def test_bar_plot_handler_success(sample_csv_file, output_dir):
-    """Test bar_plot_handler with valid parameters."""
+def test_create_bar_plot_success(sample_csv_file, output_dir):
+    """Test create_bar_plot with valid parameters."""
     print("\n=== Testing Bar Plot Handler Success ===")
     output_path = os.path.join(output_dir, "handler_bar_plot.png")
     
-    result = bar_plot_handler(
+    result = create_bar_plot(
         sample_csv_file, "city", "temperature", "Temperature by City", output_path
     )
     print("Handler result:", result)
@@ -128,12 +128,12 @@ def test_bar_plot_handler_success(sample_csv_file, output_dir):
     assert os.path.exists(output_path)
 
 
-def test_scatter_plot_handler_success(sample_csv_file, output_dir):
-    """Test scatter_plot_handler with valid parameters."""
+def test_create_scatter_plot_success(sample_csv_file, output_dir):
+    """Test create_scatter_plot with valid parameters."""
     print("\n=== Testing Scatter Plot Handler Success ===")
     output_path = os.path.join(output_dir, "handler_scatter_plot.png")
     
-    result = scatter_plot_handler(
+    result = create_scatter_plot(
         sample_csv_file, "temperature", "humidity", "Temperature vs Humidity", output_path
     )
     print("Handler result:", result)
@@ -146,12 +146,12 @@ def test_scatter_plot_handler_success(sample_csv_file, output_dir):
     assert os.path.exists(output_path)
 
 
-def test_histogram_plot_handler_success(sample_csv_file, output_dir):
-    """Test histogram_plot_handler with valid parameters."""
+def test_create_histogram_success(sample_csv_file, output_dir):
+    """Test create_histogram with valid parameters."""
     print("\n=== Testing Histogram Plot Handler Success ===")
     output_path = os.path.join(output_dir, "handler_histogram.png")
     
-    result = histogram_plot_handler(
+    result = create_histogram(
         sample_csv_file, "temperature", 15, "Temperature Distribution", output_path
     )
     print("Handler result:", result)
@@ -164,12 +164,12 @@ def test_histogram_plot_handler_success(sample_csv_file, output_dir):
     assert os.path.exists(output_path)
 
 
-def test_heatmap_plot_handler_success(sample_csv_file, output_dir):
-    """Test heatmap_plot_handler with valid parameters."""
+def test_create_heatmap_success(sample_csv_file, output_dir):
+    """Test create_heatmap with valid parameters."""
     print("\n=== Testing Heatmap Plot Handler Success ===")
     output_path = os.path.join(output_dir, "handler_heatmap.png")
     
-    result = heatmap_plot_handler(
+    result = create_heatmap(
         sample_csv_file, "Weather Data Correlation", output_path
     )
     print("Handler result:", result)
@@ -181,12 +181,12 @@ def test_heatmap_plot_handler_success(sample_csv_file, output_dir):
     assert os.path.exists(output_path)
 
 
-def test_heatmap_plot_handler_file_not_found(output_dir):
-    """Test heatmap_plot_handler with file not found."""
+def test_create_heatmap_file_not_found(output_dir):
+    """Test create_heatmap with file not found."""
     print("\n=== Testing Heatmap Plot Handler File Not Found ===")
     output_path = os.path.join(output_dir, "handler_heatmap_error.png")
     
-    result = heatmap_plot_handler(
+    result = create_heatmap(
         "nonexistent_file.csv", "Test Heatmap", output_path
     )
     print("Error result:", result)

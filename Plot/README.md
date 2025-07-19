@@ -1,4 +1,8 @@
 # Plot MCP Server
+[![Python](https://img.shields.io/badge/python-3.10+-blue.svg)](https://www.python.org/downloads/)
+[![UV](https://img.shields.io/badge/uv-package%20manager-green.svg)](https://docs.astral.sh/uv/)
+[![MCP](https://img.shields.io/badge/MCP-Model%20Context%20Protocol-orange.svg)](https://github.com/modelcontextprotocol)
+[![License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 
 A comprehensive Model Context Protocol (MCP) server for advanced data visualization and plotting operations. This server enables LLMs to create professional-quality plots from various data sources with support for multiple plot types, data formats, and intelligent data handling.
 
@@ -21,7 +25,6 @@ A comprehensive Model Context Protocol (MCP) server for advanced data visualizat
 
 - **Standardized MCP Interface**  
   Exposes all functionality via the MCP JSON-RPC protocol for seamless integration with language models.
-
 
 ## Capabilities
 
@@ -66,7 +69,11 @@ pip install -e .
 **Run the MCP Server directly:**
 
    ```bash
+   # Using uv (recommended)
    uv run plot-mcp
+   
+   # Or run the server module directly
+   uv run python -m src.server
    ```
    
    This will create a `.venv/` folder, install all required packages, and run the server directly.
@@ -172,26 +179,28 @@ claude add mcp plot -- uv --directory ~/scientific-mcps/Plot run plot-mcp
 ```text
 Plot/
 ├── pyproject.toml                 # Project metadata & dependencies
+├── pytest.ini                    # Test configuration
 ├── README.md                      # Project documentation
 ├── capability_test.py             # Comprehensive functionality tests
+├── uv.lock                        # Dependency lock file
 ├── data/                          # Sample data directory
 │   ├── temperature.csv           # Global temperature data (48,470 records)
 │   └── sample_data.csv           # Simple test data (10 records)
 ├── output/                        # Generated plots directory
-├── src/                           # Source code directory
-│   └── plot/                      # Main package directory
-│       ├── __init__.py            # Package init
-│       ├── server.py              # Main MCP server with FastMCP
-│       ├── mcp_handlers.py        # MCP protocol handlers
-│       └── capabilities/          # Individual capability modules
-│           ├── __init__.py
-│           └── plot_capabilities.py # Core plotting functions
-├── tests/                         # Test suite
+├── src/                           # Source code directory (restructured)
+│   ├── __init__.py                # Package init
+│   ├── server.py                  # Main MCP server with FastMCP and direct implementation calls
+│   └── implementation/            # Implementation modules
+│       ├── __init__.py
+│       └── plot_capabilities.py   # Core plotting functions
+├── tests/                         # Comprehensive test suite
 │   ├── __init__.py
-│   ├── test_capabilities.py       # Unit tests for capabilities
-│   ├── test_mcp_handlers.py       # Integration tests for MCP handlers
-│   └── test_server.py             # Server tests
-└── uv.lock                        # Dependency lock file
+│   ├── test_capabilities.py       # Unit tests for plotting capabilities
+│   ├── test_handlers.py           # Tests for plotting functions
+│   ├── test_integration.py        # Integration tests
+│   ├── test_plot_mcp.py           # Plot-specific MCP tests
+│   └── test_server.py             # Server functionality tests
+└── .venv/                         # Virtual environment (created by uv sync)
 ```
 
 ## Data Types Support
@@ -215,17 +224,21 @@ Supported plot types with advanced features:
 
 ## Testing
 
-### Run Capability Tests
+### Run Full Test Suite
 ```bash
-uv run python capability_test.py
-```
-
-### Run Unit Tests
-```bash
+# Run all unit and integration tests
 uv run pytest tests/ -v
-```
 
-All tests pass with zero warnings, ensuring reliable functionality across all plotting capabilities.
+# Run specific test files
+uv run pytest tests/test_capabilities.py -v     # Core plotting functionality tests
+uv run pytest tests/test_handlers.py -v        # MCP handler tests
+uv run pytest tests/test_integration.py -v     # Integration tests
+uv run pytest tests/test_plot_mcp.py -v        # Plot-specific MCP tests
+uv run pytest tests/test_server.py -v          # Server functionality tests
+
+# Run tests with coverage
+uv run pytest tests/ --cov=src --cov-report=html
+```
 
 ## Error Handling
 
@@ -253,7 +266,17 @@ Key dependencies managed through `pyproject.toml`:
 - `matplotlib>=3.6.0` - Primary plotting library for visualization
 - `seaborn>=0.12.0` - Statistical visualization enhancements
 - `openpyxl>=3.0.0` - Excel file support (.xlsx)
-- `pytest>=7.2.0` - Testing framework
+- `numpy<2.0.0` - Numerical computing (version pinned for compatibility)
+- `rich>=13.0.0` - Rich text and beautiful formatting
+- `tabulate>=0.9.0` - Table formatting utilities
+- `pytest>=7.2.0` - Testing framework with comprehensive test coverage
+
+### Development Dependencies
+- `pytest-cov>=4.0.0` - Test coverage reporting
+- `black>=23.0.0` - Code formatting
+- `isort>=5.12.0` - Import sorting
+- `mypy>=1.7.0` - Type checking
+- `ruff>=0.1.0` - Fast Python linter
 
 ## Contributing
 

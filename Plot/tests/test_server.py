@@ -11,15 +11,15 @@ import asyncio
 from pathlib import Path
 
 # Add src to path using relative path
-sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..', 'src', 'plot'))
+sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..'))
 
-from mcp_handlers import (
-    line_plot_handler,
-    bar_plot_handler,
-    scatter_plot_handler,
-    histogram_plot_handler,
-    heatmap_plot_handler,
-    data_info_handler
+from src.implementation.plot_capabilities import (
+    create_line_plot,
+    create_bar_plot,
+    create_scatter_plot,
+    create_histogram,
+    create_heatmap,
+    get_data_info
 )
 
 
@@ -54,10 +54,10 @@ def output_dir():
 
 
 
-def test_data_info_handler_success(sample_csv_file):
-    """Test data_info_handler with valid file."""
+def test_get_data_info_success(sample_csv_file):
+    """Test get_data_info with valid file."""
     print("\n=== Testing Data Info Tool Success ===")
-    result = data_info_handler(sample_csv_file)
+    result = get_data_info(sample_csv_file)
     print("Tool result:", result)
     
     assert result["status"] == "success"
@@ -69,10 +69,10 @@ def test_data_info_handler_success(sample_csv_file):
 
 
 
-def test_data_info_handler_error():
-    """Test data_info_handler with invalid file."""
+def test_get_data_info_error():
+    """Test get_data_info with invalid file."""
     print("\n=== Testing Data Info Tool Error ===")
-    result = data_info_handler("nonexistent_file.csv")
+    result = get_data_info("nonexistent_file.csv")
     print("Error result:", result)
     
     assert result["status"] == "error"
@@ -80,12 +80,12 @@ def test_data_info_handler_error():
 
 
 
-def test_line_plot_handler_success(sample_csv_file, output_dir):
-    """Test line_plot_handler with valid parameters."""
+def test_create_line_plot_success(sample_csv_file, output_dir):
+    """Test create_line_plot with valid parameters."""
     print("\n=== Testing Create Line Plot Tool Success ===")
     output_path = os.path.join(output_dir, "tool_line_plot.png")
     
-    result = line_plot_handler(
+    result = create_line_plot(
         sample_csv_file, "date", "sales", "Sales Over Time", output_path
     )
     print("Tool result:", result)
@@ -99,11 +99,11 @@ def test_line_plot_handler_success(sample_csv_file, output_dir):
 
 
 
-def test_line_plot_handler_default_params(sample_csv_file):
-    """Test line_plot_handler with default parameters."""
+def test_create_line_plot_default_params(sample_csv_file):
+    """Test create_line_plot with default parameters."""
     print("\n=== Testing Create Line Plot Tool Default Params ===")
     
-    result = line_plot_handler(sample_csv_file, "date", "sales")
+    result = create_line_plot(sample_csv_file, "date", "sales")
     print("Tool result:", result)
     
     assert result["status"] == "success"
@@ -119,12 +119,12 @@ def test_line_plot_handler_default_params(sample_csv_file):
 
 
 
-def test_bar_plot_handler_success(sample_csv_file, output_dir):
-    """Test bar_plot_handler with valid parameters."""
+def test_create_bar_plot_success(sample_csv_file, output_dir):
+    """Test create_bar_plot with valid parameters."""
     print("\n=== Testing Create Bar Plot Tool Success ===")
     output_path = os.path.join(output_dir, "tool_bar_plot.png")
     
-    result = bar_plot_handler(
+    result = create_bar_plot(
         sample_csv_file, "region", "sales", "Sales by Region", output_path
     )
     print("Tool result:", result)
@@ -138,12 +138,12 @@ def test_bar_plot_handler_success(sample_csv_file, output_dir):
 
 
 
-def test_scatter_plot_handler_success(sample_csv_file, output_dir):
-    """Test scatter_plot_handler with valid parameters."""
+def test_create_scatter_plot_success(sample_csv_file, output_dir):
+    """Test create_scatter_plot with valid parameters."""
     print("\n=== Testing Create Scatter Plot Tool Success ===")
     output_path = os.path.join(output_dir, "tool_scatter_plot.png")
     
-    result = scatter_plot_handler(
+    result = create_scatter_plot(
         sample_csv_file, "sales", "profit", "Sales vs Profit", output_path
     )
     print("Tool result:", result)
@@ -157,12 +157,12 @@ def test_scatter_plot_handler_success(sample_csv_file, output_dir):
 
 
 
-def test_histogram_plot_handler_success(sample_csv_file, output_dir):
-    """Test histogram_plot_handler with valid parameters."""
+def test_create_histogram_success(sample_csv_file, output_dir):
+    """Test create_histogram with valid parameters."""
     print("\n=== Testing Create Histogram Tool Success ===")
     output_path = os.path.join(output_dir, "tool_histogram.png")
     
-    result = histogram_plot_handler(
+    result = create_histogram(
         sample_csv_file, "sales", 20, "Sales Distribution", output_path
     )
     print("Tool result:", result)
@@ -176,12 +176,12 @@ def test_histogram_plot_handler_success(sample_csv_file, output_dir):
 
 
 
-def test_histogram_plot_handler_default_bins(sample_csv_file, output_dir):
-    """Test histogram_plot_handler with default bins parameter."""
+def test_create_histogram_default_bins(sample_csv_file, output_dir):
+    """Test create_histogram with default bins parameter."""
     print("\n=== Testing Create Histogram Tool Default Bins ===")
     output_path = os.path.join(output_dir, "tool_histogram_default.png")
     
-    result = histogram_plot_handler(
+    result = create_histogram(
         sample_csv_file, "sales", title="Sales Distribution", output_path=output_path
     )
     print("Tool result:", result)
@@ -195,12 +195,12 @@ def test_histogram_plot_handler_default_bins(sample_csv_file, output_dir):
 
 
 
-def test_heatmap_plot_handler_success(sample_csv_file, output_dir):
-    """Test heatmap_plot_handler with valid parameters."""
+def test_create_heatmap_success(sample_csv_file, output_dir):
+    """Test create_heatmap with valid parameters."""
     print("\n=== Testing Create Heatmap Tool Success ===")
     output_path = os.path.join(output_dir, "tool_heatmap.png")
     
-    result = heatmap_plot_handler(
+    result = create_heatmap(
         sample_csv_file, "Sales Data Correlation", output_path
     )
     print("Tool result:", result)
@@ -213,11 +213,11 @@ def test_heatmap_plot_handler_success(sample_csv_file, output_dir):
 
 
 
-def test_heatmap_plot_handler_default_params(sample_csv_file):
-    """Test heatmap_plot_handler with default parameters."""
+def test_create_heatmap_default_params(sample_csv_file):
+    """Test create_heatmap with default parameters."""
     print("\n=== Testing Create Heatmap Tool Default Params ===")
     
-    result = heatmap_plot_handler(sample_csv_file)
+    result = create_heatmap(sample_csv_file)
     print("Tool result:", result)
     
     assert result["status"] == "success"
@@ -236,7 +236,7 @@ def test_handler_error_handling():
     print("\n=== Testing Tool Error Handling ===")
     
     # Test with non-existent file
-    result = line_plot_handler("nonexistent_file.csv", "x", "y")
+    result = create_line_plot("nonexistent_file.csv", "x", "y")
     assert result["status"] == "error"
     assert "error" in result
     
@@ -248,7 +248,7 @@ def test_handler_error_handling():
         csv_file = f.name
     
     try:
-        result = line_plot_handler(csv_file, "invalid_column", "b")
+        result = create_line_plot(csv_file, "invalid_column", "b")
         assert result["status"] == "error"
         assert "error" in result
     finally:

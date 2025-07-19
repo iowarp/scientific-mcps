@@ -10,9 +10,9 @@ import pandas as pd
 from pathlib import Path
 
 # Add src to path using relative path
-sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..', 'src', 'plot'))
+sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..'))
 
-from capabilities.plot_capabilities import (
+from src.implementation.plot_capabilities import (
     load_data,
     get_data_info,
     create_line_plot,
