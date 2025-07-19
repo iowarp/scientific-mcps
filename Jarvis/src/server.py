@@ -21,7 +21,7 @@ from typing import Optional
 load_dotenv()
 
 # Import Phase 1 discoverability tools
-from jarvis_mcp.capabilities.discoverability import (
+from src.implementation.discoverability import (
     get_all_packages,
     get_package_info,
     get_list_repos,
@@ -31,7 +31,7 @@ from jarvis_mcp.capabilities.discoverability import (
 )
 
 # Import data models
-from jarvis_mcp.capabilities.models import (
+from src.implementation.models import (
     PackageCatalog,
     PackageInformation,
     RepositoryStatus,
