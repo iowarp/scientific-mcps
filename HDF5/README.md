@@ -77,7 +77,7 @@ claude add mcp jarvis -- uv --directory ~/scientific-mcps/Jarvis run jarvis-mcp
     "command": "uv",
     "args": [
         "--directory",
-        "path/to/directory/src/jarvis_mcp/",
+        "path/to/directory/src/hdf5/",
         "run",
         "server.py"
     ]

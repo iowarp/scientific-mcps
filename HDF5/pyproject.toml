@@ -10,9 +10,7 @@ requires-python = "==3.12.0"
 keywords = ["MCP", "JSON-RPC", "FastAPI", "HDF5"]
 license = "MIT"
 authors = [
-  { name = "shazzadul", email = "sislam6@hawk.iit.edu" },
-  { name ="Soham Sonar", email = "ssonar2@hawk.iit.edu"},
-  { name ="Aum Sathwara", email = "asathwara@hawk.iit.edu"}
+  { name = "IoWarp Scientific MCPs", email = "contact@iowarp.org" }
 ]
 readme = "README.md"
 dependencies = [
@@ -25,12 +23,23 @@ dependencies = [
   "python-dotenv>=1.0.1",
   "google-genai>=0.1.0",
   "fastmcp",
-  "h5py"
+  "h5py",
+  "pytest>=7.2.0",
+  "pytest-asyncio>=0.21.0"
 ]
 
 [project.scripts]
-hdf5-mcp = "mcp_server.server:main"
+hdf5-mcp = "server:main"
 
 [tool.setuptools.packages.find]
 where = ["src"]
+
+[tool.setuptools.package-dir]
+"" = "src"
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["src"]
+asyncio_mode = "auto"
+addopts = "-v --tb=short"
 

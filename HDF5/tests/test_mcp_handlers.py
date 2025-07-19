@@ -1,68 +1,88 @@
-
 """
 Unit tests for mcp_handlers module.
 
 Covers:
  - list_resources() returning correct resource count
- - call_tool dispatch for filter_csv, list_hdf5, node_hardware
- - Unknown‑tool error handling
+ - call_tool dispatch for various HDF5 operations
+ - Unknown-tool error handling
+ - Handler function validation
 """
-
 import json
 import pytest
-from mcp_server import mcp_handlers
+import sys
+import os
+
+# Path setup for imports
+sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..', 'src'))
+
+import mcp_handlers
 
 
-def test_list_resources():
-    print("\n=== Running test_list_resources ===")
-    res = mcp_handlers.list_resources()
-    print("Resources returned:", res)
-    assert res['_meta']['count'] == 3
+class TestMCPHandlers:
+    """Test class for MCP handlers functionality."""
 
+    def test_list_resources(self):
+        """Test that list_resources returns correct resource count."""
+        print("\n=== Running test_list_resources ===")
+        res = mcp_handlers.list_resources()
+        print("Resources returned:", res)
+        assert res['_meta']['count'] == 3
 
-def test_call_tool_filter(tmp_path):
-    print("\n=== Running test_call_tool_filter ===")
-    csv = tmp_path / "t.csv"
-    csv.write_text("id,value\n1,10\n2,100\n")
-    params = {"tool": "filter_csv", "csv_path": str(csv), "threshold": 50}
-    print(f"Calling filter_csv with params: {params}")
-    result = mcp_handlers.call_tool("filter_csv", params)
-    print("Raw handler result:", result)
-    data = json.loads(result['content'][0]['text'])
-    print("Parsed JSON data:", data)
-    assert data[0]['value'] == 100
+    @pytest.mark.asyncio
+    async def test_call_tool_list_hdf5(self, tmp_path):
+        """Test call_tool dispatch for list_hdf5."""
+        print("\n=== Running test_call_tool_list_hdf5 ===")
+        
+        # Create test directory with HDF5 files
+        test_dir = tmp_path / "test_hdf5_dir"
+        test_dir.mkdir()
+        (test_dir / "file1.hdf5").write_text("")
+        (test_dir / "file2.hdf5").write_text("")
+        
+        # Test the handler
+        result = await mcp_handlers.call_tool("list_hdf5", {"directory": str(test_dir)})
+        print("Handler result:", result)
+        
+        assert isinstance(result, list)
+        assert len(result) == 2
 
+    @pytest.mark.asyncio
+    async def test_call_tool_unknown_tool(self):
+        """Test call_tool with unknown tool name."""
+        print("\n=== Running test_call_tool_unknown_tool ===")
+        
+        with pytest.raises(mcp_handlers.UnknownToolError) as excinfo:
+            await mcp_handlers.call_tool("unknown_tool", {})
+        
+        print("Caught exception:", excinfo.value)
+        assert "unknown_tool" in str(excinfo.value)
 
-def test_call_tool_list_hdf5(tmp_path):
-    print("\n=== Running test_call_tool_list_hdf5 ===")
-    d = tmp_path / "d"
-    d.mkdir()
-    (d / "x.hdf5").write_text("")
-    params = {"tool": "list_hdf5", "directory": str(d)}
-    print(f"Calling list_hdf5 with params: {params}")
-    res = mcp_handlers.call_tool("list_hdf5", params)
-    print("Raw handler result:", res)
-    files = json.loads(res['content'][0]['text'])
-    print("Parsed file list:", files)
-    assert len(files) == 1
+    @pytest.mark.asyncio 
+    async def test_call_tool_inspect_hdf5(self, tmp_path):
+        """Test call_tool dispatch for inspect_hdf5."""
+        print("\n=== Running test_call_tool_inspect_hdf5 ===")
+        
+        # Create a test HDF5 file path (handler should handle non-existent gracefully)
+        test_file = tmp_path / "test.hdf5"
+        
+        # Test the handler - should handle missing file gracefully
+        result = await mcp_handlers.call_tool("inspect_hdf5", {"file_path": str(test_file)})
+        print("Handler result:", result)
+        
+        # Should return some result structure even if file doesn't exist
+        assert isinstance(result, dict)
 
-
-def test_call_tool_node_hardware():
-    print("=== Running test_call_tool_node_hardware ===")
-    result = mcp_handlers.call_tool("node_hardware", {"tool":"node_hardware"})
-    print("Raw result:", result)
-    data = json.loads(result['content'][0]['text'])
-    print("Parsed data:", data)
-    import os, psutil
-    logical = psutil.cpu_count(logical=True) or os.cpu_count()
-    physical = psutil.cpu_count(logical=False)
-    print(f"Expected logical={logical}, physical={physical}")
-    assert data['logical_cores'] == logical
-    assert data['physical_cores'] == physical
-
-
-def test_unknown_tool():
-    print("\n=== Running test_unknown_tool ===")
-    with pytest.raises(Exception) as excinfo:
-        mcp_handlers.call_tool("bad", {})
-    print("Caught exception:", excinfo.value)
+    @pytest.mark.asyncio
+    async def test_call_tool_preview_hdf5(self, tmp_path):
+        """Test call_tool dispatch for preview_hdf5."""
+        print("\n=== Running test_call_tool_preview_hdf5 ===")
+        
+        # Create a test HDF5 file path
+        test_file = tmp_path / "preview_test.hdf5"
+        
+        # Test the handler
+        result = await mcp_handlers.call_tool("preview_hdf5", {"file_path": str(test_file)})
+        print("Handler result:", result)
+        
+        # Should return some result structure
+        assert isinstance(result, dict)
