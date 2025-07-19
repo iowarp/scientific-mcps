@@ -5,43 +5,44 @@
 [![MCP](https://img.shields.io/badge/MCP-Model%20Context%20Protocol-orange.svg)](https://github.com/modelcontextprotocol)
 [![License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 
-A comprehensive Model Context Protocol (MCP) server for hardware monitoring and system information retrieval. This server enables LLMs to access detailed hardware information, monitor system performance, and analyze resource utilization through **two powerful, specialized tools** with **beautiful, structured output formatting** and **intelligent analysis capabilities**.
+A comprehensive Model Context Protocol (MCP) server for hardware monitoring and system analysis implementation. This server provides comprehensive hardware monitoring and system analysis capabilities through the Model Context Protocol, enabling users to collect detailed hardware information, monitor system performance, and analyze resource utilization across local and remote systems with **intelligent analysis**, **beautiful output formatting**, and **workflow-first approach**.
 
 ## Key Features
 
-- **Two Specialized Tools**  
-  - `get_node_info`: Comprehensive local hardware and system information with intelligent filtering
-  - `get_remote_node_info`: SSH-based remote node information retrieval with secure authentication
+### 🔧 **Three Specialized Tools**
+Following MCP best practices, this server provides intelligent, contextual assistance for hardware monitoring, system analysis, and infrastructure management workflows:
 
-- **Complete Hardware Monitoring**  
-  Provides detailed information about CPU, memory, disk, network, and GPU components with real-time statistics and performance metrics.
+- **`get_node_info`**: Comprehensive local hardware and system information with advanced filtering and intelligent analysis
+- **`get_remote_node_info`**: SSH-based remote node information retrieval with secure authentication and network optimization  
+- **`health_check`**: System health verification and diagnostic assessment with capability verification
 
-- **System Information**  
-  Retrieves comprehensive OS details, uptime, user information, and system configuration data for complete system analysis.
+### 🚀 **Workflow-First Design**
+- **Intelligent Analysis**: AI-powered insights and optimization recommendations based on collected data
+- **Advanced Filtering**: Sophisticated component filtering with include/exclude capabilities for focused analysis
+- **Performance Optimization**: Real-time performance analysis with bottleneck identification and resolution strategies
+- **Predictive Maintenance**: Sensor-based predictive maintenance and failure prediction with trend analysis
 
-- **Process Management**  
-  Monitors running processes with resource usage statistics, providing insights into system performance and application behavior.
+### 🎨 **Beautiful Output Formatting**
+- **Structured Layout**: Rich formatting with comprehensive summaries and visual indicators
+- **Comprehensive Insights**: Actionable recommendations and intelligent observations
+- **Metadata Tracking**: Detailed collection metadata and performance metrics
+- **Error Handling**: Helpful error messages with troubleshooting suggestions
 
-- **Performance Analytics**  
-  Offers real-time performance monitoring with CPU usage, memory utilization, and I/O statistics for system optimization.
+### 🌐 **Complete Hardware Coverage**
+- **CPU Analysis**: Specifications, performance metrics, thermal status, and optimization recommendations
+- **Memory Management**: Capacity analysis, usage patterns, efficiency metrics, and health indicators
+- **Storage Systems**: Disk performance, health monitoring, I/O analysis, and predictive maintenance
+- **Network Infrastructure**: Interface analysis, bandwidth monitoring, security assessment, and optimization
+- **System Information**: OS details, uptime analysis, configuration assessment, and security status
+- **Process Monitoring**: Resource consumption analysis, performance metrics, and optimization insights
+- **GPU Computing**: Graphics analysis, thermal monitoring, performance metrics, and compute capabilities
+- **Sensor Networks**: Temperature monitoring, health assessment, thermal management, and predictive insights
 
-- **Remote Node Capabilities**  
-  Connect to remote nodes via SSH to gather hardware and system information from distributed systems with comprehensive authentication support.
-
-- **Advanced Filtering**  
-  Support for include/exclude filters to customize data collection and focus on specific components.
-
-- **Beautiful Output Formatting**  
-  Structured, readable output with rich formatting, emojis, and comprehensive summaries with insights and recommendations.
-
-- **Intelligent Analysis**  
-  Advanced analysis capabilities with optimization recommendations, performance insights, and predictive maintenance suggestions.
-
-- **Comprehensive Documentation**  
-  Detailed tool descriptions with usage examples, parameter explanations, and workflow guidance following pandas MCP patterns.
-
-- **Standardized MCP Interface**  
-  Exposes all functionality via the MCP JSON-RPC protocol for seamless integration with language models.
+### 🔒 **Enterprise Security**
+- **SSH Authentication**: Secure key-based and password authentication with best practices
+- **Network Security**: Encrypted connections and secure data transmission
+- **Permission Management**: Minimal privilege access with comprehensive security monitoring
+- **Audit Trail**: Detailed logging and monitoring capabilities for security compliance
 
 ## Capabilities
 
@@ -123,31 +124,42 @@ All tools provide **beautifully formatted output** with:
 - Linux/macOS environment (for optimal compatibility)
 - SSH client (for remote node capabilities)
 
-## Setup
+## Installation and Setup
 
-### 1. Navigate to Node Hardware Directory
+### Quick Start
 ```bash
+# Navigate to Node Hardware directory
 cd /path/to/scientific-mcps/Node_Hardware
+
+# Install and run with UV (recommended)
+uv sync && uv run node-hardware-mcp
 ```
 
-### 2. Install Dependencies
-Using UV (recommended):
+### Installation Methods
+
+#### Method 1: UV Package Manager (Recommended)
 ```bash
+# Install dependencies
 uv sync
+
+# Run the server
+uv run node-hardware-mcp
 ```
 
-Using pip:
+#### Method 2: Traditional pip
 ```bash
+# Install in development mode
 pip install -e .
+
+# Run the server
+python -m src.server
 ```
 
-**Run the MCP Server directly:**
-
-   ```bash
-   uv run node-hardware-mcp
-   ```
-   
-   This will create a `.venv/` folder, install all required packages, and run the server directly.
+#### Method 3: Direct Execution
+```bash
+# Run without installation (creates .venv automatically)
+uv run node-hardware-mcp
+```
 
 
 ## Running the Server with Different Types of Clients:
@@ -175,11 +187,11 @@ Add to your Claude Desktop `settings.json`:
 ```json
 {
   "mcpServers": {
-    "pandas-mcp": {
+    "node-hardware-mcp": {
       "command": "uv",
       "args": [
         "--directory",
-        "/path/to/scientific-mcps/sNode_Hardware",
+        "/path/to/scientific-mcps/Node_Hardware",
         "run", 
         "node-hardware-mcp"
       ]
@@ -439,15 +451,45 @@ When using `get_node_info` or `get_remote_node_info`, you can filter components:
 - `exclude_components=['processes']` - Faster collection without process details
 
 
+## Development and Testing
+
+### Running Tests
+```bash
+# Run all tests
+uv run pytest
+
+# Run specific test categories
+uv run pytest tests/test_capabilities.py
+
+# Run with coverage
+uv run pytest --cov=src --cov-report=html
+```
+
+### Development Tools
+```bash
+# Format code
+uv run black src tests
+
+# Sort imports
+uv run isort src tests
+
+# Type checking
+uv run mypy src
+
+# Linting
+uv run ruff check src tests
+```
+
 ### Running the Server Standalone
 For testing and development:
 
 ```bash
-# Start the server
+# Start the server (recommended)
 uv run node-hardware-mcp
 
-# Or run directly
-python -m node_hardware.server
+# Alternative methods
+python -m src.server
+python src/server.py
 ```
 
 ## Error Handling and Troubleshooting
@@ -505,13 +547,79 @@ The server provides comprehensive error handling with:
 - **Monitoring**: Built-in security monitoring and anomaly detection capabilities
 
 
+## Architecture
+
+### Project Structure
+```
+Node_Hardware/
+├── src/
+│   ├── __init__.py              # Package initialization
+│   ├── server.py                # Main MCP server with tools and direct implementation calls
+│   └── implementation/          # Core implementation modules
+│       ├── __init__.py
+│       ├── output_formatter.py  # Beautiful response formatting
+│       ├── remote_node_info.py  # Local and remote node information
+│       ├── cpu_info.py          # CPU monitoring capabilities
+│       ├── memory_info.py       # Memory analysis
+│       ├── disk_info.py         # Storage monitoring
+│       ├── network_info.py      # Network analysis
+│       ├── system_info.py       # System information
+│       ├── process_info.py      # Process monitoring
+│       ├── gpu_info.py          # GPU analysis
+│       ├── sensor_info.py       # Sensor monitoring
+│       ├── hardware_summary.py  # Comprehensive summaries
+│       ├── performance_monitor.py # Performance analysis
+│       └── utils.py             # Utility functions
+├── tests/
+│   ├── __init__.py
+│   └── test_capabilities.py     # Implementation tests
+├── pyproject.toml               # Project configuration
+├── pytest.ini                  # Test configuration
+└── README.md                    # This file
+```
+
+### Design Philosophy
+
+Following MCP best practices, this server implements:
+
+1. **Workflow-First Approach**: Tools designed for real-world hardware monitoring workflows
+2. **Intelligent Analysis**: AI-powered insights and optimization recommendations  
+3. **Beautiful Formatting**: Structured, readable output with comprehensive metadata
+4. **Enterprise Security**: Secure authentication and minimal privilege access
+5. **Performance Optimization**: Efficient data collection with intelligent filtering
+
 ## Contributing
 
 1. Fork the repository
-2. Create a feature branch
-3. Add tests for new functionality
-5. Submit a pull request
+2. Create a feature branch (`git checkout -b feature/amazing-feature`)
+3. Install development dependencies (`uv sync --dev`)
+4. Make your changes following the existing patterns
+5. Add tests for new functionality
+6. Run tests and ensure they pass (`uv run pytest`)
+7. Run formatting and linting (`uv run black . && uv run ruff check .`)
+8. Commit your changes (`git commit -m 'Add amazing feature'`)
+9. Push to the branch (`git push origin feature/amazing-feature`)
+10. Submit a pull request
+
+### Development Guidelines
+
+- Follow the existing code style and patterns
+- Add comprehensive tests for new features
+- Update documentation for any API changes
+- Use type hints for better code clarity
+- Follow the workflow-first design philosophy
 
 ## License
 
-This project is part of the Scientific MCPs collection and follows the same licensing terms.
+MIT License - This project is part of the Scientific MCPs collection.
+
+---
+
+## Support
+
+For issues, questions, or contributions:
+- Create an issue in the repository
+- Follow the contributing guidelines
+- Ensure all tests pass before submitting PRs
+
+**Part of the IoWarp Scientific MCPs Collection** 🔬
