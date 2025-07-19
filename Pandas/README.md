@@ -60,7 +60,7 @@ A comprehensive **Model Context Protocol (MCP)** server for advanced data analys
 ## Installation & Setup
 
 ### Prerequisites
-- **Python 3.12+** (required for latest features)
+- **Python 3.10+** (required for latest features)
 - **[UV](https://docs.astral.sh/uv/)** package manager (recommended)
 - **Linux/macOS** environment (for optimal compatibility)
 
@@ -86,7 +86,7 @@ uv add fastmcp pandas numpy scipy openpyxl pyarrow tables rich tabulate
 uv run pandas-mcp
 
 # Or with Python module
-uv run python -m pandasmcp.server
+uv run python -m src.server
 ```
 
 ## Integration Options
@@ -237,35 +237,28 @@ Pandas/
 ├── pyproject.toml              # Project metadata & UV dependencies
 ├── README.md                   # This documentation
 ├── .gitignore                  # Git ignore patterns
-├── test_all_capabilities.py    # Comprehensive functionality tests
-├── create_sample_data.py       # Sample data generation
-├── data/                       # Sample datasets
-│   ├── employees.csv           # Employee dataset (1000 records)
-│   ├── sales.parquet           # Sales data in Parquet format
-│   ├── weather.xlsx            # Weather data in Excel format
-│   └── inventory.h5            # Inventory data in HDF5 format
-├── src/pandasmcp/              # Source code
-│   ├── __init__.py             # Package initialization
-│   ├── server.py               # Main MCP server with FastMCP
-│   ├── mcp_handlers.py         # MCP protocol handlers
-│   ├── utils/                  # Utility modules
-│   │   ├── output_formatter.py # Beautiful output formatting
-│   │   └── __init__.py
-│   └── capabilities/           # Core functionality modules
+├── pytest.ini                  # Pytest configuration
+├── uv.lock                     # Dependency lock file
+├── sample_data.csv             # Sample employee dataset (30 records)
+├── sample_data_filtered.csv    # Filtered sample data output
+├── src/                        # Source code
+│   ├── server.py               # Main MCP server with FastMCP and direct implementation calls
+│   └── implementation/         # Core functionality modules
+│       ├── __init__.py         # Package initialization
 │       ├── data_io.py          # Universal data I/O operations
-│       ├── statistics.py       # Statistical analysis
+│       ├── pandas_statistics.py # Statistical analysis
 │       ├── data_cleaning.py    # Data cleaning and preprocessing
 │       ├── data_profiling.py   # Data profiling and exploration
 │       ├── transformations.py  # Data transformation operations
 │       ├── time_series.py      # Time series analysis
 │       ├── filtering.py        # Data filtering and sampling
 │       ├── memory_optimization.py # Memory optimization
-│       └── validation.py       # Data validation and testing
+│       ├── validation.py       # Data validation and testing
+│       └── output_formatter.py # Beautiful output formatting
 ├── tests/                      # Test suite
-│   ├── test_capabilities.py    # Unit tests for capabilities
-│   ├── test_mcp_handlers.py    # Integration tests for MCP handlers
-│   └── conftest.py             # Test fixtures and configuration
-└── uv.lock                     # Dependency lock file
+│   ├── __init__.py             # Test package initialization
+│   └── test_capabilities.py    # Unit tests for capabilities
+└── docs/                       # Documentation
 ```
 
 ## Supported Data Formats
@@ -281,27 +274,31 @@ Pandas/
 
 ## Testing
 
-### Run All Capability Tests
-```bash
-uv run python test_all_capabilities.py
-```
-
-### Run Unit Tests
+### Run All Tests
 ```bash
 uv run pytest tests/ -v
 ```
 
+### Run Specific Test Files
+```bash
+# Test capabilities
+uv run pytest tests/test_capabilities.py -v
+
+# Test capabilities
+uv run pytest tests/test_capabilities.py -v
+```
+
 ### Test Coverage
 ```bash
-uv run pytest tests/ --cov=pandasmcp --cov-report=html
+uv run pytest tests/ --cov=src --cov-report=html
 ```
 
 ### Load Sample Data Test
 ```bash
-# Test with the included employee dataset
+# Test with the included sample dataset
 uv run python -c "
-from pandasmcp.capabilities.data_io import load_data_file
-result = load_data_file('data/employees.csv')
+from src.implementation.data_io import load_data_file
+result = load_data_file('sample_data.csv')
 print(f'Loaded {len(result)} records successfully!')
 "
 ```
@@ -335,6 +332,7 @@ Core dependencies managed through `pyproject.toml` with UV:
 
 ### **File Format Support**
 - `openpyxl>=3.1.0` - Excel file handling
+- `xlrd>=2.0.0` - Legacy Excel file support
 - `pyarrow>=15.0.0` - Parquet and Arrow format support
 - `tables>=3.9.0` - HDF5 file format support
 - `sqlalchemy>=2.0.0` - SQL database connectivity
@@ -381,8 +379,7 @@ Comprehensive error handling with detailed messages:
 2. **Create** a feature branch: `git checkout -b feature/amazing-feature`
 3. **Add tests** for new functionality
 4. **Ensure tests pass**: `uv run pytest`
-5. **Run capability tests**: `uv run python test_all_capabilities.py`
-6. **Submit** a pull request
+5. **Submit** a pull request
 
 ### Development Setup
 ```bash

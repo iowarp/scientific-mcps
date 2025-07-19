@@ -31,8 +31,16 @@ except ImportError:
 # Add current directory to path for relative imports
 sys.path.insert(0, os.path.dirname(__file__))
 
-# Import handlers
-from . import mcp_handlers
+# Import implementation modules directly
+from implementation.data_io import load_data_file, save_data_file, get_file_info
+from implementation.pandas_statistics import get_statistical_summary, get_correlation_analysis
+from implementation.data_cleaning import handle_missing_data, clean_data
+from implementation.transformations import groupby_operations, merge_datasets, create_pivot_table
+from implementation.data_profiling import profile_data
+from implementation.time_series import time_series_operations
+from implementation.memory_optimization import optimize_memory_usage
+from implementation.filtering import filter_data
+from implementation.validation import validate_data
 
 # Set up logging
 logging.basicConfig(level=logging.INFO)
@@ -116,7 +124,7 @@ async def load_data_tool(
     """
     try:
         logger.info(f"Loading data from: {file_path}")
-        return mcp_handlers.load_data_handler(file_path, file_format, sheet_name, encoding, columns, nrows)
+        return load_data_file(file_path, file_format, sheet_name, encoding, columns, nrows)
     except Exception as e:
         logger.error(f"Data loading error: {e}")
         return {
@@ -187,7 +195,7 @@ async def save_data_tool(
     """
     try:
         logger.info(f"Saving data to: {file_path}")
-        return mcp_handlers.save_data_handler(data, file_path, file_format, index)
+        return save_data_file(data, file_path, file_format, index)
     except Exception as e:
         logger.error(f"Data saving error: {e}")
         return {
@@ -261,7 +269,7 @@ async def statistical_summary_tool(
     """
     try:
         logger.info(f"Generating statistical summary for: {file_path}")
-        return mcp_handlers.statistical_summary_handler(file_path, columns, include_distributions)
+        return get_statistical_summary(file_path, columns, include_distributions)
     except Exception as e:
         logger.error(f"Statistical analysis error: {e}")
         return {
@@ -336,7 +344,7 @@ async def correlation_analysis_tool(
     """
     try:
         logger.info(f"Performing correlation analysis on: {file_path}")
-        return mcp_handlers.correlation_analysis_handler(file_path, method, columns)
+        return get_correlation_analysis(file_path, method, columns)
     except Exception as e:
         logger.error(f"Correlation analysis error: {e}")
         return {
@@ -418,7 +426,7 @@ async def hypothesis_testing_tool(
     """
     try:
         logger.info(f"Performing hypothesis testing on: {file_path}")
-        return mcp_handlers.hypothesis_testing_handler(file_path, test_type, column1, column2, alpha)
+        return get_statistical_summary(file_path, test_type, column1, column2, alpha)
     except Exception as e:
         logger.error(f"Hypothesis testing error: {e}")
         return {
@@ -500,7 +508,7 @@ async def handle_missing_data_tool(
     """
     try:
         logger.info(f"Handling missing data in: {file_path}")
-        return mcp_handlers.handle_missing_data_handler(file_path, strategy, method, columns)
+        return handle_missing_data(file_path, strategy, method, columns)
     except Exception as e:
         logger.error(f"Missing data handling error: {e}")
         return {
@@ -579,7 +587,7 @@ async def clean_data_tool(
     """
     try:
         logger.info(f"Cleaning data in: {file_path}")
-        return mcp_handlers.clean_data_handler(file_path, remove_duplicates, detect_outliers, convert_types)
+        return clean_data(file_path, remove_duplicates, detect_outliers, convert_types)
     except Exception as e:
         logger.error(f"Data cleaning error: {e}")
         return {
@@ -663,7 +671,7 @@ async def groupby_operations_tool(
     """
     try:
         logger.info(f"Performing groupby operations on: {file_path}")
-        return mcp_handlers.groupby_operations_handler(file_path, group_by, operations, filter_condition)
+        return groupby_operations(file_path, group_by, operations, filter_condition)
     except Exception as e:
         logger.error(f"Groupby operations error: {e}")
         return {
@@ -753,7 +761,7 @@ async def merge_datasets_tool(
     """
     try:
         logger.info(f"Merging datasets: {left_file} and {right_file}")
-        return mcp_handlers.merge_datasets_handler(left_file, right_file, join_type, left_on, right_on, on)
+        return merge_datasets(left_file, right_file, join_type, left_on, right_on, on)
     except Exception as e:
         logger.error(f"Dataset merge error: {e}")
         return {
@@ -843,7 +851,7 @@ async def pivot_table_tool(
     """
     try:
         logger.info(f"Creating pivot table for: {file_path}")
-        return mcp_handlers.pivot_table_handler(file_path, index, columns, values, aggfunc)
+        return create_pivot_table(file_path, index, columns, values, aggfunc)
     except Exception as e:
         logger.error(f"Pivot table error: {e}")
         return {
@@ -936,7 +944,7 @@ async def time_series_operations_tool(
     """
     try:
         logger.info(f"Performing time series operations on: {file_path}")
-        return mcp_handlers.time_series_operations_handler(file_path, date_column, operation, window_size, frequency)
+        return time_series_operations(file_path, date_column, operation, window_size, frequency)
     except Exception as e:
         logger.error(f"Time series operations error: {e}")
         return {
@@ -1034,7 +1042,7 @@ async def validate_data_tool(
     """
     try:
         logger.info(f"Validating data in: {file_path}")
-        return mcp_handlers.validate_data_handler(file_path, validation_rules)
+        return validate_data(file_path, validation_rules)
     except Exception as e:
         logger.error(f"Data validation error: {e}")
         return {
@@ -1132,7 +1140,7 @@ async def filter_data_tool(
     """
     try:
         logger.info(f"Filtering data in: {file_path}")
-        return mcp_handlers.filter_data_handler(file_path, filter_conditions, output_file)
+        return filter_data(file_path, filter_conditions, output_file)
     except Exception as e:
         logger.error(f"Data filtering error: {e}")
         return {
@@ -1221,7 +1229,7 @@ async def optimize_memory_tool(
     """
     try:
         logger.info(f"Optimizing memory usage for: {file_path}")
-        return mcp_handlers.optimize_memory_handler(file_path, optimize_dtypes, chunk_size)
+        return optimize_memory_usage(file_path, optimize_dtypes, chunk_size)
     except Exception as e:
         logger.error(f"Memory optimization error: {e}")
         return {
@@ -1310,7 +1318,7 @@ async def profile_data_tool(
     """
     try:
         logger.info(f"Profiling data in: {file_path}")
-        return mcp_handlers.profile_data_handler(file_path, include_correlations, sample_size)
+        return profile_data(file_path, include_correlations, sample_size)
     except Exception as e:
         logger.error(f"Data profiling error: {e}")
         return {

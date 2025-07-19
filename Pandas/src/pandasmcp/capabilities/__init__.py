@@ -1,1 +1,0 @@
-# Pandas MCP Capabilities Module
