@@ -11,13 +11,13 @@ import sys
 # Add src to path for imports
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..', 'src'))
 
-from plot.mcp_handlers import (
-    create_line_plot_handler,
-    create_bar_plot_handler,
-    create_scatter_plot_handler,
-    create_histogram_handler,
-    create_heatmap_handler,
-    get_data_info_handler
+from src.mcp_handlers import (
+    line_plot_handler,
+    bar_plot_handler,
+    scatter_plot_handler,
+    histogram_plot_handler,
+    heatmap_plot_handler,
+    data_info_handler
 )
 
 @pytest.fixture
@@ -46,7 +46,7 @@ def output_dir():
 
 def test_get_data_info_handler(sample_csv_file):
     """Test getting data information."""
-    result = get_data_info_handler(sample_csv_file)
+    result = data_info_handler(sample_csv_file)
     
     assert result["status"] == "success"
     assert result["shape"] == (5, 4)
@@ -59,7 +59,7 @@ def test_create_line_plot_handler(sample_csv_file, output_dir):
     """Test creating line plot."""
     output_path = os.path.join(output_dir, "test_line_plot.png")
     
-    result = create_line_plot_handler(
+    result = line_plot_handler(
         sample_csv_file, "x", "y", "Test Line Plot", output_path
     )
     
@@ -73,7 +73,7 @@ def test_create_bar_plot_handler(sample_csv_file, output_dir):
     """Test creating bar plot."""
     output_path = os.path.join(output_dir, "test_bar_plot.png")
     
-    result = create_bar_plot_handler(
+    result = bar_plot_handler(
         sample_csv_file, "category", "value", "Test Bar Plot", output_path
     )
     
@@ -87,7 +87,7 @@ def test_create_scatter_plot_handler(sample_csv_file, output_dir):
     """Test creating scatter plot."""
     output_path = os.path.join(output_dir, "test_scatter_plot.png")
     
-    result = create_scatter_plot_handler(
+    result = scatter_plot_handler(
         sample_csv_file, "x", "y", "Test Scatter Plot", output_path
     )
     
@@ -101,7 +101,7 @@ def test_create_histogram_handler(sample_csv_file, output_dir):
     """Test creating histogram."""
     output_path = os.path.join(output_dir, "test_histogram.png")
     
-    result = create_histogram_handler(
+    result = histogram_plot_handler(
         sample_csv_file, "value", 10, "Test Histogram", output_path
     )
     
@@ -115,7 +115,7 @@ def test_create_heatmap_handler(sample_csv_file, output_dir):
     """Test creating heatmap."""
     output_path = os.path.join(output_dir, "test_heatmap.png")
     
-    result = create_heatmap_handler(
+    result = heatmap_plot_handler(
         sample_csv_file, "Test Heatmap", output_path
     )
     
@@ -125,10 +125,10 @@ def test_create_heatmap_handler(sample_csv_file, output_dir):
 
 def test_error_handling():
     """Test error handling for invalid files."""
-    result = get_data_info_handler("nonexistent_file.csv")
+    result = data_info_handler("nonexistent_file.csv")
     assert result["status"] == "error"
     
-    result = create_line_plot_handler("nonexistent_file.csv", "x", "y", "Test", "output.png")
+    result = line_plot_handler("nonexistent_file.csv", "x", "y", "Test", "output.png")
     assert result["status"] == "error"
 
 if __name__ == "__main__":

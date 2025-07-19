@@ -10,9 +10,9 @@ import pandas as pd
 from pathlib import Path
 
 # Add src to path using relative path
-sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..', 'src', 'plot'))
+sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..'))
 
-from mcp_handlers import (
+from src.mcp_handlers import (
     data_info_handler,
     line_plot_handler,
     bar_plot_handler,

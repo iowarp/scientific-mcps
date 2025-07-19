@@ -11,9 +11,9 @@ import asyncio
 from pathlib import Path
 
 # Add src to path using relative path
-sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..', 'src', 'plot'))
+sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..'))
 
-from mcp_handlers import (
+from src.mcp_handlers import (
     line_plot_handler,
     bar_plot_handler,
     scatter_plot_handler,
@@ -31,7 +31,7 @@ def comprehensive_data():
     # Create more realistic data
     np.random.seed(42)
     data = {
-        'timestamp': pd.date_range('2024-01-01', periods=100, freq='H'),
+        'timestamp': pd.date_range('2024-01-01', periods=100, freq='h'),
         'temperature': 20 + 10 * np.sin(np.arange(100) * 2 * np.pi / 24) + np.random.normal(0, 2, 100),
         'humidity': 60 + 20 * np.sin(np.arange(100) * 2 * np.pi / 24 + np.pi/4) + np.random.normal(0, 5, 100),
         'pressure': 1013 + 5 * np.sin(np.arange(100) * 2 * np.pi / 48) + np.random.normal(0, 1, 100),

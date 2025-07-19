@@ -38,7 +38,7 @@ node-hardware-mcp = "mcp_server.server:main"
 pandas-mcp = "pandasmcp.server:main"
 parallel-sort-mcp = "server:main"
 parquet-mcp = "server:main"
-plot-mcp = "plot.server:main"
+plot-mcp = "src.server:main"
 slurm-mcp = "slurm_mcp.server:main"
 
 [tool.setuptools]
