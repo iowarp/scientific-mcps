@@ -6,7 +6,7 @@ build-backend = "setuptools.build_meta"
 name = "scientific-mcps"
 version = "0.1.0"
 description = "Install all sub-MCP packages together."
-requires-python = ">=3.12.0"
+requires-python = ">=3.10"
 
 dependencies = [
   "adios-mcp @ git+https://github.com/iowarp/scientific-mcps.git@main#subdirectory=Adios",
@@ -34,12 +34,12 @@ darshan-mcp = "darshan_mcp.server:main"
 hdf5-mcp = "mcp_server.server:main"
 jarvis-mcp = "jarvis_mcp.server:main"
 lmod-mcp = "lmod_mcp.server:main"
-node-hardware-mcp = "mcp_server.server:main"
-pandas-mcp = "pandasmcp.server:main"
+node-hardware-mcp = "src.server:main"
+pandas-mcp = "src.server:main"
 parallel-sort-mcp = "server:main"
 parquet-mcp = "server:main"
-plot-mcp = "plot.server:main"
-slurm-mcp = "slurm_mcp.server:main"
+plot-mcp = "src.server:main"
+slurm-mcp = "src.server:main"
 
 [tool.setuptools]
 packages = []
