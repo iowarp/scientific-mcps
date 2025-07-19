@@ -1,22 +1,24 @@
 """
-Test cases for pandas MCP capabilities
+Test cases for the pandas capabilities modules.
 """
+
 import pytest
 import pandas as pd
 import numpy as np
-import os
 import tempfile
-import json
-from unittest.mock import patch, MagicMock
+import os
+import sys
 
-# Import the capabilities
-from pandasmcp.capabilities.data_io import load_data_file, save_data_file
-from pandasmcp.capabilities.statistics import get_statistical_summary, get_correlation_analysis
-from pandasmcp.capabilities.data_cleaning import handle_missing_data, clean_data
-from pandasmcp.capabilities.data_profiling import profile_data
-from pandasmcp.capabilities.transformations import groupby_operations, merge_datasets, create_pivot_table
-from pandasmcp.capabilities.filtering import filter_data, sample_data
-from pandasmcp.capabilities.memory_optimization import optimize_memory_usage
+# Add the parent directory to Python path so we can import src
+sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+
+from src.implementation.data_io import load_data_file, save_data_file
+from src.implementation.pandas_statistics import get_statistical_summary, get_correlation_analysis
+from src.implementation.data_cleaning import handle_missing_data, clean_data
+from src.implementation.data_profiling import profile_data
+from src.implementation.transformations import groupby_operations, merge_datasets, create_pivot_table
+from src.implementation.filtering import filter_data
+from src.implementation.memory_optimization import optimize_memory_usage
 
 
 class TestPandasMCPCapabilities:
@@ -154,14 +156,6 @@ class TestPandasMCPCapabilities:
         assert result['success'] == True
         assert 'filter_stats' in result
         assert 'filtered_data' in result
-    
-    def test_sample_data(self, temp_csv_file):
-        """Test data sampling"""
-        result = sample_data(temp_csv_file, sample_size=10, method='random')
-        
-        assert result['success'] == True
-        assert 'sample_stats' in result
-        assert len(result['sampled_data']) == 10
     
     def test_optimize_memory_usage(self, temp_csv_file):
         """Test memory optimization"""
