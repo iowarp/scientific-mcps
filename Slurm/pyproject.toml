@@ -8,7 +8,7 @@ version = "0.1.0"
 description = "Slurm MCP server implementation using Model Context Protocol"
 readme = "README.md"
 requires-python = ">=3.10"
-keywords = ["MCP", "JSON-RPC", "FastMCP", "Slurm"]
+keywords = ["MCP", "JSON-RPC", "FastMCP", "Slurm", "HPC", "Job Management"]
 license = "MIT"
 authors = [
     { name = "IoWarp Scientific MCPs", email = "contact@iowarp.org" }
@@ -21,31 +21,60 @@ dependencies = [
     "httpx>=0.24.0",
     "python-dotenv>=1.0.0",
     "pydantic>=1.10.0",
+    "psutil>=5.9.0",
+    "rich>=13.0.0",
+    "tabulate>=0.9.0",
     "pytest>=7.2.0",
     "pytest-asyncio>=1.0.0",
-    "psutil>=5.9.0",
     "requests>=2.28.0"
 ]
 
 [project.optional-dependencies]
-test = ["pytest>=7.0.0", "httpx"]
+test = ["pytest>=7.0.0", "httpx", "pytest-cov>=4.0.0"]
 
 [project.scripts]
-slurm-mcp = "slurm_mcp.server:main"
+slurm-mcp = "src.server:main"
 
 [tool.setuptools.packages.find]
-where = ["src"]
-include = ["slurm_mcp*"]
+where = ["."]
+include = ["src*"]
 
 [tool.setuptools.package-dir]
-"slurm_mcp" = "src/slurm_mcp"
+"" = "."
 
 [dependency-groups]
 dev = [
     "pytest>=8.4.0",
+    "pytest-cov>=4.0.0",
+    "black>=23.0.0",
+    "isort>=5.12.0",
+    "mypy>=1.7.0",
+    "ruff>=0.1.0"
 ]
 
 [tool.uv.workspace]
 members = [
     "slurm-mcp",
 ]
+
+[tool.ruff]
+line-length = 88
+target-version = "py310"
+
+[tool.ruff.lint]
+select = ["E", "F", "W", "I", "N", "UP", "RUF"]
+ignore = ["E501"]
+
+[tool.black]
+line-length = 88
+target-version = ["py310"]
+
+[tool.isort]
+profile = "black"
+line_length = 88
+
+[tool.mypy]
+python_version = "3.10"
+strict = true
+warn_return_any = true
+warn_unused_configs = true

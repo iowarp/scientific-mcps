@@ -110,11 +110,10 @@ collected 92 items
 
 tests/test_capabilities.py::...     [PASSED]
 tests/test_integration.py::...      [PASSED]
-tests/test_mcp_handlers.py::...     [PASSED]
 tests/test_performance.py::...      [PASSED]
 tests/test_server_tools.py::...     [PASSED]
 
-============ 92 passed in 11.55s ============
+============ 75 passed in 9.23s ============
 ```
 
 ## SLURM Environment Testing

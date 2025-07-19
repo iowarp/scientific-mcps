@@ -16,7 +16,7 @@ class TestNodeAllocation:
     
     def test_allocate_nodes_basic(self):
         """Test basic node allocation functionality."""
-        from capabilities.node_allocation import allocate_nodes
+        from implementation.node_allocation import allocate_nodes
         
         result = allocate_nodes(nodes=1, cores=2, time_limit="00:30:00")
         
@@ -41,7 +41,7 @@ class TestNodeAllocation:
 
     def test_deallocate_nodes(self):
         """Test node deallocation functionality."""
-        from capabilities.node_allocation import allocate_nodes, deallocate_nodes
+        from implementation.node_allocation import allocate_nodes, deallocate_nodes
         
         # First allocate nodes (use mock if real allocation fails)
         alloc_result = allocate_nodes(nodes=1, cores=1)
@@ -65,7 +65,7 @@ class TestNodeAllocation:
 
     def test_get_allocation_status(self):
         """Test allocation status checking."""
-        from capabilities.node_allocation import allocate_nodes, get_allocation_status
+        from implementation.node_allocation import allocate_nodes, get_allocation_status
         
         # First allocate nodes (use mock if real allocation fails)
         alloc_result = allocate_nodes(nodes=1, cores=1)
@@ -89,7 +89,7 @@ class TestNodeAllocation:
 
     def test_node_list_expansion(self):
         """Test node list expansion utility."""
-        from capabilities.node_allocation import _expand_node_list
+        from implementation.node_allocation import _expand_node_list
         
         # Test simple comma-separated list
         result = _expand_node_list("node001,node002,node003")

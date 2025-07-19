@@ -13,7 +13,7 @@ from pathlib import Path
 src_path = Path(__file__).parent.parent / "src"
 sys.path.insert(0, str(src_path))
 
-from capabilities.slurm_handler import (
+from implementation.slurm_handler import (
     submit_slurm_job, 
     get_job_status,
     cancel_slurm_job,
@@ -99,7 +99,7 @@ class TestSlurmCapabilities:
 
     def test_enhanced_job_submission(self, temp_script, job_parameters):
         """Test job submission with enhanced parameters."""
-        job_id = submit_slurm_job(
+        result = submit_slurm_job(
             temp_script, 4,
             memory=job_parameters["memory"],
             time_limit=job_parameters["time_limit"],
@@ -107,9 +107,10 @@ class TestSlurmCapabilities:
             partition=job_parameters["partition"]
         )
         
-        # Should return a job ID
-        assert isinstance(job_id, str)
-        assert len(job_id) > 0
+        # Should return a dictionary with job_id
+        assert isinstance(result, dict)
+        assert "job_id" in result
+        assert len(result["job_id"]) > 0
 
     def test_job_status_structure(self, sample_job_id):
         """Test that job status returns proper structure."""
@@ -265,8 +266,11 @@ class TestSlurmCapabilities:
     def test_job_workflow_integration(self, temp_script):
         """Test complete job workflow integration."""
         # Submit job
-        job_id = submit_slurm_job(temp_script, cores=2, job_name="integration_test")
-        assert isinstance(job_id, str)
+        submit_result = submit_slurm_job(temp_script, cores=2, job_name="integration_test")
+        assert isinstance(submit_result, dict)
+        assert "job_id" in submit_result
+        
+        job_id = submit_result["job_id"]
         
         # Check status
         status = get_job_status(job_id)
@@ -305,7 +309,8 @@ class TestSlurmCapabilities:
             os.chmod(script_path, 0o755)
             
             try:
-                job_id = submit_slurm_job(script_path, 2)
+                submit_result = submit_slurm_job(script_path, 2)
+                job_id = submit_result["job_id"]
                 status = get_job_status(job_id)
                 
                 # The real_slurm flag should be True
@@ -333,8 +338,11 @@ class TestSlurmCapabilities:
 
     def test_job_submission_with_valid_script(self, temp_script, valid_cores):
         """Test job submission with valid script and cores."""
-        job_id = submit_slurm_job(temp_script, valid_cores)
+        submit_result = submit_slurm_job(temp_script, valid_cores)
         
+        assert isinstance(submit_result, dict)
+        assert "job_id" in submit_result
+        job_id = submit_result["job_id"]
         assert isinstance(job_id, str)
         assert job_id.isdigit()
 
@@ -378,9 +386,12 @@ class TestSlurmCapabilities:
         job_name = "test_enhanced_job"
         partition = "compute"
         
-        job_id = submit_slurm_job(temp_script, cores, memory, time_limit, job_name, partition)
+        submit_result = submit_slurm_job(temp_script, cores, memory, time_limit, job_name, partition)
         
-        # Should return a job ID
+        # Should return a dictionary with job_id
+        assert isinstance(submit_result, dict)
+        assert "job_id" in submit_result
+        job_id = submit_result["job_id"]
         assert isinstance(job_id, str)
         assert len(job_id) > 0
         

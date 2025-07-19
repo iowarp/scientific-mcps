@@ -67,7 +67,7 @@ def _create_sbatch_script(original_script: str, cores: int, memory: Optional[str
 
 def _submit_real_slurm_job(script_path: str, cores: int, memory: Optional[str] = None, 
                           time_limit: Optional[str] = None, job_name: Optional[str] = None, 
-                          partition: Optional[str] = None) -> str:
+                          partition: Optional[str] = None) -> dict:
     """Submit a real Slurm job using sbatch."""
     # Create a proper SBATCH script
     sbatch_script = _create_sbatch_script(script_path, cores, memory, time_limit, job_name, partition)
@@ -92,7 +92,17 @@ def _submit_real_slurm_job(script_path: str, cores: int, memory: Optional[str] =
         print(f"📄 SBATCH script: {sbatch_script}")
         print(f"💻 Cores requested: {cores}")
         
-        return job_id
+        return {
+            "job_id": job_id,
+            "status": "SUBMITTED",
+            "script_path": script_path,
+            "cores": cores,
+            "memory": memory,
+            "time_limit": time_limit,
+            "job_name": job_name,
+            "partition": partition,
+            "real_slurm": True
+        }
         
     finally:
         # Clean up temporary script
@@ -102,7 +112,7 @@ def _submit_real_slurm_job(script_path: str, cores: int, memory: Optional[str] =
 
 def submit_slurm_job(script_path: str, cores: int, memory: Optional[str] = None, 
                     time_limit: Optional[str] = None, job_name: Optional[str] = None, 
-                    partition: Optional[str] = None) -> str:
+                    partition: Optional[str] = None) -> dict:
     """
     Submits a job to Slurm via sbatch with script path and cores.
     Requires Slurm to be installed and available on the system.
@@ -116,7 +126,7 @@ def submit_slurm_job(script_path: str, cores: int, memory: Optional[str] = None,
         partition: Slurm partition to use
 
     Returns:
-        The Slurm job ID as a string
+        Dictionary containing job submission details including job_id
 
     Raises:
         FileNotFoundError: If the script file does not exist

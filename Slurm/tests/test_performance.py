@@ -1,388 +1,532 @@
+#!/usr/bin/env python3
 """
-Performance and stress tests for Slurm MCP implementation.
-Tests system behavior under various load conditions and edge cases.
+Performance tests for the Slurm MCP server.
+
+This module tests the performance characteristics of the Slurm MCP server,
+including job submission latency, concurrent operations, throughput, and
+scalability under various workloads.
 """
+
 import pytest
-import asyncio
 import time
-import sys
+import statistics
+import tempfile
 import os
-from concurrent.futures import ThreadPoolExecutor
+import sys
+import asyncio
+import concurrent.futures
+from typing import List, Dict, Any
+from pathlib import Path
 
-# Add src to path
-sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..', 'src'))
+# Add src to Python path
+src_path = Path(__file__).parent.parent / "src"
+sys.path.insert(0, str(src_path))
 
-from server import (
-    submit_slurm_job_tool,
-    check_job_status_tool,
-    cancel_slurm_job_tool,
-    list_slurm_jobs_tool,
-    get_slurm_info_tool
-)
+# Import implementation modules directly
+from implementation.job_submission import submit_slurm_job
+from implementation.job_status import get_job_status
+from implementation.job_cancellation import cancel_slurm_job
+from implementation.job_listing import list_slurm_jobs
+from implementation.cluster_info import get_slurm_info
+from implementation.job_details import get_job_details
+from implementation.job_output import get_job_output
+from implementation.queue_info import get_queue_info
+from implementation.array_jobs import submit_array_job
+from implementation.node_info import get_node_info
 
 
-class TestPerformance:
-    """Performance and stress tests for Slurm MCP."""
+class TestSlurmMCPPerformance:
+    """Performance test suite for Slurm MCP server."""
 
-    @pytest.mark.asyncio
-    async def test_concurrent_job_submissions(self, temp_script):
-        """Test concurrent job submission performance."""
-        num_concurrent = 10
-        start_time = time.time()
+    @pytest.fixture(scope="class")
+    def quick_script(self):
+        """Create a minimal test script for quick execution."""
+        script_content = """#!/bin/bash
+#SBATCH --time=00:01:00
+echo "Quick test: $(date)"
+sleep 1
+echo "Done: $(date)"
+"""
+        fd, script_path = tempfile.mkstemp(suffix='.sh', prefix='quick_test_')
+        with os.fdopen(fd, 'w') as f:
+            f.write(script_content)
+        os.chmod(script_path, 0o755)
         
-        # Submit multiple jobs concurrently
-        tasks = []
-        for i in range(num_concurrent):
-            task = submit_slurm_job_tool(
-                temp_script, 
-                cores=1, 
-                job_name=f"perf_test_{i}"
-            )
-            tasks.append(task)
+        yield script_path
         
-        results = await asyncio.gather(*tasks, return_exceptions=True)
-        
-        end_time = time.time()
-        duration = end_time - start_time
-        
-        # Check results
-        successful_submissions = 0
-        job_ids = []
-        
-        for result in results:
-            if not isinstance(result, Exception) and isinstance(result, dict):
-                if not result.get("isError") and "job_id" in result:
-                    successful_submissions += 1
-                    job_ids.append(result["job_id"])
-        
-        # Performance assertions
-        assert duration < 30.0  # Should complete within 30 seconds
-        assert successful_submissions >= 0  # At least some should succeed
-        
-        # Clean up
-        if job_ids:
-            cleanup_tasks = [cancel_slurm_job_tool(job_id) for job_id in job_ids]
-            await asyncio.gather(*cleanup_tasks, return_exceptions=True)
-        
-        print(f"Submitted {successful_submissions}/{num_concurrent} jobs in {duration:.2f}s")
+        # Cleanup
+        if os.path.exists(script_path):
+            os.unlink(script_path)
 
-    @pytest.mark.asyncio
-    async def test_status_check_performance(self, sample_job_id):
-        """Test performance of status checking operations."""
-        num_checks = 50
-        start_time = time.time()
+    @pytest.fixture(scope="class")  
+    def medium_script(self):
+        """Create a medium-duration test script."""
+        script_content = """#!/bin/bash
+#SBATCH --time=00:03:00
+echo "Medium test: $(date)"
+for i in {1..5}; do
+    echo "Iteration $i"
+    sleep 1
+done
+echo "Done: $(date)"
+"""
+        fd, script_path = tempfile.mkstemp(suffix='.sh', prefix='medium_test_')
+        with os.fdopen(fd, 'w') as f:
+            f.write(script_content)
+        os.chmod(script_path, 0o755)
         
-        # Perform multiple status checks
-        tasks = []
-        for i in range(num_checks):
-            task = check_job_status_tool(sample_job_id)
-            tasks.append(task)
+        yield script_path
         
-        results = await asyncio.gather(*tasks, return_exceptions=True)
-        
-        end_time = time.time()
-        duration = end_time - start_time
-        
-        # Check results
-        successful_checks = sum(1 for r in results if not isinstance(r, Exception))
-        
-        # Performance assertions
-        assert duration < 20.0  # Should complete within 20 seconds
-        assert successful_checks >= num_checks * 0.8  # At least 80% should succeed
-        
-        avg_time = duration / num_checks
-        print(f"Performed {successful_checks}/{num_checks} status checks in {duration:.2f}s (avg: {avg_time:.3f}s)")
+        # Cleanup
+        if os.path.exists(script_path):
+            os.unlink(script_path)
 
-    @pytest.mark.asyncio
-    async def test_information_gathering_performance(self):
-        """Test performance of information gathering operations."""
-        operations = [
-            ("cluster_info", get_slurm_info_tool),
-            ("job_list", list_slurm_jobs_tool),
-        ]
+    @pytest.fixture(scope="class")
+    def cpu_intensive_script(self):
+        """Create a CPU-intensive test script."""
+        script_content = """#!/bin/bash
+#SBATCH --time=00:02:00
+echo "CPU intensive test: $(date)"
+# Light CPU work
+python3 -c "
+import time
+start = time.time()
+result = sum(i*i for i in range(10000))
+print(f'Computation result: {result}')
+print(f'Execution time: {time.time() - start:.2f}s')
+"
+echo "Done: $(date)"
+"""
+        fd, script_path = tempfile.mkstemp(suffix='.sh', prefix='cpu_test_')
+        with os.fdopen(fd, 'w') as f:
+            f.write(script_content)
+        os.chmod(script_path, 0o755)
         
-        for op_name, op_func in operations:
+        yield script_path
+        
+        # Cleanup
+        if os.path.exists(script_path):
+            os.unlink(script_path)
+
+    def test_job_submission_latency(self, quick_script):
+        """Test the latency of single job submission."""
+        latencies = []
+        num_tests = 5
+        
+        for _ in range(num_tests):
             start_time = time.time()
-            
-            # Perform operation multiple times
-            tasks = [op_func() for _ in range(10)]
-            results = await asyncio.gather(*tasks, return_exceptions=True)
-            
+            result = submit_slurm_job(quick_script, cores=1)
             end_time = time.time()
-            duration = end_time - start_time
             
-            successful_ops = sum(1 for r in results if not isinstance(r, Exception))
+            latency = end_time - start_time
+            latencies.append(latency)
             
-            # Performance assertions
-            assert duration < 15.0  # Should complete within 15 seconds
-            assert successful_ops >= 8  # At least 80% should succeed
-            
-            avg_time = duration / len(tasks)
-            print(f"{op_name}: {successful_ops}/{len(tasks)} operations in {duration:.2f}s (avg: {avg_time:.3f}s)")
-
-    @pytest.mark.asyncio
-    async def test_mixed_workload_performance(self, temp_script, sample_job_id):
-        """Test performance under mixed workload."""
-        start_time = time.time()
-        
-        # Create mixed workload
-        tasks = []
-        
-        # Job submissions
-        for i in range(5):
-            tasks.append(submit_slurm_job_tool(temp_script, cores=1, job_name=f"mixed_{i}"))
-        
-        # Status checks
-        for i in range(10):
-            tasks.append(check_job_status_tool(sample_job_id))
-        
-        # Information gathering
-        for i in range(3):
-            tasks.append(get_slurm_info_tool())
-            tasks.append(list_slurm_jobs_tool())
-        
-        # Execute mixed workload
-        results = await asyncio.gather(*tasks, return_exceptions=True)
-        
-        end_time = time.time()
-        duration = end_time - start_time
-        
-        # Analyze results
-        successful_ops = sum(1 for r in results if not isinstance(r, Exception))
-        job_ids = []
-        
-        for result in results:
-            if (not isinstance(result, Exception) and 
-                isinstance(result, dict) and 
-                "job_id" in result and 
-                not result.get("isError")):
-                job_ids.append(result["job_id"])
+            # Clean up job if submitted successfully
+            if not result.get("isError") and "job_id" in result:
+                cancel_slurm_job(str(result["job_id"]))
         
         # Performance assertions
-        assert duration < 45.0  # Should complete within 45 seconds
-        assert successful_ops >= len(tasks) * 0.7  # At least 70% should succeed
+        avg_latency = statistics.mean(latencies)
+        max_latency = max(latencies)
+        min_latency = min(latencies)
         
-        # Clean up jobs
-        if job_ids:
-            cleanup_tasks = [cancel_slurm_job_tool(job_id) for job_id in job_ids]
-            await asyncio.gather(*cleanup_tasks, return_exceptions=True)
+        print(f"\n=== Job Submission Latency Metrics ===")
+        print(f"Average latency: {avg_latency:.3f}s")
+        print(f"Min latency: {min_latency:.3f}s") 
+        print(f"Max latency: {max_latency:.3f}s")
+        print(f"Latency std dev: {statistics.stdev(latencies):.3f}s")
         
-        print(f"Mixed workload: {successful_ops}/{len(tasks)} operations in {duration:.2f}s")
+        # Performance requirements
+        assert avg_latency < 2.0, f"Average submission latency too high: {avg_latency:.3f}s"
+        assert max_latency < 6.0, f"Maximum submission latency too high: {max_latency:.3f}s"
 
-    @pytest.mark.asyncio
-    async def test_rapid_sequential_operations(self, temp_script):
-        """Test rapid sequential operations."""
-        operations_per_second = []
+    def test_job_status_query_performance(self, quick_script):
+        """Test the performance of job status queries."""
+        # First submit a job
+        result = submit_slurm_job(quick_script, cores=1)
+        if result.get("isError"):
+            pytest.skip("Could not submit job for status testing")
+            
+        job_id = str(result["job_id"])
         
-        # Test rapid job submissions
-        start_time = time.time()
-        for i in range(20):
-            result = await submit_slurm_job_tool(temp_script, cores=1, job_name=f"rapid_{i}")
-            if not isinstance(result, dict) or result.get("isError"):
-                continue
+        try:
+            latencies = []
+            num_queries = 10
+            
+            for _ in range(num_queries):
+                start_time = time.time()
+                status_result = get_job_status(job_id)
+                end_time = time.time()
                 
-        duration = time.time() - start_time
-        ops_per_sec = 20 / duration if duration > 0 else 0
-        operations_per_second.append(("submissions", ops_per_sec))
-        
-        # Test rapid status checks
-        start_time = time.time()
-        for i in range(50):
-            await check_job_status_tool("1234567")
-        duration = time.time() - start_time
-        ops_per_sec = 50 / duration if duration > 0 else 0
-        operations_per_second.append(("status_checks", ops_per_sec))
-        
-        # Print performance metrics
-        for op_name, ops_per_sec in operations_per_second:
-            print(f"{op_name}: {ops_per_sec:.2f} ops/sec")
-            assert ops_per_sec > 0.1  # At least some reasonable throughput
+                latency = end_time - start_time
+                latencies.append(latency)
+            
+            # Performance metrics
+            avg_latency = statistics.mean(latencies)
+            max_latency = max(latencies)
+            
+            print(f"\n=== Job Status Query Metrics ===")
+            print(f"Average query latency: {avg_latency:.3f}s")
+            print(f"Max query latency: {max_latency:.3f}s")
+            print(f"Queries per second: {1/avg_latency:.1f}")
+            
+            # Performance requirements
+            assert avg_latency < 1.0, f"Status query latency too high: {avg_latency:.3f}s"
+            assert max_latency < 3.0, f"Max status query latency too high: {max_latency:.3f}s"
+            
+        finally:
+            # Cleanup
+            cancel_slurm_job(job_id)
 
-    def test_memory_usage_under_load(self, temp_script):
-        """Test memory usage under load."""
-        import psutil
-        import gc
+    def test_concurrent_job_submissions(self, quick_script):
+        """Test concurrent job submission performance."""
+        num_concurrent = 5
+        submitted_jobs = []
         
-        process = psutil.Process()
+        def submit_job():
+            result = submit_slurm_job(quick_script, cores=1)
+            return result, time.time()
+        
+        start_time = time.time()
+        
+        # Use ThreadPoolExecutor for concurrent submissions
+        with concurrent.futures.ThreadPoolExecutor(max_workers=num_concurrent) as executor:
+            futures = [executor.submit(submit_job) for _ in range(num_concurrent)]
+            results = [future.result() for future in concurrent.futures.as_completed(futures)]
+        
+        end_time = time.time()
+        total_time = end_time - start_time
+        
+        # Collect job IDs for cleanup
+        for result, _ in results:
+            if not result.get("isError") and "job_id" in result:
+                submitted_jobs.append(str(result["job_id"]))
+        
+        # Performance metrics
+        successful_submissions = len(submitted_jobs)
+        throughput = successful_submissions / total_time if total_time > 0 else 0
+        
+        print(f"\n=== Concurrent Submission Metrics ===")
+        print(f"Successful submissions: {successful_submissions}/{num_concurrent}")
+        print(f"Total time: {total_time:.3f}s")
+        print(f"Throughput: {throughput:.2f} jobs/second")
+        
+        # Cleanup submitted jobs
+        for job_id in submitted_jobs:
+            try:
+                cancel_slurm_job(job_id)
+            except Exception:
+                pass  # Best effort cleanup
+        
+        # Performance requirements
+        assert successful_submissions >= num_concurrent * 0.8, "Too many failed submissions"
+        assert total_time < 10.0, f"Concurrent submissions took too long: {total_time:.3f}s"
+
+    def test_cluster_info_performance(self):
+        """Test cluster information retrieval performance."""
+        latencies = []
+        num_tests = 8
+        
+        for _ in range(num_tests):
+            start_time = time.time()
+            result = get_slurm_info()
+            end_time = time.time()
+            
+            latency = end_time - start_time
+            latencies.append(latency)
+        
+        # Performance metrics
+        avg_latency = statistics.mean(latencies)
+        max_latency = max(latencies)
+        
+        print(f"\n=== Cluster Info Query Metrics ===")
+        print(f"Average latency: {avg_latency:.3f}s")
+        print(f"Max latency: {max_latency:.3f}s")
+        print(f"Queries per second: {1/avg_latency:.1f}")
+        
+        # Performance requirements
+        assert avg_latency < 2.0, f"Cluster info query too slow: {avg_latency:.3f}s"
+
+    def test_job_listing_performance(self, quick_script):
+        """Test performance of job listing operations."""
+        # Submit a few jobs first
+        submitted_jobs = []
+        for i in range(3):
+            result = submit_slurm_job(quick_script, cores=1, job_name=f"perf_test_{i}")
+            if not result.get("isError") and "job_id" in result:
+                submitted_jobs.append(str(result["job_id"]))
+        
+        try:
+            latencies = []
+            num_tests = 5
+            
+            for _ in range(num_tests):
+                start_time = time.time()
+                result = list_slurm_jobs()
+                end_time = time.time()
+                
+                latency = end_time - start_time
+                latencies.append(latency)
+            
+            # Performance metrics
+            avg_latency = statistics.mean(latencies)
+            
+            print(f"\n=== Job Listing Metrics ===")
+            print(f"Average listing latency: {avg_latency:.3f}s")
+            print(f"Listings per second: {1/avg_latency:.1f}")
+            
+            # Performance requirements
+            assert avg_latency < 3.0, f"Job listing too slow: {avg_latency:.3f}s"
+            
+        finally:
+            # Cleanup
+            for job_id in submitted_jobs:
+                try:
+                    cancel_slurm_job(job_id)
+                except Exception:
+                    pass
+
+    def test_node_info_performance(self):
+        """Test node information retrieval performance."""
+        latencies = []
+        num_tests = 5
+        
+        for _ in range(num_tests):
+            start_time = time.time()
+            result = get_node_info()
+            end_time = time.time()
+            
+            latency = end_time - start_time
+            latencies.append(latency)
+        
+        # Performance metrics
+        avg_latency = statistics.mean(latencies)
+        
+        print(f"\n=== Node Info Query Metrics ===")
+        print(f"Average latency: {avg_latency:.3f}s")
+        print(f"Queries per second: {1/avg_latency:.1f}")
+        
+        # Performance requirements
+        assert avg_latency < 2.5, f"Node info query too slow: {avg_latency:.3f}s"
+
+    def test_queue_info_performance(self):
+        """Test queue information retrieval performance."""
+        latencies = []
+        num_tests = 5
+        
+        for _ in range(num_tests):
+            start_time = time.time()
+            result = get_queue_info()
+            end_time = time.time()
+            
+            latency = end_time - start_time
+            latencies.append(latency)
+        
+        # Performance metrics
+        avg_latency = statistics.mean(latencies)
+        
+        print(f"\n=== Queue Info Query Metrics ===")
+        print(f"Average latency: {avg_latency:.3f}s")
+        print(f"Queries per second: {1/avg_latency:.1f}")
+        
+        # Performance requirements
+        assert avg_latency < 2.0, f"Queue info query too slow: {avg_latency:.3f}s"
+
+    def test_job_lifecycle_performance(self, quick_script):
+        """Test the performance of a complete job lifecycle."""
+        start_time = time.time()
+        
+        # Submit job
+        submit_start = time.time()
+        result = submit_slurm_job(quick_script, cores=1, job_name="lifecycle_test")
+        submit_end = time.time()
+        
+        if result.get("isError"):
+            pytest.skip("Could not submit job for lifecycle testing")
+        
+        job_id = str(result["job_id"])
+        submit_time = submit_end - submit_start
+        
+        try:
+            # Query status
+            status_start = time.time()
+            status_result = get_job_status(job_id)
+            status_end = time.time()
+            status_time = status_end - status_start
+            
+            # Get job details
+            details_start = time.time()
+            details_result = get_job_details(job_id)
+            details_end = time.time()
+            details_time = details_end - details_start
+            
+            # Cancel job
+            cancel_start = time.time()
+            cancel_result = cancel_slurm_job(job_id)
+            cancel_end = time.time()
+            cancel_time = cancel_end - cancel_start
+            
+            total_time = cancel_end - start_time
+            
+            print(f"\n=== Job Lifecycle Performance ===")
+            print(f"Submit time: {submit_time:.3f}s")
+            print(f"Status query time: {status_time:.3f}s")
+            print(f"Details query time: {details_time:.3f}s")
+            print(f"Cancel time: {cancel_time:.3f}s")
+            print(f"Total lifecycle time: {total_time:.3f}s")
+            
+            # Performance requirements
+            assert submit_time < 3.0, f"Job submission too slow: {submit_time:.3f}s"
+            assert status_time < 1.0, f"Status query too slow: {status_time:.3f}s"
+            assert details_time < 2.0, f"Details query too slow: {details_time:.3f}s"
+            assert cancel_time < 2.0, f"Job cancellation too slow: {cancel_time:.3f}s"
+            assert total_time < 8.0, f"Total lifecycle too slow: {total_time:.3f}s"
+            
+        except Exception as e:
+            # Cleanup on error
+            try:
+                cancel_slurm_job(job_id)
+            except Exception:
+                pass
+            raise e
+
+    def test_array_job_performance(self):
+        """Test array job submission performance."""
+        # Create array job script
+        script_content = """#!/bin/bash
+#SBATCH --time=00:01:00
+echo "Array task ${SLURM_ARRAY_TASK_ID}"
+sleep 1
+"""
+        fd, script_path = tempfile.mkstemp(suffix='.sh', prefix='array_perf_')
+        try:
+            with os.fdopen(fd, 'w') as f:
+                f.write(script_content)
+            os.chmod(script_path, 0o755)
+            
+            start_time = time.time()
+            result = submit_array_job(
+                script_path, 
+                array_range="1-3", 
+                cores=1, 
+                job_name="array_perf_test"
+            )
+            end_time = time.time()
+            
+            submission_time = end_time - start_time
+            
+            print(f"\n=== Array Job Performance ===")
+            print(f"Array job submission time: {submission_time:.3f}s")
+            
+            # Cleanup if successful
+            if not result.get("isError") and "job_id" in result:
+                job_id = str(result["job_id"])
+                try:
+                    cancel_slurm_job(job_id)
+                except Exception:
+                    pass
+            
+            # Performance requirements
+            assert submission_time < 5.0, f"Array job submission too slow: {submission_time:.3f}s"
+            
+        finally:
+            # Cleanup script file
+            if os.path.exists(script_path):
+                os.unlink(script_path)
+
+    @pytest.mark.slow
+    def test_sustained_load_performance(self, quick_script):
+        """Test performance under sustained load."""
+        duration_seconds = 30
+        max_concurrent = 3
+        submitted_jobs = []
+        
+        def submit_and_track():
+            result = submit_slurm_job(quick_script, cores=1)
+            if not result.get("isError") and "job_id" in result:
+                return str(result["job_id"])
+            return None
+        
+        start_time = time.time()
+        submission_times = []
+        
+        print(f"\n=== Starting Sustained Load Test ({duration_seconds}s) ===")
+        
+        while time.time() - start_time < duration_seconds:
+            # Submit jobs in small batches
+            with concurrent.futures.ThreadPoolExecutor(max_workers=max_concurrent) as executor:
+                batch_start = time.time()
+                futures = [executor.submit(submit_and_track) for _ in range(max_concurrent)]
+                results = [f.result() for f in concurrent.futures.as_completed(futures)]
+                batch_end = time.time()
+                
+                batch_time = batch_end - batch_start
+                submission_times.append(batch_time)
+                
+                # Collect successful job IDs
+                for job_id in results:
+                    if job_id:
+                        submitted_jobs.append(job_id)
+                
+                # Brief pause between batches
+                time.sleep(1)
+        
+        total_time = time.time() - start_time
+        total_submissions = len(submitted_jobs)
+        avg_throughput = total_submissions / total_time if total_time > 0 else 0
+        
+        print(f"=== Sustained Load Results ===")
+        print(f"Total submissions: {total_submissions}")
+        print(f"Total time: {total_time:.1f}s")
+        print(f"Average throughput: {avg_throughput:.2f} jobs/second")
+        print(f"Average batch time: {statistics.mean(submission_times):.3f}s")
+        
+        # Cleanup all jobs
+        print("Cleaning up submitted jobs...")
+        cleanup_start = time.time()
+        for job_id in submitted_jobs:
+            try:
+                cancel_slurm_job(job_id)
+            except Exception:
+                pass
+        cleanup_time = time.time() - cleanup_start
+        print(f"Cleanup time: {cleanup_time:.1f}s")
+        
+        # Performance requirements
+        assert avg_throughput > 0.1, f"Throughput too low: {avg_throughput:.3f} jobs/s"
+        assert total_submissions > 5, f"Too few successful submissions: {total_submissions}"
+
+    def test_memory_usage_stability(self, quick_script):
+        """Test that memory usage remains stable during operations."""
+        import psutil
+        import os
+        
+        process = psutil.Process(os.getpid())
         initial_memory = process.memory_info().rss / 1024 / 1024  # MB
         
-        async def memory_test():
-            tasks = []
-            # Create many tasks
-            for i in range(100):
-                task = submit_slurm_job_tool(temp_script, cores=1, job_name=f"mem_test_{i}")
-                tasks.append(task)
+        # Perform multiple operations
+        operations = 0
+        for _ in range(20):
+            # Submit and cancel job
+            result = submit_slurm_job(quick_script, cores=1)
+            if not result.get("isError") and "job_id" in result:
+                job_id = str(result["job_id"])
+                cancel_slurm_job(job_id)
+                operations += 1
             
-            # Execute and wait
-            results = await asyncio.gather(*tasks, return_exceptions=True)
-            
-            # Clean up job IDs
-            job_ids = []
-            for result in results:
-                if (not isinstance(result, Exception) and 
-                    isinstance(result, dict) and 
-                    "job_id" in result and 
-                    not result.get("isError")):
-                    job_ids.append(result["job_id"])
-            
-            return job_ids
+            # Query cluster info
+            get_slurm_info()
+            operations += 1
         
-        # Run memory test
-        job_ids = asyncio.run(memory_test())
+        final_memory = process.memory_info().rss / 1024 / 1024  # MB
+        memory_increase = final_memory - initial_memory
         
-        # Force garbage collection
-        gc.collect()
+        print(f"\n=== Memory Usage Analysis ===")
+        print(f"Initial memory: {initial_memory:.1f} MB")
+        print(f"Final memory: {final_memory:.1f} MB")
+        print(f"Memory increase: {memory_increase:.1f} MB")
+        print(f"Operations performed: {operations}")
+        print(f"Memory per operation: {memory_increase/operations:.3f} MB/op")
         
-        peak_memory = process.memory_info().rss / 1024 / 1024  # MB
-        memory_increase = peak_memory - initial_memory
-        
-        print(f"Memory usage: {initial_memory:.1f}MB -> {peak_memory:.1f}MB (+{memory_increase:.1f}MB)")
-        
-        # Memory should not increase excessively
-        assert memory_increase < 100  # Less than 100MB increase
-
-    @pytest.mark.asyncio
-    async def test_timeout_handling(self, temp_script):
-        """Test behavior under timeout conditions."""
-        # Test with very short timeouts
-        timeout_tests = [
-            (0.1, "Very short timeout"),
-            (1.0, "Short timeout"),
-            (5.0, "Medium timeout"),
-        ]
-        
-        for timeout_duration, description in timeout_tests:
-            try:
-                result = await asyncio.wait_for(
-                    submit_slurm_job_tool(temp_script, cores=1),
-                    timeout=timeout_duration
-                )
-                # If it completes within timeout, that's good
-                assert isinstance(result, dict)
-                
-            except asyncio.TimeoutError:
-                # Timeout is also acceptable
-                print(f"{description}: Operation timed out after {timeout_duration}s")
-                pass
-
-    @pytest.mark.asyncio
-    async def test_error_recovery_performance(self):
-        """Test performance when recovering from errors."""
-        start_time = time.time()
-        
-        # Submit operations that will likely fail
-        error_tasks = []
-        for i in range(20):
-            # These should fail quickly
-            task = submit_slurm_job_tool("nonexistent_script.sh", 1)
-            error_tasks.append(task)
-        
-        results = await asyncio.gather(*error_tasks, return_exceptions=True)
-        
-        duration = time.time() - start_time
-        
-        # Should handle errors quickly
-        assert duration < 10.0  # Should fail fast
-        
-        # All should return results (either success or handled errors)
-        for result in results:
-            if not isinstance(result, Exception):
-                assert isinstance(result, dict)
-        
-        print(f"Error recovery: {len(results)} operations in {duration:.2f}s")
-
-    @pytest.mark.asyncio
-    async def test_resource_cleanup_performance(self, temp_script):
-        """Test performance of resource cleanup operations."""
-        # Submit multiple jobs
-        submit_tasks = []
-        for i in range(10):
-            task = submit_slurm_job_tool(temp_script, cores=1, job_name=f"cleanup_{i}")
-            submit_tasks.append(task)
-        
-        submit_results = await asyncio.gather(*submit_tasks, return_exceptions=True)
-        
-        # Collect job IDs
-        job_ids = []
-        for result in submit_results:
-            if (not isinstance(result, Exception) and 
-                isinstance(result, dict) and 
-                "job_id" in result and 
-                not result.get("isError")):
-                job_ids.append(result["job_id"])
-        
-        if job_ids:
-            # Test cleanup performance
-            start_time = time.time()
-            
-            cleanup_tasks = [cancel_slurm_job_tool(job_id) for job_id in job_ids]
-            cleanup_results = await asyncio.gather(*cleanup_tasks, return_exceptions=True)
-            
-            cleanup_duration = time.time() - start_time
-            
-            successful_cleanups = sum(
-                1 for r in cleanup_results 
-                if not isinstance(r, Exception)
-            )
-            
-            print(f"Cleanup: {successful_cleanups}/{len(job_ids)} jobs in {cleanup_duration:.2f}s")
-            
-            # Cleanup should be reasonably fast
-            assert cleanup_duration < 20.0
-
-    @pytest.mark.asyncio
-    async def test_scalability_limits(self, temp_script):
-        """Test system behavior at scalability limits."""
-        # Test increasing load levels
-        load_levels = [10, 25, 50]
-        
-        for load_level in load_levels:
-            print(f"Testing load level: {load_level}")
-            
-            start_time = time.time()
-            
-            # Create tasks at this load level
-            tasks = []
-            for i in range(load_level):
-                task = submit_slurm_job_tool(temp_script, cores=1, job_name=f"scale_{load_level}_{i}")
-                tasks.append(task)
-            
-            # Execute with timeout
-            try:
-                results = await asyncio.wait_for(
-                    asyncio.gather(*tasks, return_exceptions=True),
-                    timeout=60.0  # 60 second timeout
-                )
-                
-                duration = time.time() - start_time
-                
-                successful_ops = sum(
-                    1 for r in results 
-                    if not isinstance(r, Exception) and isinstance(r, dict)
-                )
-                
-                success_rate = successful_ops / load_level
-                throughput = successful_ops / duration if duration > 0 else 0
-                
-                print(f"Load {load_level}: {success_rate:.1%} success, {throughput:.2f} ops/sec")
-                
-                # Clean up any successful jobs
-                job_ids = []
-                for result in results:
-                    if (not isinstance(result, Exception) and 
-                        isinstance(result, dict) and 
-                        "job_id" in result and 
-                        not result.get("isError")):
-                        job_ids.append(result["job_id"])
-                
-                if job_ids:
-                    cleanup_tasks = [cancel_slurm_job_tool(job_id) for job_id in job_ids]
-                    await asyncio.gather(*cleanup_tasks, return_exceptions=True)
-                
-                # System should maintain some level of functionality
-                assert success_rate > 0.1  # At least 10% success rate
-                
-            except asyncio.TimeoutError:
-                print(f"Load {load_level}: Timed out after 60 seconds")
-                # Timeout at high load is acceptable
-                break
+        # Memory requirements (should not grow excessively)
+        assert memory_increase < 50, f"Excessive memory growth: {memory_increase:.1f} MB"
