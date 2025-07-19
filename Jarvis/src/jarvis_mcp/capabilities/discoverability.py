@@ -13,7 +13,7 @@ import logging
 from datetime import datetime
 
 # Import Pydantic models
-from .models import (
+from jarvis_mcp.capabilities.models import (
     PackageCatalog, PackageInfo, PackageInformation, RepositoryStatus, 
     RepositoryInfo, RepositoryOperationResult, ClusterResourceStatus, 
     ResourceInfo, PackageType

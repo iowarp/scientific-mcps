@@ -1,76 +1,26 @@
 [build-system]
-requires = ["setuptools>=64.0", "wheel"]
+requires = ["setuptools>=60.0.0", "wheel"]
 build-backend = "setuptools.build_meta"
 
 [project]
 name = "jarvis-mcp"
 version = "0.1.0"
-description = "Jarvis MCP server implementation using Model Context Protocol"
+description = "MCP server and client for Jarvis-CD pipelines"
 readme = "README.md"
-requires-python = ">=3.10"
-keywords = ["MCP", "JSON-RPC", "FastMCP", "Jarvis", "HPC", "Package Management"]
-license = "MIT"
-authors = [
-    { name = "IoWarp Scientific MCPs", email = "contact@iowarp.org" }
-]
+requires-python = ">=3.10.12"
 dependencies = [
-    "mcp>=0.1.0",
-    "fastmcp>=0.1.0",
-    "fastapi>=0.95.0",
-    "uvicorn>=0.21.0",
-    "httpx>=0.24.0",
-    "python-dotenv>=1.0.0",
-    "pydantic>=2.0.0",
-    "rich>=13.0.0",
-    "tabulate>=0.9.0",
-    "pytest>=7.2.0",
-    "pytest-asyncio>=1.0.0",
-    "requests>=2.28.0",
-    "jarvis-util @ git+https://github.com/grc-iit/jarvis-util.git@main#egg=jarvis-util",
-    "jarvis-cd @ git+https://github.com/grc-iit/jarvis-cd.git@main#egg=jarvis-cd",
+  "fastmcp",
+  "fastapi",
+  "pydantic>=2.0.0",
+  "python-dotenv",
+  "google-genai",
+  "jarvis-util @ git+https://github.com/grc-iit/jarvis-util.git@main#egg=jarvis-util",
+  "jarvis-cd @ git+https://github.com/grc-iit/jarvis-cd.git@main#egg=jarvis-cd",
 ]
-
-[project.optional-dependencies]
-test = ["pytest>=7.0.0", "httpx", "pytest-cov>=4.0.0"]
-
-[project.scripts]
-jarvis-mcp = "src.server:main"
 
 [tool.setuptools.packages.find]
-where = ["."]
-include = ["src*"]
+where = ["src"]
 
-[tool.setuptools.package-dir]
-"" = "."
-
-[dependency-groups]
-dev = [
-    "pytest>=8.4.0",
-    "pytest-cov>=4.0.0",
-    "black>=23.0.0",
-    "isort>=5.12.0",
-    "mypy>=1.7.0",
-    "ruff>=0.1.0"
-]
-
-[tool.ruff]
-line-length = 88
-target-version = "py310"
-
-[tool.ruff.lint]
-select = ["E", "F", "W", "I", "N", "UP", "RUF"]
-ignore = ["E501"]
-
-[tool.black]
-line-length = 88
-target-version = ["py310"]
-
-[tool.isort]
-profile = "black"
-line_length = 88
-
-[tool.mypy]
-python_version = "3.10"
-strict = true
-warn_return_any = true
-warn_unused_configs = true
+[project.scripts]
+# this creates a `jarvis-mcp` CLI on your $PATH:
+jarvis-mcp = "jarvis_mcp.server:main"
