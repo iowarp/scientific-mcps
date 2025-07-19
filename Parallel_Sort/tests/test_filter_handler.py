@@ -4,7 +4,7 @@ Tests for the filter handler capability.
 import pytest
 import tempfile
 import os
-from parallel_sort.capabilities.filter_handler import (
+from implementation.filter_handler import (
     filter_logs, filter_by_time_range, filter_by_log_level, 
     filter_by_keyword, apply_filter_preset, FilterOperator
 )

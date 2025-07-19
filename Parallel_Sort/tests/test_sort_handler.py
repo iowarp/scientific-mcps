@@ -4,7 +4,7 @@ Tests for the sort handler capability.
 import pytest
 import tempfile
 import os
-from parallel_sort.capabilities.sort_handler import sort_log_by_timestamp, parse_timestamp
+from implementation.sort_handler import sort_log_by_timestamp, parse_timestamp
 from datetime import datetime
 
 

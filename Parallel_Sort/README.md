@@ -2,7 +2,7 @@
 
 A comprehensive Model Context Protocol (MCP) server for advanced log file processing and analysis. Provides parallel sorting capabilities, statistical analysis, pattern detection, and flexible export options for large-scale log data processing.
 
-## Implemented MCP Capabilities
+## Implemented MCP Capabilities 
 
 | Capability | Type | Description |
 |------------|------|-------------|
@@ -157,7 +157,7 @@ Parallel_Sort/
 │       ├── __init__.py
 │       ├── server.py
 │       ├── mcp_handlers.py
-│       └── capabilities/
+│       └── implementation/
 │           ├── __init__.py
 │           ├── sort_handler.py
 │           ├── statistics_handler.py
@@ -211,7 +211,7 @@ Available predefined filter presets:
 
 - [Project Structure](src/parallel_sort/)
 - [Test Examples](tests/)
-- [Capabilities Documentation](src/parallel_sort/capabilities/)
+- [Capabilities Documentation](src/parallel_sort/implementation/)
 
 ## License
 

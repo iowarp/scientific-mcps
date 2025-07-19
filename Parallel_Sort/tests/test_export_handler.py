@@ -5,7 +5,7 @@ import pytest
 import json
 import csv
 import io
-from parallel_sort.capabilities.export_handler import (
+from implementation.export_handler import (
     export_to_json, export_to_csv, export_to_text, export_summary_report
 )
 

@@ -20,7 +20,7 @@ sys.path.insert(0, os.path.dirname(__file__))
 # Load environment variables
 load_dotenv()
 
-from . import mcp_handlers
+import mcp_handlers
 
 # Initialize MCP server
 mcp = FastMCP("ParallelSortMCP")

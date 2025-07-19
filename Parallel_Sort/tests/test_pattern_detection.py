@@ -4,7 +4,7 @@ Tests for the pattern detection capability.
 import pytest
 import tempfile
 import os
-from parallel_sort.capabilities.pattern_detection import (
+from implementation.pattern_detection import (
     detect_patterns, detect_error_clusters, normalize_message_for_pattern
 )
 

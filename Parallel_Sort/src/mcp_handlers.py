@@ -1,20 +1,20 @@
 """
 MCP handlers for Parallel Sort server.
-These handlers wrap all capabilities for MCP protocol compliance.
+These handlers wrap all implementation for MCP protocol compliance.
 """
 import json
 from typing import Dict, Any, List, Union
-from .capabilities.sort_handler import sort_log_by_timestamp
-from .capabilities.statistics_handler import analyze_log_statistics
-from .capabilities.pattern_detection import detect_patterns
-from .capabilities.filter_handler import (
+from implementation.sort_handler import sort_log_by_timestamp
+from implementation.statistics_handler import analyze_log_statistics
+from implementation.pattern_detection import detect_patterns
+from implementation.filter_handler import (
     filter_logs, filter_by_time_range, filter_by_log_level, 
     filter_by_keyword, apply_filter_preset
 )
-from .capabilities.export_handler import (
+from implementation.export_handler import (
     export_to_json, export_to_csv, export_to_text, export_summary_report
 )
-from .capabilities.parallel_processor import parallel_sort_large_file
+from implementation.parallel_processor import parallel_sort_large_file
 
 
 async def sort_log_handler(file_path: str) -> Dict[str, Any]:
