@@ -1,183 +1,257 @@
-# ADIOS MCP Server
+# ADIOS MCP - Scientific Data Access for LLMs
 
-A read-only Model Context Protocol (MCP) server for ADIOS datasets, enabling LLMS to query scientific simulation and real-time data.
 
-## Key Features
+## Description
 
-- **Read-Only ADIOS Access**  
-  Uses the ADIOS2 Python API to list files, inspect variables, and retrieve data slices or full arrays without modifying the source.
+ADIOS MCP is a comprehensive Model Context Protocol (MCP) server that enables Language Learning Models (LLMs) to access and analyze scientific simulation and real-time data through the ADIOS2 framework. This server provides read-only access to BP5 datasets with intelligent data handling and seamless integration with AI coding assistants.
 
-- **Standardized MCP Interface**  
-  Exposes data-access tools via the MCP JSON-RPC protocol.
+The system automatically handles ADIOS2 data structures, provides comprehensive variable inspection, and supports multi-step time-series data analysis. It offers professional data access capabilities with support for scientific computing workflows and high-performance data I/O operations.
 
-- **Local LLM Integration**  
-  Connects to local language models through ollama, allowing natural-language queries and inference without internet or cloud dependencies.
+**Key Features:**
+- **High-Performance Data Access**: Read-only access to ADIOS2 BP5 files with optimized I/O operations
+- **Intelligent Data Processing**: Automatic variable type detection, shape analysis, and step-based data handling
+- **Multiple Data Operations**: Variable inspection, attribute reading, data slicing, and statistical analysis
+- **Scientific Computing Support**: Time-series analysis, multi-dimensional arrays, and metadata handling
+- **Cross-Platform Compatibility**: Pure Python implementation for Linux, macOS, and Windows
+- **MCP Integration**: Full Model Context Protocol compliance for seamless LLM integration
 
-- **Cross-Platform**  
-  Pure Python implementation runs on Linux, macOS, and Windows. Package installable via `pip` or Spack.
 
-## Architecture
 
- ![](https://github.com/iowarp/scientific-mcps/blob/main/Adios/assets/architecture.png)
+## 🛠️ Installation
 
-## Capabilities
-
- 1. list_bp5: List all the bp5 files in a directory. 
-
- 2. inspect_variables: Inspect all variables in a BP5 file (type, shape, available steps).
-
- 3. inspect_attributes: Read global or variable-specific attributes from a BP5 file. 
-
- 4. read_variable_at_step: Read a named variable at a specific step from a BP5 file.
-
- 5. read_bp5: Reads all the variables/data and their steps from a BP5 file.
-
- 6. get_min_max: Get minimum and maximum of a variable in a BP5 file.
-
- 7. add_variables: Sum two variables in a BP5 file, either globally or at specific steps.
-
----
-
-## Prerequisites
+### Requirements
 
 - Python 3.10 or higher
-- [uv](https://docs.astral.sh/uv/) package manager
-- Linux/macOS environment (for optimal compatibility)
+- [uv](https://docs.astral.sh/uv/) package manager (recommended)
+- Linux/macOS environment (Windows supported)
 
-## Setup
-**Run the Mcp Server directly:**
+<details>
+<summary><b>Install in Cursor</b></summary>
 
-   ```bash
-   uv run adios-mcp
-   ```
-   
-   This will create a `.venv/` folder, install all required packages, and run the server directly.
+Go to: `Settings` -> `Cursor Settings` -> `MCP` -> `Add new global MCP server`
 
-## Testing
+Pasting the following configuration into your Cursor `~/.cursor/mcp.json` file is the recommended approach. You may also install in a specific project by creating `.cursor/mcp.json` in your project folder. See [Cursor MCP docs](https://docs.cursor.com/context/model-context-protocol) for more info.
 
-To run the test suite:
-
-```bash
-# Install test dependencies (pytest is included in dev dependencies)
-uv sync --dev
-
-# Run all tests
-uv run pytest
-
-# Run tests with verbose output
-uv run pytest -v
-
-# Run specific test file
-uv run pytest tests/test_bp5_attributes.py
-
-# Run tests with coverage report
-uv run pytest --cov=src --cov-report=html
-```
-
-The test suite includes comprehensive unit tests for all BP5 functionality modules with mocked ADIOS2 dependencies for fast, reliable testing.
-
---- 
-
-## Running the Server with different types of Clients:
-
-### Running the Server with the WARP Client
-To interact with the ADIOS MCP server, use the main `wrp.py` client. You will need to configure it to point to the ADIOS server.
-
-1.  **Configure:** Ensure that `Adios` is listed in the `MCP` section of your chosen configuration file (e.g., in `bin/confs/Gemini.yaml` or `bin/confs/Ollama.yaml`).
-    ```yaml
-    # In bin/confs/Gemini.yaml
-    MCP:
-      - Adios
-      # - Jarvis
-      # - HDF5
-    ```
-
-2.  **Run:** Start the client from the repository root with your desired configuration:
-    ```bash
-    # Example using the Gemini configuration 
-    
-    python3 bin/wrp.py --conf=bin/confs/Gemini.yaml
-    ```
-    For quick setup with Gemini, see our [Quick Start Guide](docs/basic_install.md).
-    
-    
-    For detailed setup with local LLMs and other providers, see the [Complete Installation Guide](../bin/docs/Installation.md).
-
-### Running the Server on Claude Command Line Interface Tool.
-
-1. Install the Claude Code using NPM,
-Install [NodeJS 18+](https://nodejs.org/en/download), then run:
-
-```bash
-npm install -g @anthropic-ai/claude-code
-```
-
-2. Running the server:
-```bash
-claude add mcp adios -- uv --directory ~/scientific-mcps/Adios run adios-mcp
-```
-
-### Running the Server on open source LLM client (Claude, Copilot, etc.)
-
-**Put the following in settings.json of any open source LLMs like Claude or Microsoft Co-pilot:**
-
-```bash
-"adios-mcp": {
-    "command": "uv",
-    "args": [
-        "--directory",
-        "path/to/directory/src/",
-        "run",
-        "server.py"
-    ]
+```json
+{
+  "mcpServers": {
+    "adios-mcp": {
+      "command": "uv",
+      "args": ["--directory", "/absolute/path/to/Adios", "run", "adios-mcp"]
+    }
+  }
 }
 ```
 
----
-## Few Examples
+</details>
 
-**Note: Mention Absolute path of all the files you want to have operations ex. Read file at Adios/data/data1.bp**
+<details>
+<summary><b>Install in VS Code</b></summary>
 
-1. Read variables/data at specific step in a Bp5 File 
+Add this to your VS Code MCP config file. See [VS Code MCP docs](https://code.visualstudio.com/docs/copilot/chat/mcp-servers) for more info.
 
- ![](https://github.com/iowarp/scientific-mcps/blob/main/Adios/assets/read_steps.png)
-
-2. Inspect the variables in a BP5 file (type, shape, available steps)
-
- ![](https://github.com/iowarp/scientific-mcps/blob/main/Adios/assets/steps.png)
-
-3. Inspect and read the attributes of a specific variable
-
- ![](https://github.com/iowarp/scientific-mcps/blob/main/Adios/assets/attributes.png)
-
-**Detailed demonstration of use cases are available at [Examples](https://github.com/sohamvsonar/scientific-mcps/tree/main/Adios/docs/example_uses.md).**
-
-## Project Structure
-```text
-Adios/
-├── pyproject.toml           # Project metadata & dependencies
-├── README.md                # Project documentation
-├── assets/                  # Images and other assets
-├── data/                    # Sample data directory
-├── docs/                    # Additional documentation
-│     ├── adios_setup        # Detailed guide on installing the Adios2
-│     └── example_uses       # Example use cases with prompt, answers and pictures
-├── src/                     # Source code directory
-│   ├── server.py            # The MCP server
-│   ├── mcp_handlers.py      # MCP methods
-│   └── implementation/      # Core functionality modules
-│       ├── __init__.py
-│       ├── bp5_attributes.py                 # Inspect attributes functionality
-│       ├── bp5_inspect_variables.py          # Inspect variables functionality
-│       ├── bp5_inspect_variables_at_step.py  # Inspect variables at step functionality
-│       ├── bp5_list.py                       # List BP5 files functionality
-│       └── bp5_read_variable_at_step.py      # Read variable at step functionality
-├── tests/                   # Test directory
-│   ├── __init__.py
-│   ├── test_bp5_attributes.py                 # Tests for attribute inspection
-│   ├── test_bp5_inspect_variables.py          # Tests for variable inspection
-│   ├── test_bp5_inspect_variables_at_step.py  # Tests for step-specific inspection
-│   ├── test_bp5_list.py                       # Tests for BP5 file listing
-│   └── test_bp5_read_variable_at_step.py      # Tests for reading variables at steps
-├── uv.lock                  # Dependency lock file
+```json
+"mcp": {
+  "servers": {
+    "adios-mcp": {
+      "type": "stdio",
+      "command": "uv",
+      "args": ["--directory", "/absolute/path/to/Adios", "run", "adios-mcp"]
+    }
+  }
+}
 ```
+
+</details>
+
+<details>
+<summary><b>Install in Claude Code</b></summary>
+
+Run this command. See [Claude Code MCP docs](https://docs.anthropic.com/en/docs/claude-code/mcp) for more info.
+
+```sh
+claude mcp add adios-mcp -- uv --directory /absolute/path/to/Adios run adios-mcp
+```
+
+</details>
+
+<details>
+<summary><b>Install in Claude Desktop</b></summary>
+
+Add this to your Claude Desktop `claude_desktop_config.json` file. See [Claude Desktop MCP docs](https://modelcontextprotocol.io/quickstart/user) for more info.
+
+```json
+{
+  "mcpServers": {
+    "adios-mcp": {
+      "command": "uv",
+      "args": ["--directory", "/absolute/path/to/Adios", "run", "adios-mcp"],
+      "env": {
+        "UV_PROJECT_ENVIRONMENT": "/absolute/path/to/Adios/.venv"
+      }
+    }
+  }
+}
+```
+
+</details>
+
+<details>
+<summary><b>Manual Setup</b></summary>
+
+1. Clone or download the ADIOS MCP server
+2. Install dependencies:
+   ```bash
+   cd /path/to/Adios
+   uv sync
+   ```
+3. Test the installation:
+   ```bash
+   uv run adios-mcp --version
+   ```
+
+</details>
+
+## Available Actions
+
+### `list_bp5`
+**Description**: List all BP5 files in a specified directory with comprehensive file information including metadata and structure details.
+
+**Parameters**:
+- `directory` (str): Absolute path to directory containing BP5 files
+
+**Returns**: List of BP5 files with metadata, size information, and basic structure details.
+
+### `inspect_variables`
+**Description**: Inspect all variables in a BP5 file including type information, shape dimensions, and available time steps for comprehensive data structure analysis. If variable_name is provided, returns data for that specific variable.
+
+**Parameters**:
+- `filename` (str): Absolute path to BP5 file
+- `variable_name` (str, optional): Specific variable name for targeted inspection
+
+**Returns**: Complete variable inventory with types, shapes, step counts, and data structure information for all variables or specific variable.
+
+### `inspect_variables_at_step`
+**Description**: Inspect a specific variable at a given step in a BP5 file. Shows variable type, shape, and metadata at the specified time step.
+
+**Parameters**:
+- `filename` (str): Absolute path to BP5 file
+- `variable_name` (str): Name of the variable to inspect
+- `step` (int): Step number to inspect
+
+**Returns**: Variable information at the specified step including type, shape, and available metadata.
+
+### `inspect_attributes`
+**Description**: Read global or variable-specific attributes from a BP5 file with detailed metadata extraction and attribute value analysis.
+
+**Parameters**:
+- `filename` (str): Absolute path to BP5 file
+- `variable_name` (str, optional): Specific variable name for targeted attribute inspection
+
+**Returns**: Comprehensive attribute dictionary with metadata, variable-specific attributes, and global file attributes.
+
+### `read_variable_at_step`
+**Description**: Read a named variable at a specific time step from a BP5 file with full data extraction and conversion to Python native types.
+
+**Parameters**:
+- `filename` (str): Absolute path to BP5 file
+- `variable_name` (str): Name of variable to read
+- `target_step` (int): Time step number to read from
+
+**Returns**: Variable data as Python scalar or list (flattened array) at the specified step.
+
+## Examples
+
+### 1. Scientific Data Structure Analysis
+```
+I have a BP5 simulation file at /data/simulation_results.bp. Can you first analyze the data structure and then show me the temperature variable evolution over time?
+```
+
+**Tools called:**
+- `inspect_variables` - Analyze the dataset structure and available variables
+- `read_variable_at_step` - Read temperature data at specific time steps
+
+This prompt will:
+- Use `inspect_variables` to analyze the BP5 file structure and discover all variables
+- Extract temperature variable data using `read_variable_at_step` at different time steps
+- Provide insights about the simulation data structure and temporal evolution
+
+### 2. Multi-Variable Scientific Analysis
+```
+Using the file /data/fluid_dynamics.bp, perform a comprehensive analysis showing:
+1. All available variables and their properties
+2. Pressure field at step 50
+3. Variable metadata and attributes for the pressure field
+```
+
+**Tools called:**
+- `inspect_variables` - List all available variables and properties
+- `read_variable_at_step` - Extract pressure field at step 50
+- `inspect_attributes` - Get pressure variable metadata
+
+This prompt will:
+- Generate comprehensive variable inventory using `inspect_variables`
+- Extract specific time step data using `read_variable_at_step`
+- Analyze variable metadata with `inspect_attributes`
+- Provide detailed analysis of fluid dynamics simulation data
+
+### 3. Time-Series Variable Inspection
+```
+From /data/climate_model.bp, I want to understand the temperature variable structure across different time steps and inspect its properties at step 25.
+```
+
+**Tools called:**
+- `inspect_variables` - Get temperature variable structure and available steps
+- `inspect_variables_at_step` - Detailed inspection at step 25
+
+This prompt will:
+- Use `inspect_variables` to understand overall variable structure
+- Use `inspect_variables_at_step` to get detailed information at a specific time step
+- Provide comprehensive time-series data structure analysis
+
+### 4. High-Performance Computing Data Analysis
+```
+Analyze the simulation output at /data/parallel_computation.bp - show me the variable structure, read specific computational domain data, and extract metadata attributes.
+```
+
+**Tools called:**
+- `inspect_variables` - Analyze computational variables and structure
+- `inspect_attributes` - Extract simulation metadata and parameters
+- `read_variable_at_step` - Read domain-specific data
+
+This prompt will:
+- Use `inspect_variables` to understand parallel computation structure
+- Extract simulation parameters with `inspect_attributes`
+- Read specific computational domain data using `read_variable_at_step`
+- Provide HPC-focused data analysis
+
+### 5. Scientific Data Validation and Exploration
+```
+I need to validate the integrity of my ADIOS dataset at /data/experimental_results.bp - check all variables, their step-wise properties, and ensure metadata completeness.
+```
+
+**Tools called:**
+- `inspect_variables` - Comprehensive variable structure validation
+- `inspect_variables_at_step` - Step-specific variable validation
+- `inspect_attributes` - Metadata integrity check
+
+This prompt will:
+- Use `inspect_variables` to validate overall data structure integrity
+- Perform step-specific analysis with `inspect_variables_at_step`
+- Check metadata completeness with `inspect_attributes`
+- Provide comprehensive data quality assessment for scientific workflows
+
+### 6. Quick BP5 File Discovery
+```
+Show me all BP5 files in my simulation directory at /data/simulations/ and provide a quick overview of their contents and structure.
+```
+
+**Tools called:**
+- `list_bp5` - Directory-wide BP5 file discovery
+- `inspect_variables` - Quick structure overview for each file
+
+This prompt will:
+- Use `list_bp5` to discover all BP5 files in the directory
+- Use `inspect_variables` to provide structural overview of discovered files
+- Generate comprehensive overview of available simulation datasets
+- Suggest optimal data access strategies based on file contents
