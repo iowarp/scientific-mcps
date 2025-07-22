@@ -7,8 +7,8 @@ from .base import BaseLLM, LLMReply, ToolDef
 from typing import List, Dict
 
 try:
-    from google import genai
-    from google.genai import types
+    import google.generativeai as genai
+    from google.generativeai import types
 except ImportError:
     genai = None
     types = None
@@ -35,7 +35,8 @@ class GeminiLLM(BaseLLM):
         if not api_key_value:
             raise ValueError("Gemini API Key not found. Please provide it in the config file or set GEMINI_API_KEY environment variable.")
 
-        self.client = genai.Client(api_key=api_key_value)
+        genai.configure(api_key=api_key_value)
+        self.client = genai.GenerativeModel(model_name)
         self.model_name = model_name
         
     async def chat(
