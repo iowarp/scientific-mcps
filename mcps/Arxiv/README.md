@@ -3,7 +3,7 @@
 
 ## Description
 
-ArXiv MCP is a comprehensive Model Context Protocol (MCP) server that enables Language Learning Models (LLMs) to search, analyze, and access research papers from the ArXiv preprint repository. This server provides advanced search capabilities, paper analysis tools, and citation management with seamless integration with AI coding assistants.
+**ArXiv MCP** provides comprehensive research paper access from ArXiv preprint repository with multi-dimensional search capabilities, paper analysis tools, citation management, PDF access, and research workflow support for academic literature review.
 
 
 **Key Features:**

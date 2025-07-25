@@ -3,7 +3,7 @@
 
 ## Description
 
-ADIOS MCP is a comprehensive Model Context Protocol (MCP) server that enables Language Learning Models (LLMs) to access and analyze scientific simulation and real-time data through the ADIOS2 framework. This server provides read-only access to BP5 datasets with intelligent data handling and seamless integration with AI coding assistants.
+**ADIOS MCP** enables scientific simulation data access through ADIOS2 framework with read-only BP5 file support, variable inspection, attribute reading, and step-based data handling for high-performance scientific computing workflows.
 
 
 

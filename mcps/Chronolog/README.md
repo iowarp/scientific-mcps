@@ -3,7 +3,7 @@
 
 ## Description
 
-ChronoLog MCP is a comprehensive Model Context Protocol (MCP) server that integrates with ChronoLog, a scalable, high-performance distributed shared log store. This server enables Language Learning Models (LLMs) to capture, manage, and retrieve conversational interactions in a structured format with enterprise-grade logging capabilities and real-time event processing.
+**ChronoLog MCP** integrates with ChronoLog distributed shared log store for capturing, managing, and retrieving conversational interactions with structured event formatting, session management, and real-time event processing capabilities.
 
 **Key Features:**
 - **Real-time Event Logging**: Capture conversational interactions between LLMs and users with structured event formatting

@@ -3,7 +3,7 @@
 
 ## Description
 
-Plot MCP is a Model Context Protocol server that enables LLMs to create professional data visualizations from CSV and Excel files with intelligent data processing capabilities. The server automatically handles data cleaning, type inference, and missing value processing while supporting multiple visualization types including line plots, bar charts, scatter plots, histograms, and correlation heatmaps.
+**Plot MCP** creates data visualizations from CSV and Excel files with intelligent data processing capabilities, supporting line plots, bar charts, scatter plots, histograms, and correlation heatmaps for comprehensive data analysis.
 
 
 ## 🛠️ Installation

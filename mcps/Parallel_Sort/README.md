@@ -3,7 +3,8 @@
  
 ## Description
  
-Parallel Sort MCP is a comprehensive Model Context Protocol (MCP) server that enables Language Learning Models (LLMs) to perform high-performance log file processing and analysis operations. This server provides advanced log sorting, filtering, analysis tools, and scalable data processing capabilities with seamless integration with AI coding assistants.
+**Parallel Sort MCP** processes large log files with high-performance sorting, advanced multi-condition filtering, pattern detection, and statistical analysis capabilities, supporting multiple export formats for comprehensive log management workflows.
+
 **Key Features:**
 - **Log File Sorting**: Timestamp-based sorting with parallel processing for large log files
 - **Advanced Filtering**: Multi-condition filtering by time range, log level, keywords, and custom patterns

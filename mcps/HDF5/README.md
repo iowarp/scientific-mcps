@@ -3,7 +3,7 @@
 
 ## Description
 
-HDF5 MCP is a comprehensive Model Context Protocol (MCP) server that enables Language Learning Models (LLMs) to access, analyze, and manipulate HDF5 scientific data files. This server provides advanced capabilities for hierarchical data structure inspection, dataset previewing, and comprehensive data reading with seamless integration with AI coding assistants.
+**HDF5 MCP** provides comprehensive scientific data access through hierarchical data structure inspection, dataset previewing, and complete data reading with seamless integration for multi-dimensional arrays and attribute handling in scientific computing.
 
 **Key Features:**
 - **Comprehensive HDF5 Access**: Full support for HDF5 file inspection, structure analysis, and data extraction

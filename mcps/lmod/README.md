@@ -3,7 +3,7 @@
 
 ## Description
 
-Lmod MCP is a comprehensive Model Context Protocol (MCP) server that enables Language Learning Models (LLMs) to manage environment modules using the Lmod system. This server provides advanced module management capabilities, environment configuration tools, and HPC workflow support with seamless integration with AI coding assistants.
+**Lmod MCP** manages environment modules using the Lmod system with advanced search capabilities, atomic operations, environment collections, and HPC integration for reproducible scientific computing and development environments.
 
 **Key Features:**
 - **Comprehensive Module Management**: List, search, load, unload, and inspect modules with intelligent dependency handling

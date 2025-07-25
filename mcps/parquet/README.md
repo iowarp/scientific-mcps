@@ -3,7 +3,7 @@
 
 ## Description
 
-Parquet MCP is a comprehensive Model Context Protocol (MCP) server that enables Language Learning Models (LLMs) to access, analyze, and manipulate Parquet columnar data files. This server provides advanced capabilities for efficient data reading, column-based operations, and high-performance analytics with seamless integration with AI coding assistants.
+**Parquet MCP** accesses columnar data files with high-performance PyArrow-based reading, automatic schema detection, column-based operations, and analytics integration supporting data science workflows and big data processing capabilities.
 
 **Key Features:**
 - **High-Performance Columnar Access**: Efficient column-based data reading using PyArrow with optimized memory usage

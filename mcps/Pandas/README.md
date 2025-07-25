@@ -3,7 +3,7 @@
 
 ## Description
 
-Pandas MCP is a Model Context Protocol server that enables LLMs to perform advanced data analysis and manipulation using the powerful Pandas library, featuring comprehensive statistical analysis, data cleaning and transformation, time series operations, multi-format data I/O (CSV, Excel, JSON, Parquet, HDF5), and intelligent data quality assessment for seamless data science workflows.
+**Pandas MCP** transforms data analysis workflows by providing comprehensive statistical analysis, data cleaning and transformation, time series operations, multi-format I/O support, and intelligent data quality assessment for efficient data science workflows.
 
 
 

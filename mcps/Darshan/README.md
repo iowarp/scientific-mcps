@@ -3,7 +3,7 @@
 
 ## Description
 
-Darshan MCP is a comprehensive Model Context Protocol (MCP) server that enables Language Learning Models (LLMs) to analyze HPC application I/O performance through Darshan profiler trace files. This server provides advanced I/O analysis capabilities, performance bottleneck identification, and comprehensive reporting tools with seamless integration with AI coding assistants.
+**Darshan MCP** analyzes HPC application I/O performance through comprehensive trace file analysis, performance bottleneck identification, timeline analysis, and comparative reporting tools for optimizing scientific computing I/O patterns.
 
 **Key Features:**
 - **Comprehensive I/O Analysis**: Load and parse Darshan logs with metadata extraction and performance metrics calculation

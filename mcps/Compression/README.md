@@ -3,7 +3,7 @@
 
 ## Description
 
-Compression MCP is a comprehensive Model Context Protocol (MCP) server that enables Language Learning Models (LLMs) to perform efficient file compression operations using industry-standard algorithms. This server provides high-performance gzip compression with detailed statistics and seamless integration with AI coding assistants.
+**Compression MCP** delivers efficient file compression operations using industry-standard gzip algorithms with detailed analytics, comprehensive error management, and storage optimization capabilities for data archival and transfer operations.
 
 
 **Key Features:**

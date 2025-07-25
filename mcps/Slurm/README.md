@@ -3,7 +3,7 @@
 
 ## Description
 
-Slurm MCP is a Model Context Protocol server that enables LLMs to manage HPC workloads on Slurm-managed clusters with comprehensive job submission, monitoring, and resource management capabilities, featuring intelligent job scheduling, cluster monitoring, array job support, and interactive node allocation for seamless high-performance computing workflows.
+**Slurm MCP** enables high-performance computing workflows through comprehensive job submission, monitoring, and resource management on HPC clusters, featuring intelligent scheduling, array job support, interactive node allocation, and real-time performance analytics.
 
 
 ## 🛠️ Installation
