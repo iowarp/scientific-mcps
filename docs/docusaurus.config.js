@@ -70,12 +70,16 @@ const config = {
         {name: 'keywords', content: 'MCP, Model Context Protocol, scientific computing, AI agents, data analysis, HPC, research, IOWarp'},
         {property: 'og:title', content: 'IOWarp MCPs - Scientific Computing Tools for AI'},
         {property: 'og:description', content: 'Collection of Model Context Protocol servers for scientific computing research.'},
+        {property: 'og:image', content: 'https://iowarp.github.io/iowarp-mcps/img/iowarp_social_card.png'},
+        {property: 'og:image:width', content: '400'},
+        {property: 'og:image:height', content: '400'},
         {name: 'twitter:card', content: 'summary_large_image'},
         {name: 'twitter:title', content: 'IOWarp MCPs - Scientific Computing Tools for AI'},
         {name: 'twitter:description', content: 'Collection of Model Context Protocol servers for scientific computing research.'},
+        {name: 'twitter:image', content: 'https://iowarp.github.io/iowarp-mcps/img/iowarp_social_card.png'},
       ],
       // Social card for link previews
-      image: 'img/iowarp_logo.png',
+      image: 'img/iowarp_social_card.png',
       navbar: {
         title: 'IOWarp MCPs',
         logo: {
