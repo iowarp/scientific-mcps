@@ -3,6 +3,8 @@ name: Auto-update MCP README files
 on:
   pull_request:
     branches: [ dev ]
+  push:
+    branches: [ dev ]
 
 permissions:
   contents: write
