@@ -84,14 +84,6 @@ uv --directory=$env:CLONE_DIR\\iowarp-mcps\\mcps\\${name} run ${name.toLowerCase
     }
   };
 
-  const getPlatformIcon = (platform) => {
-    const icons = {
-      claude: '🤖',
-      cursor: '⚡',
-      vscode: '💻'
-    };
-    return icons[platform] || '🔧';
-  };
 
   // Parse examples from children content and structure them like actions
   const parseExamples = (children) => {
@@ -259,13 +251,6 @@ uv --directory=$env:CLONE_DIR\\iowarp-mcps\\mcps\\${name} run ${name.toLowerCase
               <div className={styles.mcpMeta}>
                 <span className={styles.mcpCategory}>{category}</span>
                 <span className={styles.mcpVersion}>v{version}</span>
-                <div className={styles.platformSupport}>
-                  {platforms.map(platform => (
-                    <span key={platform} className={styles.platformIcon} title={platform}>
-                      {getPlatformIcon(platform)}
-                    </span>
-                  ))}
-                </div>
               </div>
             </div>
           </div>
@@ -295,19 +280,19 @@ uv --directory=$env:CLONE_DIR\\iowarp-mcps\\mcps\\${name} run ${name.toLowerCase
           className={`${styles.mainTab} ${activeTab === 'installation' ? styles.active : ''}`}
           onClick={() => setActiveTab('installation')}
         >
-          📥 Installation
+          Installation
         </button>
         <button 
           className={`${styles.mainTab} ${activeTab === 'actions' ? styles.active : ''}`}
           onClick={() => setActiveTab('actions')}
         >
-          🔧 Actions ({actions?.length || 0})
+          Actions ({actions?.length || 0})
         </button>
         <button 
           className={`${styles.mainTab} ${activeTab === 'examples' ? styles.active : ''}`}
           onClick={() => setActiveTab('examples')}
         >
-          📝 Examples
+          Examples
         </button>
       </div>
 

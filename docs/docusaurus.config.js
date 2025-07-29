@@ -11,8 +11,8 @@ import {themes as prismThemes} from 'prism-react-renderer';
 /** @type {import('@docusaurus/types').Config} */
 const config = {
   title: 'IOWarp MCPs',
-  tagline: 'AI Tools for Scientific Computing',
-  favicon: 'img/favicon.ico',
+  tagline: 'Model Context Protocol servers for scientific computing research',
+  favicon: 'img/iowarp_logo.png',
 
   // Future flags, see https://docusaurus.io/docs/api/docusaurus-config#future
   future: {
@@ -64,24 +64,34 @@ const config = {
   themeConfig:
     /** @type {import('@docusaurus/preset-classic').ThemeConfig} */
     ({
-      // Replace with your project's social card
-      image: 'img/logo.svg',
+      // Enhanced metadata for social sharing
+      metadata: [
+        {name: 'description', content: 'Collection of Model Context Protocol (MCP) servers for scientific computing research. Enable AI agents to interact with data analysis tools, HPC resources, and research datasets.'},
+        {name: 'keywords', content: 'MCP, Model Context Protocol, scientific computing, AI agents, data analysis, HPC, research, IOWarp'},
+        {property: 'og:title', content: 'IOWarp MCPs - Scientific Computing Tools for AI'},
+        {property: 'og:description', content: 'Collection of Model Context Protocol servers for scientific computing research.'},
+        {name: 'twitter:card', content: 'summary_large_image'},
+        {name: 'twitter:title', content: 'IOWarp MCPs - Scientific Computing Tools for AI'},
+        {name: 'twitter:description', content: 'Collection of Model Context Protocol servers for scientific computing research.'},
+      ],
+      // Social card for link previews
+      image: 'img/iowarp_logo.png',
       navbar: {
         title: 'IOWarp MCPs',
         logo: {
           alt: 'IOWarp MCPs Logo',
-          src: 'img/logo.svg',
+          src: 'img/iowarp_logo.png',
         },
         items: [
           {
             to: '/',
             position: 'left',
-            label: '🏠 Browse MCPs',
+            label: 'Browse MCPs',
           },
           {
             to: '/docs/intro',
             position: 'left',
-            label: '🚀 Getting Started',
+            label: 'Getting Started',
           },
           {
             href: 'https://github.com/iowarp/iowarp-mcps',

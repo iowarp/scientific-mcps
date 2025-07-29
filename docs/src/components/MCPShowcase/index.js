@@ -32,7 +32,6 @@ const MCPCard = ({ mcpId, mcp }) => {
           <h3 className={styles.mcpName}>{mcp.name}</h3>
           <span className={styles.mcpCategory}>{mcp.category}</span>
         </div>
-        <PlatformIcons platforms={mcp.platforms} />
       </div>
       <p className={styles.mcpDescription}>{mcp.description}</p>
       <div className={styles.mcpStats}>
