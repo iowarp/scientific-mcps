@@ -1,3 +1,5 @@
+[![MseeP.ai Security Assessment Badge](https://mseep.net/pr/iowarp-iowarp-mcps-badge.png)](https://mseep.ai/app/iowarp-iowarp-mcps)
+
 # IoWarp MCPs
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
