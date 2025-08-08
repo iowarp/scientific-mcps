@@ -2,6 +2,7 @@ import json
 import asyncio
 import sys
 import os
+from abc import ABC, abstractmethod
 from contextlib import AsyncExitStack
 from pathlib import Path
 from typing import List, Optional
@@ -24,16 +25,55 @@ def find_server_py(server_name: str) -> str:
     raise FileNotFoundError(f"Could not find server.py for {server_name}")
 
 
-class MCPManager:
+class MCPManager(ABC):
     """
-    Manages the connection and interaction with a single MCP server.
+    Abstract base class for managing MCP interactions.
     """
     def __init__(self, llm_adapter: BaseLLM, verbose: bool = False):
+        self.llm = llm_adapter
+        self.verbose = verbose
+
+    @abstractmethod
+    async def connect(self, server_script: str):
+        """Connect to MCP server(s)."""
+        pass
+
+    @abstractmethod
+    async def process_query(self, query: str) -> str:
+        """Process a user query and return a response."""
+        pass
+
+    async def chat_loop(self):
+        """Interactive chat loop"""
+        print(f"\nMCP Client Started! (type 'quit' to exit)")
+        try:
+            while True:
+                q = input("\nQuery: ").strip()
+                if q.lower() in ('quit', 'exit'):
+                    break
+                response_text = await self.process_query(q)
+                print(f"\n{response_text}")
+        except (KeyboardInterrupt, EOFError):
+            print("\nExiting...")
+        finally:
+            await self.cleanup()
+
+    @abstractmethod
+    async def cleanup(self):
+        """Clean up resources."""
+        pass
+
+
+class WarpMCPManager(MCPManager):
+    """
+    Manages the connection and interaction with a single MCP server.
+    This is the original MCPManager functionality.
+    """
+    def __init__(self, llm_adapter: BaseLLM, verbose: bool = False):
+        super().__init__(llm_adapter, verbose)
         self.session: Optional[ClientSession] = None
         self.exit_stack = AsyncExitStack()
-        self.llm = llm_adapter
         self.tools: List[ToolDef] = []
-        self.verbose = verbose
 
     async def connect(self, server_script: str):
         print(f"Starting server with stdio: {server_script}" if self.verbose else "")
@@ -120,19 +160,34 @@ class MCPManager:
         except Exception as e:
             return f"Error during LLM processing: {e}"
 
-    async def chat_loop(self):
-        print(f"\nMCP Client Started! (type 'quit' to exit)")
+    async def cleanup(self):
+        await self.exit_stack.aclose()
+
+
+class EmptyMCPManager(MCPManager):
+    """
+    Simplified MCP manager that assumes the LLM handles tool calls internally.
+    Used when MCPs are managed by an external agent framework.
+    """
+    def __init__(self, llm_adapter: BaseLLM, verbose: bool = False):
+        super().__init__(llm_adapter, verbose)
+
+    async def connect(self, server_script: str):
+        """No-op connection since MCPs are externally managed."""
+        if self.verbose:
+            print(f"EmptyMCPManager: Skipping connection to {server_script} (externally managed)")
+
+    async def process_query(self, query: str) -> str:
+        """Simple query processing that delegates to LLM's internal tool handling."""
+        messages = [{"role": "user", "content": query}]
+        
         try:
-            while True:
-                q = input("\nQuery: ").strip()
-                if q.lower() in ('quit', 'exit'):
-                    break
-                response_text = await self.process_query(q)
-                print(f"\n{response_text}")
-        except (KeyboardInterrupt, EOFError):
-            print("\nExiting...")
-        finally:
-            await self.cleanup()
+            # Assume the LLM handles tool calls internally
+            llm_reply = await self.llm.chat(messages, [])
+            return llm_reply.text
+        except Exception as e:
+            return f"Error during LLM processing: {e}"
 
     async def cleanup(self):
-        await self.exit_stack.aclose() 
+        """No cleanup needed for empty manager."""
+        pass 
