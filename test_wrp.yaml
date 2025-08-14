@@ -5,46 +5,47 @@ tests:
   - name: "hello_world"
     description: "Basic test to verify agent responds with proper JSON format"
     mcps: ["arxiv"]  # Used to determine WRP config file(s) to use
-    prompt: 'Respond with exactly the following JSON: {"status": "ok"}'
-    expected_json:
-      status: "ok"
-    json_schema:
-      type: "object"
-      required: ["status"]
-      properties:
-        status:
-          type: "string"
-          enum: ["ok"]
+    turns:
+      - prompt: 'Respond with exactly the following JSON: {"status": "ok"}'
+        expected_json:
+          status: "ok"
+        json_schema:
+          type: "object"
+          required: ["status"]
+          properties:
+            status:
+              type: "string"
+              enum: ["ok"]
     timeout: 20
 
   - name: "arxiv_search_test"
     description: "Test Arxiv MCP search functionality"
     mcps: ["arxiv"]
-    prompt: 'Use search_by_title to search for papers with title "machine learning". Return results as JSON: {"query": "machine learning", "found_papers": true, "paper_titles": ["title1", "title2", "title3"]}'
-    expected_json:
-      query: "machine learning"
-      found_papers: true
-    json_schema:
-      type: "object"
-      required: ["query", "found_papers", "paper_titles"]
-      properties:
-        query:
-          type: "string"
-          enum: ["machine learning"]
-        found_papers:
-          type: "boolean"
-          enum: [true]
-        paper_titles:
-          type: "array"
-          items:
-            type: "string"
-          minItems: 1
+    turns:
+      - prompt: 'Use search_by_title to search for papers with title "machine learning". Return results as JSON: {"query": "machine learning", "found_papers": true, "paper_titles": ["title1", "title2", "title3"]}'
+        expected_json:
+          query: "machine learning"
+          found_papers: true
+        json_schema:
+          type: "object"
+          required: ["query", "found_papers", "paper_titles"]
+          properties:
+            query:
+              type: "string"
+              enum: ["machine learning"]
+            found_papers:
+              type: "boolean"
+              enum: [true]
+            paper_titles:
+              type: "array"
+              items:
+                type: "string"
+              minItems: 1
     timeout: 45
 
   - name: "multi_turn_arxiv_test"
     description: "Test multiple sequential tool calls within Arxiv MCP"
     mcps: ["arxiv"]
-    multi_turn: true
     turns:
       - prompt: 'Use search_by_title to find papers about "neural networks". Return ONLY this exact JSON with no other text: {"search_done": true, "topic": "neural networks", "paper_titles": ["Neural Network Paper 1", "Neural Network Paper 2"]}'
         expected_json:
@@ -85,4 +86,61 @@ tests:
                 type: "string"
               minItems: 1
     timeout: 90
+
+  - name: "interconnected_research_workflow"
+    description: "Test 3-step interconnected workflow: search -> get details -> find similar papers"
+    mcps: ["arxiv"]
+    turns:
+      - prompt: 'Find arxiv papers about "machine learning". Respond with JSON in EXACTLY the following form: {"titles: [<titles>],  "total_found": <number_of_papers_found>}'
+        expected_json: {}
+        json_schema:
+          type: "object"
+          required: ["titles", "total_found"]
+          properties:
+            titles:
+              type: "array"
+              items:
+                type: "string"
+                minLength: 1
+              minItems: 1
+            total_found:
+              type: "integer"
+              minimum: 1
+      - prompt: 'Get details on the first paper in the list. Return JSON of the results in EXACTLY the following form: {"paper_title": "<actual_title>", "authors": [<authors>], "arxiv-id": <arxiv id>, "abstract": <paper abstract>}'
+        expected_json: {}
+        json_schema:
+          type: "object"
+          required: ["paper_title", "authors", "arxiv-id", "abstract"]
+          properties:
+            paper_title:
+              type: "string"
+              minLength: 1
+            authors:
+              type: "array"
+              items:
+                type: "string"
+                minLength: 1
+              minItems: 1
+            arxiv-id:
+              type: "string"
+              pattern: "^[0-9]{4}\\.[0-9]{4,5}(v[0-9]+)?$"
+            abstract:
+              type: "string"
+              minLength: 1
+      - prompt: 'Find other papers on Arxiv that are similar to this paper. Return JSON of the results in EXACTLY the following form: {"similar_count": <number_of_similar_papers>, "titles": [<titles>]}'
+        expected_json: {}
+        json_schema:
+          type: "object"
+          required: ["similar_count", "titles"]
+          properties:
+            similar_count:
+              type: "integer"
+              minimum: 0
+            titles:
+              type: "array"
+              items:
+                type: "string"
+                minLength: 1
+              minItems: 0
+    timeout: 120
 
