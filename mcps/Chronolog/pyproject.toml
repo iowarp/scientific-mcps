@@ -29,7 +29,9 @@ dependencies = [
     "fastmcp",
     "python-dotenv",
     "google-genai",
-    "h5py"
+    "h5py",
+    "pytest",
+    "pytest-asyncio"
 ]
 
 [project.scripts]
