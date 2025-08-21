@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-National Data Platform (NDP) MCP Server - 21st August 2025
+National Data Platform (NDP) MCP Server
 
 This MCP server provides access to the National Data Platform API,
 enabling discovery, search, and analysis of datasets including

@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Test script for the National Data Platform (NDP) MCP Server 21st August 2025
+Test script for the National Data Platform (NDP) MCP Server
 
 This script tests the functionality of the NDP MCP server to ensure
 all tools, resources, and prompts work correctly.
