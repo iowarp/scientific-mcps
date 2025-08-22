@@ -3,7 +3,7 @@
 
 ## Description
 
-**Slurm MCP** enables high-performance computing workflows through comprehensive job submission, monitoring, and resource management on HPC clusters, featuring intelligent scheduling, array job support, interactive node allocation, and real-time performance analytics.
+Slurm MCP is a Model Context Protocol server that enables LLMs to manage HPC workloads on Slurm-managed clusters with comprehensive job submission, monitoring, and resource management capabilities, featuring intelligent job scheduling, cluster monitoring, array job support, and interactive node allocation for seamless high-performance computing workflows.
 
 
 ## 🛠️ Installation
@@ -109,7 +109,122 @@ uv --directory=$env:CLONE_DIR\iowarp-mcps\mcps\Slurm run slurm-mcp --help
 
 ## Capabilities
 
+### `submit_slurm_job`
+**Description**: Submit a job script to Slurm scheduler with advanced resource specification and intelligent optimization.
 
+**Parameters**:
+- `script_path` (str): Parameter for script_path
+- `cores` (int, optional): Parameter for cores (default: 1)
+- `memory` (str, optional): Parameter for memory (default: 1GB)
+- `time_limit` (str, optional): Parameter for time_limit (default: 01:00:00)
+- `job_name` (Any, optional): Parameter for job_name
+- `partition` (Any, optional): Parameter for partition
+
+**Returns**: Dictionary containing comprehensive job submission results with scheduling insights
+
+### `check_job_status`
+**Description**: Check comprehensive status of a Slurm job with advanced monitoring and intelligent analysis.
+
+**Parameters**:
+- `job_id` (str): Parameter for job_id
+
+**Returns**: Dictionary containing comprehensive job status with performance insights and optimization recommendations
+
+### `cancel_slurm_job`
+**Description**: Cancel a Slurm job.
+
+**Parameters**:
+- `job_id` (str): Parameter for job_id
+
+**Returns**: Dictionary with cancellation results
+
+### `list_slurm_jobs`
+**Description**: List Slurm jobs with optional filtering.
+
+**Parameters**:
+- `user` (Any, optional): Parameter for user
+- `state` (Any, optional): Parameter for state
+
+**Returns**: Dictionary with list of jobs
+
+### `get_slurm_info`
+**Description**: Get information about the Slurm cluster.
+
+**Returns**: Dictionary with cluster information
+
+### `get_job_details`
+**Description**: Get detailed information about a Slurm job.
+
+**Parameters**:
+- `job_id` (str): Parameter for job_id
+
+**Returns**: Dictionary with detailed job information
+
+### `get_job_output`
+**Description**: Get job output content.
+
+**Parameters**:
+- `job_id` (str): Parameter for job_id
+- `output_type` (str, optional): Parameter for output_type (default: stdout)
+
+**Returns**: Dictionary with job output content
+
+### `get_queue_info`
+**Description**: Get job queue information.
+
+**Parameters**:
+- `partition` (Any, optional): Parameter for partition
+
+**Returns**: Dictionary with queue information
+
+### `submit_array_job`
+**Description**: Submit an array job to Slurm scheduler.
+
+**Parameters**:
+- `script_path` (str): Parameter for script_path
+- `array_range` (str): Parameter for array_range
+- `cores` (int, optional): Parameter for cores (default: 1)
+- `memory` (str, optional): Parameter for memory (default: 1GB)
+- `time_limit` (str, optional): Parameter for time_limit (default: 01:00:00)
+- `job_name` (Any, optional): Parameter for job_name
+- `partition` (Any, optional): Parameter for partition
+
+**Returns**: Dictionary with array job submission results
+
+### `get_node_info`
+**Description**: Get cluster node information.
+
+**Returns**: Dictionary with node information
+
+### `allocate_slurm_nodes`
+**Description**: Allocate Slurm nodes using salloc command.
+
+**Parameters**:
+- `nodes` (int, optional): Parameter for nodes (default: 1)
+- `cores` (int, optional): Parameter for cores (default: 1)
+- `memory` (Any, optional): Parameter for memory
+- `time_limit` (str, optional): Parameter for time_limit (default: 01:00:00)
+- `partition` (Any, optional): Parameter for partition
+- `job_name` (Any, optional): Parameter for job_name
+- `immediate` (bool, optional): Parameter for immediate (default: False)
+
+**Returns**: Dictionary with allocation information
+
+### `deallocate_slurm_nodes`
+**Description**: Deallocate Slurm nodes by canceling the allocation.
+
+**Parameters**:
+- `allocation_id` (str): Parameter for allocation_id
+
+**Returns**: Dictionary with deallocation status
+
+### `get_allocation_status`
+**Description**: Get status of a node allocation.
+
+**Parameters**:
+- `allocation_id` (str): Parameter for allocation_id
+
+**Returns**: Dictionary with allocation status information
 ## Examples
 
 ### 1. Job Submission and Monitoring

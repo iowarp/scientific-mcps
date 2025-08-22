@@ -3,7 +3,7 @@
 
 ## Description
 
-**Jarvis MCP** manages data-centric pipeline lifecycles using the Jarvis framework, featuring pipeline creation, package management, configuration updates, environment building, and execution capabilities for high-performance computing and data science.
+Jarvis MCP is a Model Context Protocol server that enables LLMs to manage the full lifecycle of data-centric pipelines using the Jarvis framework, featuring pipeline creation, package management, configuration updates, environment building, and execution capabilities for high-performance computing and data science workflows.
 
 ## 🛠️ Installation
 
@@ -109,7 +109,228 @@ uv --directory=$env:CLONE_DIR\iowarp-mcps\mcps\Jarvis run jarvis-mcp --help
 
 ## Capabilities
 
+### `update_pipeline`
+**Description**: Re-apply environment and configuration to every package in a Jarvis pipeline.
 
+**Parameters**:
+- `pipeline_id` (str): ID of the pipeline to update
+
+**Returns**: dict: Status and results of the update operation.
+
+### `build_pipeline_env`
+**Description**: Build the pipeline execution environment for a given pipeline.
+
+**Parameters**:
+- `pipeline_id` (str): ID of the pipeline to build
+
+**Returns**: dict: Status and results of the environment build operation.
+
+### `create_pipeline`
+**Description**: Create a new pipeline environment for data-centric workflows.
+
+**Parameters**:
+- `pipeline_id` (str): Name/ID for the new pipeline
+
+**Returns**: dict: Status and details of the created pipeline.
+
+### `load_pipeline`
+**Description**: Load an existing pipeline environment by ID, or the current one if not specified.
+
+**Parameters**:
+- `pipeline_id` (str, optional): ID of the pipeline to load
+
+**Returns**: dict: Status and details of the loaded pipeline.
+
+### `get_pkg_config`
+**Description**: Retrieve the configuration of a specific package in a pipeline.
+
+**Parameters**:
+- `pipeline_id` (str): ID of the pipeline
+- `pkg_id` (str): ID of the package
+
+**Returns**: dict: Current configuration of the package.
+
+### `append_pkg`
+**Description**: Add a package to a pipeline for execution or analysis.
+
+**Parameters**:
+- `pipeline_id` (str): ID of the pipeline
+- `pkg_type` (str): Type of package to add
+- `pkg_id` (str, optional): ID for the new package
+- `do_configure` (bool, optional): Whether to configure after adding
+- `extra_args` (dict, optional): Additional configuration arguments
+
+**Returns**: dict: Status and details of the package addition.
+
+### `configure_pkg`
+**Description**: Configure a package in a pipeline with new settings.
+
+**Parameters**:
+- `pipeline_id` (str): ID of the pipeline
+- `pkg_id` (str): ID of the package
+- `extra_args` (dict, optional): Configuration arguments
+
+**Returns**: dict: Status and details of the configuration operation.
+
+### `unlink_pkg`
+**Description**: Unlink a package from a pipeline without deleting its files.
+
+**Parameters**:
+- `pipeline_id` (str): ID of the pipeline
+- `pkg_id` (str): ID of the package to unlink
+
+**Returns**: dict: Status and details of the unlink operation.
+
+### `remove_pkg`
+**Description**: Remove a package and its files from a pipeline.
+
+**Parameters**:
+- `pipeline_id` (str): ID of the pipeline
+- `pkg_id` (str): ID of the package to remove
+
+**Returns**: dict: Status and details of the removal operation.
+
+### `run_pipeline`
+**Description**: Execute the pipeline, running all configured steps.
+
+**Parameters**:
+- `pipeline_id` (str): ID of the pipeline to run
+
+**Returns**: dict: Status and results of the pipeline execution.
+
+### `destroy_pipeline`
+**Description**: Destroy a pipeline and clean up all associated files and resources.
+
+**Parameters**:
+- `pipeline_id` (str): ID of the pipeline to destroy
+
+**Returns**: dict: Status and details of the destruction operation.
+
+### `jm_create_config`
+**Description**: Initialize manager directories and persist configuration.
+
+**Parameters**:
+- `config_dir` (str): Parameter for config_dir
+- `private_dir` (str): Parameter for private_dir
+- `shared_dir` (Any, optional): Parameter for shared_dir
+
+**Returns**: Returns list
+
+### `jm_load_config`
+**Description**: Load manager configuration from saved state.
+
+**Returns**: Returns list
+
+### `jm_save_config`
+**Description**: Save current configuration state to disk.
+
+**Returns**: Returns list
+
+### `jm_set_hostfile`
+**Description**: Set and save the path to the hostfile for deployments.
+
+**Parameters**:
+- `path` (str): Parameter for path
+
+**Returns**: Returns list
+
+### `jm_bootstrap_from`
+**Description**: Bootstrap configuration based on a predefined machine template.
+
+**Parameters**:
+- `machine` (str): Parameter for machine
+
+**Returns**: Returns list
+
+### `jm_bootstrap_list`
+**Description**: List all bootstrap templates available.
+
+**Returns**: Returns list
+
+### `jm_reset`
+**Description**: Reset manager to a clean state by destroying all pipelines and config.
+
+**Returns**: Returns list
+
+### `jm_list_pipelines`
+**Description**: List all current pipelines under management.
+
+**Returns**: Returns list
+
+### `jm_cd`
+**Description**: Set the working pipeline context.
+
+**Parameters**:
+- `pipeline_id` (str): Parameter for pipeline_id
+
+**Returns**: Returns list
+
+### `jm_list_repos`
+**Description**: List all registered repositories.
+
+**Returns**: Returns list
+
+### `jm_add_repo`
+**Description**: Add a repository path to the manager.
+
+**Parameters**:
+- `path` (str): Parameter for path
+- `force` (bool, optional): Parameter for force (default: False)
+
+**Returns**: Returns list
+
+### `jm_remove_repo`
+**Description**: Remove a repository from configuration.
+
+**Parameters**:
+- `repo_name` (str): Parameter for repo_name
+
+**Returns**: Returns list
+
+### `jm_promote_repo`
+**Description**: Promote a repository to higher priority.
+
+**Parameters**:
+- `repo_name` (str): Parameter for repo_name
+
+**Returns**: Returns list
+
+### `jm_get_repo`
+**Description**: Get detailed information about a repository.
+
+**Parameters**:
+- `repo_name` (str): Parameter for repo_name
+
+**Returns**: Returns list
+
+### `jm_construct_pkg`
+**Description**: Generate a new package skeleton by type.
+
+**Parameters**:
+- `pkg_type` (str): Parameter for pkg_type
+
+**Returns**: Returns list
+
+### `jm_graph_show`
+**Description**: Print the resource graph to the console.
+
+**Returns**: Returns list
+
+### `jm_graph_build`
+**Description**: Construct or rebuild the graph with a given sleep delay.
+
+**Parameters**:
+- `net_sleep` (float): Parameter for net_sleep
+
+**Returns**: Returns list
+
+### `jm_graph_modify`
+**Description**: Modify the current resource graph with a delay between operations.
+
+**Parameters**:
+- `net_sleep` (float): Parameter for net_sleep
+
+**Returns**: Returns list
 ## Examples
 
 ### 1. Pipeline Creation and Basic Management

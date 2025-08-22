@@ -5,17 +5,17 @@ import styles from './styles.module.css';
 
 // Platform icons component
 const PlatformIcons = ({ platforms }) => {
-  const platformIcons = {
-    claude: '🤖',
-    cursor: '⚡',
-    vscode: '💻'
+  const platformLabels = {
+    claude: 'Claude',
+    cursor: 'Cursor',
+    vscode: 'VSCode'
   };
 
   return (
     <div className={styles.platformIcons}>
       {platforms.map((platform) => (
-        <span key={platform} className={styles.platformIcon} title={platform}>
-          {platformIcons[platform]}
+        <span key={platform} className={styles.platformLabel} title={platform}>
+          {platformLabels[platform] || platform}
         </span>
       ))}
     </div>
@@ -32,7 +32,6 @@ const MCPCard = ({ mcpId, mcp }) => {
           <h3 className={styles.mcpName}>{mcp.name}</h3>
           <span className={styles.mcpCategory}>{mcp.category}</span>
         </div>
-        <PlatformIcons platforms={mcp.platforms} />
       </div>
       <p className={styles.mcpDescription}>{mcp.description}</p>
       <div className={styles.mcpStats}>

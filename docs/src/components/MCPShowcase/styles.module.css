@@ -247,7 +247,20 @@
   transition: opacity 0.2s ease;
 }
 
-.mcpCard:hover .platformIcon {
+.platformLabel {
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  background: var(--ifm-color-emphasis-200);
+  padding: 0.2rem 0.4rem;
+  border-radius: 0.25rem;
+  opacity: 0.8;
+  transition: opacity 0.2s ease;
+  font-weight: 600;
+}
+
+.mcpCard:hover .platformIcon,
+.mcpCard:hover .platformLabel {
   opacity: 1;
 }
 

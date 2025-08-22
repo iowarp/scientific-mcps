@@ -1,4 +1,4 @@
-name: Update Documentation and Deploy Website
+name: Update Documentation and Build Website
 
 on:
   push:
@@ -9,15 +9,12 @@ on:
 permissions:
   contents: write
   pull-requests: write
-  pages: write
-  id-token: write
 
 jobs:
-  update-and-deploy:
+  # Job 1: Build and test documentation (runs on all branches/PRs)
+  build-docs:
+    name: Build Documentation
     runs-on: ubuntu-latest
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
     
     steps:
     - name: Checkout repository
@@ -41,7 +38,7 @@ jobs:
           uv sync
         fi
 
-    # Step 1: Update README files (for PRs to dev branch)
+    # Update README files (for PRs to dev branch)
     - name: Update MCP README files
       if: github.event_name == 'pull_request' && github.base_ref == 'dev'
       run: python3 scripts/readme_filler.py mcps
@@ -60,7 +57,7 @@ jobs:
           echo "No README changes to commit"
         fi
 
-    # Step 2: Generate Docusaurus documentation
+    # Generate and build documentation
     - name: Generate Docusaurus documentation
       run: |
         python3 scripts/generate_docs.py mcps docs
@@ -80,23 +77,16 @@ jobs:
       working-directory: ./docs
       run: npm run build
 
-    # Step 3: Deploy to GitHub Pages (only on main branch push)
-    - name: Setup Pages
+    # Store build artifacts for deployment job
+    - name: Upload build artifacts
       if: github.ref == 'refs/heads/main' && github.event_name == 'push'
-      uses: actions/configure-pages@v4
-
-    - name: Upload artifact
-      if: github.ref == 'refs/heads/main' && github.event_name == 'push'
-      uses: actions/upload-pages-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
-        path: './docs/build'
+        name: docs-build
+        path: ./docs/build
+        retention-days: 1
 
-    - name: Deploy to GitHub Pages
-      if: github.ref == 'refs/heads/main' && github.event_name == 'push'
-      id: deployment
-      uses: actions/deploy-pages@v4
-
-    # Step 4: Commit generated documentation (for workflow branch)
+    # Commit generated documentation (for workflow branch)
     - name: Commit generated documentation
       if: github.ref == 'refs/heads/workflow/docusaurus-for-webpage' && github.event_name == 'push'
       run: |
@@ -111,15 +101,55 @@ jobs:
           echo "No documentation changes to commit"
         fi
 
-    # Step 5: Summary
+    # Job Summary
     - name: Job Summary
       run: |
-        echo "## Documentation Update Summary" >> $GITHUB_STEP_SUMMARY
+        echo "## Documentation Build Summary" >> $GITHUB_STEP_SUMMARY
         echo "- ✅ Generated Docusaurus documentation" >> $GITHUB_STEP_SUMMARY
         echo "- ✅ Built website successfully" >> $GITHUB_STEP_SUMMARY
-        if [ "${{ github.ref }}" = "refs/heads/main" ] && [ "${{ github.event_name }}" = "push" ]; then
-          echo "- 🚀 Deployed to GitHub Pages" >> $GITHUB_STEP_SUMMARY
-        fi
         if [ "${{ github.event_name }}" = "pull_request" ] && [ "${{ github.base_ref }}" = "dev" ]; then
           echo "- 📝 Updated README files" >> $GITHUB_STEP_SUMMARY
         fi
+        if [ "${{ github.ref }}" = "refs/heads/main" ] && [ "${{ github.event_name }}" = "push" ]; then
+          echo "- 📦 Build artifacts ready for deployment" >> $GITHUB_STEP_SUMMARY
+        fi
+
+  # Job 2: Deploy to GitHub Pages (only runs on main branch pushes)
+  deploy:
+    name: Deploy to GitHub Pages
+    needs: build-docs
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+    
+    permissions:
+      pages: write
+      id-token: write
+    
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    
+    steps:
+    - name: Download build artifacts
+      uses: actions/download-artifact@v4
+      with:
+        name: docs-build
+        path: ./build
+
+    - name: Setup Pages
+      uses: actions/configure-pages@v4
+
+    - name: Upload to GitHub Pages
+      uses: actions/upload-pages-artifact@v3
+      with:
+        path: ./build
+
+    - name: Deploy to GitHub Pages
+      id: deployment
+      uses: actions/deploy-pages@v4
+
+    - name: Deployment Summary
+      run: |
+        echo "## Deployment Summary" >> $GITHUB_STEP_SUMMARY
+        echo "- 🚀 Successfully deployed to GitHub Pages" >> $GITHUB_STEP_SUMMARY
+        echo "- 🔗 Website URL: ${{ steps.deployment.outputs.page_url }}" >> $GITHUB_STEP_SUMMARY

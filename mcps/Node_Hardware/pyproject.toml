@@ -17,10 +17,15 @@ dependencies = [
 
 keywords = ["hardware-monitoring", "system-analysis", "performance-metrics", "node-information", "ssh-monitoring", "remote-hardware", "mcp", "llm-integration", "infrastructure-monitoring", "distributed-systems"]
 
-[tool.uv]
-dev-dependencies = [
+[dependency-groups]
+dev = [
+    "mypy>=1.17.0",
     "pytest>=8.4.0",
-    "pytest-asyncio>=0.21.0"
+    "pytest-asyncio>=1.1.0",
+    "pytest-cov>=6.2.1",
+    "pytest-timeout>=2.4.0",
+    "types-psutil",
+    "ruff>=0.12.5",
 ]
 
 [project.scripts]

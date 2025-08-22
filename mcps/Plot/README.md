@@ -3,7 +3,7 @@
 
 ## Description
 
-**Plot MCP** creates data visualizations from CSV and Excel files with intelligent data processing capabilities, supporting line plots, bar charts, scatter plots, histograms, and correlation heatmaps for comprehensive data analysis.
+Plot MCP is a Model Context Protocol server that enables LLMs to create professional data visualizations from CSV and Excel files with intelligent data processing capabilities. The server automatically handles data cleaning, type inference, and missing value processing while supporting multiple visualization types including line plots, bar charts, scatter plots, histograms, and correlation heatmaps.
 
 
 ## 🛠️ Installation
@@ -109,7 +109,71 @@ uv --directory=$env:CLONE_DIR\iowarp-mcps\mcps\Plot run plot-mcp --help
 
 ## Capabilities
 
+### `line_plot`
+**Description**: Create a line plot from data file with comprehensive visualization options.
 
+**Parameters**:
+- `file_path` (str): Parameter for file_path
+- `x_column` (str): Parameter for x_column
+- `y_column` (str): Parameter for y_column
+- `title` (str, optional): Parameter for title (default: Line Plot)
+- `output_path` (str, optional): Parameter for output_path (default: line_plot.png)
+
+**Returns**: Dictionary containing: - plot_info: Details about the generated plot including dimensions and format - data_summary: Statistical summary of the plotted data - file_details: Information about the output file size and location - visualization_stats: Metrics about data points and trends
+
+### `bar_plot`
+**Description**: Create a bar plot from data file with comprehensive customization options.
+
+**Parameters**:
+- `file_path` (str): Parameter for file_path
+- `x_column` (str): Parameter for x_column
+- `y_column` (str): Parameter for y_column
+- `title` (str, optional): Parameter for title (default: Bar Plot)
+- `output_path` (str, optional): Parameter for output_path (default: bar_plot.png)
+
+**Returns**: Dictionary containing: - plot_info: Details about the generated bar chart including bar count and styling - data_summary: Statistical summary of the categorical and numerical data - file_details: Information about the output file size and location - visualization_stats: Metrics about data distribution and categories
+
+### `scatter_plot`
+**Description**: Create a scatter plot from data file with advanced correlation analysis.
+
+**Parameters**:
+- `file_path` (str): Parameter for file_path
+- `x_column` (str): Parameter for x_column
+- `y_column` (str): Parameter for y_column
+- `title` (str, optional): Parameter for title (default: Scatter Plot)
+- `output_path` (str, optional): Parameter for output_path (default: scatter_plot.png)
+
+**Returns**: Dictionary containing: - plot_info: Details about the generated scatter plot including point count and styling - correlation_stats: Statistical correlation metrics and trend analysis - data_summary: Statistical summary of both x and y variables - file_details: Information about the output file size and location
+
+### `histogram_plot`
+**Description**: Create a histogram from data file with advanced statistical analysis.
+
+**Parameters**:
+- `file_path` (str): Parameter for file_path
+- `column` (str): Parameter for column
+- `bins` (int, optional): Parameter for bins (default: 30)
+- `title` (str, optional): Parameter for title (default: Histogram)
+- `output_path` (str, optional): Parameter for output_path (default: histogram.png)
+
+**Returns**: Dictionary containing: - plot_info: Details about the generated histogram including bin information - distribution_stats: Statistical metrics including mean, median, mode, and standard deviation - data_summary: Comprehensive summary of the data distribution - file_details: Information about the output file size and location
+
+### `heatmap_plot`
+**Description**: Create a heatmap from data file with advanced correlation visualization.
+
+**Parameters**:
+- `file_path` (str): Parameter for file_path
+- `title` (str, optional): Parameter for title (default: Heatmap)
+- `output_path` (str, optional): Parameter for output_path (default: heatmap.png)
+
+**Returns**: Dictionary containing: - plot_info: Details about the generated heatmap including matrix dimensions - correlation_matrix: Full correlation matrix with statistical significance - data_summary: Statistical summary of all numerical variables - file_details: Information about the output file size and location
+
+### `data_info`
+**Description**: Get comprehensive data file information with detailed analysis.
+
+**Parameters**:
+- `file_path` (str): Parameter for file_path
+
+**Returns**: Dictionary containing: - data_schema: Column names, data types, and null value analysis - data_quality: Missing values, duplicates, and data consistency metrics - statistical_summary: Basic statistics for numerical and categorical columns - visualization_recommendations: Suggested plot types based on data characteristics
 ## Examples
 
 ### 1. Data Exploration and Analysis

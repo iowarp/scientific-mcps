@@ -1,6 +1,6 @@
 [project]
 name = "plot-mcp"
-version = "0.1.0"
+version = "1.0.0"
 description = "MCP server for advanced data visualization and plotting operations"
 readme = "README.md"
 requires-python = ">=3.10"
@@ -23,7 +23,11 @@ dependencies = [
 
 [dependency-groups]
 dev = [
+    "mypy>=1.17.0",
     "pytest>=8.4.0",
+    "pytest-asyncio>=1.1.0",
+    "pytest-cov>=6.2.1",
+    "ruff>=0.12.5",
 ]
 
 [project.scripts]

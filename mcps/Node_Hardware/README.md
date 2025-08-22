@@ -3,7 +3,7 @@
 
 ## Description
 
-**Node Hardware MCP** monitors system hardware information including CPU specifications, memory usage, disk performance, network interfaces, GPU details, and sensor data for both local and remote nodes via SSH connections.
+Node Hardware MCP is a Model Context Protocol server that enables LLMs to monitor and analyze system hardware information including CPU specifications, memory usage, disk performance, network interfaces, GPU details, and sensor data for both local and remote nodes via SSH connections, providing comprehensive hardware monitoring and performance analysis capabilities.
 
 
 ## 🛠️ Installation
@@ -110,7 +110,71 @@ uv --directory=$env:CLONE_DIR\iowarp-mcps\mcps\Node_Hardware run node-hardware-m
 
 ## Capabilities
 
+### `get_cpu_info`
+**Description**: Get comprehensive CPU information including specifications, core configuration, frequency analysis, and performance metrics.
 
+**Returns**: dict: Structured CPU information with performance insights and optimization recommendations.
+
+### `get_memory_info`
+**Description**: Get comprehensive memory information including capacity, usage patterns, and performance characteristics.
+
+**Returns**: dict: Structured memory information with usage insights and optimization recommendations.
+
+### `get_system_info`
+**Description**: Get comprehensive system information including operating system details, platform configuration, and system status.
+
+**Returns**: dict: Structured system information with configuration insights and security recommendations.
+
+### `get_disk_info`
+**Description**: Get comprehensive disk information including storage devices, partitions, and I/O performance metrics.
+
+**Returns**: dict: Structured disk information with performance insights and maintenance recommendations.
+
+### `get_network_info`
+**Description**: Get comprehensive network information including interfaces, connections, and bandwidth analysis.
+
+**Returns**: dict: Structured network information with performance insights and security recommendations.
+
+### `get_gpu_info`
+**Description**: Get comprehensive GPU information including specifications, memory, and compute capabilities.
+
+**Returns**: dict: Structured GPU information with performance insights and optimization recommendations.
+
+### `get_sensor_info`
+**Description**: Get sensor information including temperature, fan speeds, and thermal data.
+
+**Returns**: dict: Structured sensor information with thermal insights and health recommendations.
+
+### `get_process_info`
+**Description**: Get process information including running processes and resource usage.
+
+**Returns**: dict: Structured process information with resource insights and optimization recommendations.
+
+### `get_performance_info`
+**Description**: Get real-time performance metrics including CPU, memory, and disk usage.
+
+**Returns**: dict: Structured performance information with bottleneck analysis and optimization recommendations.
+
+### `get_remote_node_info`
+**Description**: Get comprehensive remote node hardware and system information via SSH with advanced filtering and intelligent analysis.
+
+**Parameters**:
+- `hostname` (str): Target hostname or IP address for remote collection.
+- `username` (Optional[str]): SSH username for remote authentication.
+- `port` (int): SSH port number for remote connection.
+- `ssh_key` (Optional[str]): Path to SSH private key file for authentication.
+- `timeout` (int): SSH connection timeout in seconds.
+- `components` (Optional[List[str]]): List of specific components to include in collection.
+- `exclude_components` (Optional[List[str]]): List of specific components to exclude from collection.
+- `include_performance` (bool): Whether to include real-time performance analysis.
+- `include_health` (bool): Whether to include health assessment and predictive maintenance insights.
+
+**Returns**: dict: Comprehensive remote hardware and system analysis, including hardware_data, collection_metadata, performance_analysis, health_assessment, ssh_connection_info, error_information, intelligent_insights, optimization_recommendations, and beautiful_formatting.
+
+### `health_check`
+**Description**: Perform comprehensive health check and system diagnostics with advanced capability verification.
+
+**Returns**: dict: Comprehensive health assessment, including server_status, capability_status, system_compatibility, performance_metrics, diagnostic_insights, optimization_recommendations, troubleshooting_guide, predictive_maintenance, security_assessment, and health_summary.
 ## Examples
 
 ### 1. Local Hardware Overview

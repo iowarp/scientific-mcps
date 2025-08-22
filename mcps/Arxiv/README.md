@@ -3,7 +3,7 @@
 
 ## Description
 
-**ArXiv MCP** provides comprehensive research paper access from ArXiv preprint repository with multi-dimensional search capabilities, paper analysis tools, citation management, PDF access, and research workflow support for academic literature review.
+ArXiv MCP is a comprehensive Model Context Protocol (MCP) server that enables Language Learning Models (LLMs) to search, analyze, and access research papers from the ArXiv preprint repository. This server provides advanced search capabilities, paper analysis tools, and citation management with seamless integration with AI coding assistants.
 
 
 **Key Features:**
@@ -232,7 +232,7 @@ uv --directory=$env:CLONE_DIR\iowarp-mcps\mcps\Arxiv run arxiv-mcp --help
 
 **Parameters**:
 - `arxiv_ids_json` (str): Parameter for arxiv_ids_json
-- `download_path` (str, optional): Parameter for download_path
+- `download_path` (Any, optional): Parameter for download_path
 - `max_concurrent` (int, optional): Parameter for max_concurrent (default: 3)
 
 **Returns**: Dictionary with download results
