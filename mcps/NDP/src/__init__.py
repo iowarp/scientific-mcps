@@ -1,13 +1,8 @@
 """
-NDP MCP Server Package
+National Data Platform (NDP) MCP Server
 
-A Model Context Protocol (MCP) server for National Data Platform integration.
+This package provides an MCP server for searching and discovering datasets
+across multiple CKAN instances in the National Data Platform.
 """
 
 __version__ = "1.0.0"
-__author__ = "NDP MCP Team"
-__email__ = "ndp-mcp@example.com"
-
-from .ndp_mcp_server import NDPMCPServer, NDPClient
-
-__all__ = ["NDPMCPServer", "NDPClient"]
