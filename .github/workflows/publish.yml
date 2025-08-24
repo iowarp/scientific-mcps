@@ -47,7 +47,8 @@ jobs:
           BASE_VERSION=$(grep -E '^version = ' pyproject.toml | sed 's/version = "\(.*\)"/\1/')
           TIMESTAMP=$(date +%Y%m%d%H%M%S)
           SHORT_SHA=${GITHUB_SHA:0:7}
-          VERSION="${BASE_VERSION}.dev${TIMESTAMP}+${SHORT_SHA}"
+          # Use GitHub run number to ensure unique versions
+          VERSION="${BASE_VERSION}.dev${TIMESTAMP}+${SHORT_SHA}.${GITHUB_RUN_NUMBER}"
           echo "version=$VERSION" >> $GITHUB_OUTPUT
           echo "is_release=false" >> $GITHUB_OUTPUT
           echo "Building dev version: $VERSION"
@@ -90,8 +91,12 @@ jobs:
     
     - name: Publish to TestPyPI
       uses: pypa/gh-action-pypi-publish@release/v1
+      continue-on-error: true  # Don't fail the workflow if TestPyPI upload fails
       with:
         repository-url: https://test.pypi.org/legacy/
+        skip-existing: true
+        verbose: true
+        attestations: false  # Disable attestations for TestPyPI to avoid issues
 
   publish-to-pypi:
     name: Publish to PyPI
@@ -114,6 +119,9 @@ jobs:
     
     - name: Publish to PyPI
       uses: pypa/gh-action-pypi-publish@release/v1
+      with:
+        skip-existing: true
+        verbose: true
 
   github-release:
     name: Create GitHub Release
